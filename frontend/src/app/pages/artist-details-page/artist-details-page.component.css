@@ -124,7 +124,7 @@ h1 {
 
 .score {
   margin-left: 4px;
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .poster-note {

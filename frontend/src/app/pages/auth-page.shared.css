@@ -6,12 +6,13 @@
     30%  form surface     (--surface-dark card with a 1px border)
     10%  accent           (primary button, focus ring, link underline)
 
-  Contrast (WCAG 2.2 AA), measured on the #181a1e surface:
-    primary text  #eceef1  ~15:1
-    labels/help   #b4bac3  ~8.9:1
-    errors        #ff8a8a  ~7.7:1  (always paired with an icon, never color alone)
-    button text   #fff on --accent-strong #5b4ef0  ~5.5:1
-    field borders rgba(255,255,255,.45)  ~4.5:1 (non-text contrast needs 3:1, 1.4.11)
+  Contrast (WCAG 2.2 AA) on the #1e1e1e surface:
+    primary text  --primary-text    ~15:1
+    labels/help   --secondary-text  ~8:1
+    errors        --warn-color      ~7:1  (always paired with an icon, never color alone)
+    focus label   --accent-text     ~6.6:1
+    button text   #fff on --accent-strong  ~5.5:1
+    field borders rgba(255,255,255,.45)  >3:1 (non-text contrast, 1.4.11)
 */
 
 .auth-page {
@@ -42,22 +43,22 @@
   --mat-form-field-outlined-hover-outline-color: rgba(255, 255, 255, 0.75);
   --mat-form-field-outlined-focus-outline-color: var(--accent-color);
   --mat-form-field-outlined-focus-outline-width: 2px;
-  --mat-form-field-outlined-label-text-color: #b4bac3;
+  --mat-form-field-outlined-label-text-color: var(--secondary-text);
   --mat-form-field-outlined-hover-label-text-color: #d6dae0;
-  --mat-form-field-outlined-focus-label-text-color: #c9c4ff;
+  --mat-form-field-outlined-focus-label-text-color: var(--accent-text);
   --mat-form-field-outlined-input-text-color: var(--primary-text);
-  --mat-form-field-outlined-caret-color: #c9c4ff;
-  --mat-form-field-outlined-error-outline-color: #ff8a8a;
-  --mat-form-field-outlined-error-focus-outline-color: #ff8a8a;
-  --mat-form-field-outlined-error-hover-outline-color: #ff8a8a;
-  --mat-form-field-outlined-error-label-text-color: #ff8a8a;
-  --mat-form-field-outlined-error-focus-label-text-color: #ff8a8a;
-  --mat-form-field-outlined-error-hover-label-text-color: #ff8a8a;
-  --mat-form-field-error-text-color: #ff8a8a;
-  --mat-form-field-supporting-text-color: #b4bac3;
-  --mat-form-field-trailing-icon-color: #b4bac3;
-  --mat-form-field-error-trailing-icon-color: #ff8a8a;
-  --mat-icon-button-icon-color: #b4bac3;
+  --mat-form-field-outlined-caret-color: var(--accent-text);
+  --mat-form-field-outlined-error-outline-color: var(--warn-color);
+  --mat-form-field-outlined-error-focus-outline-color: var(--warn-color);
+  --mat-form-field-outlined-error-hover-outline-color: var(--warn-color);
+  --mat-form-field-outlined-error-label-text-color: var(--warn-color);
+  --mat-form-field-outlined-error-focus-label-text-color: var(--warn-color);
+  --mat-form-field-outlined-error-hover-label-text-color: var(--warn-color);
+  --mat-form-field-error-text-color: var(--warn-color);
+  --mat-form-field-supporting-text-color: var(--secondary-text);
+  --mat-form-field-trailing-icon-color: var(--secondary-text);
+  --mat-form-field-error-trailing-icon-color: var(--warn-color);
+  --mat-icon-button-icon-color: var(--secondary-text);
   display: block;
   padding: clamp(24px, 5vw, 36px);
   border: 1px solid var(--divider);
@@ -81,7 +82,7 @@
 
 .auth-card-description {
   margin: 8px 0 0;
-  color: #b4bac3;
+  color: var(--secondary-text);
   font-size: 0.9375rem;
   line-height: 1.55;
 }
@@ -126,10 +127,10 @@
   gap: 8px;
   margin: 0 0 8px;
   padding: 12px;
-  border: 1px solid rgba(255, 138, 138, 0.5);
+  border: 1px solid color-mix(in srgb, var(--warn-color) 50%, transparent);
   border-radius: 6px;
-  background-color: rgba(255, 138, 138, 0.08);
-  color: #ff8a8a;
+  background-color: color-mix(in srgb, var(--warn-color) 8%, transparent);
+  color: var(--warn-color);
   font-size: 0.875rem;
   line-height: 1.45;
 }
@@ -155,7 +156,7 @@
 
 .auth-switch {
   margin: 24px 0 0;
-  color: #b4bac3;
+  color: var(--secondary-text);
   font-size: 0.9375rem;
   text-align: center;
 }
@@ -165,7 +166,7 @@
   width: 48px;
   height: 48px;
   margin-bottom: 16px;
-  color: #c9c4ff;
+  color: var(--accent-text);
   font-size: 48px;
 }
 

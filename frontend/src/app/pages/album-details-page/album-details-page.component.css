@@ -167,7 +167,7 @@ h1 {
 }
 
 .track.current .row-copy strong {
-  color: var(--accent-color);
+  color: var(--accent-text);
 }
 
 .track-play {

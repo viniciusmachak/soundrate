@@ -36,6 +36,13 @@ export class ReviewDialogComponent {
         Validators.pattern(/\S/)
       ]]
     });
+
+    // Backdrop clicks and Escape go through onCancel so unsaved text isn't lost by accident.
+    this.dialogRef.disableClose = true;
+    this.dialogRef.backdropClick().subscribe(() => this.onCancel());
+    this.dialogRef.keydownEvents().subscribe(event => {
+      if (event.key === 'Escape') this.onCancel();
+    });
   }
 
   get isEditing(): boolean {
@@ -47,6 +54,10 @@ export class ReviewDialogComponent {
   }
 
   onCancel(): void {
+    const hasUnsavedText = this.form.dirty && this.form.value.text?.trim() !== (this.data?.existingText ?? '').trim();
+    if (hasUnsavedText && !window.confirm('Discard your unsaved review?')) {
+      return;
+    }
     this.dialogRef.close();
   }
 

@@ -59,5 +59,9 @@ export const routes: Routes = [
     title: 'About | Soundrate',
     loadComponent: () => import('./pages/about-page/about-page.component').then(m => m.AboutPageComponent)
   },
-  { path: '**', redirectTo: '' }
+  {
+    path: '**',
+    title: 'Page not found | Soundrate',
+    loadComponent: () => import('./pages/not-found-page/not-found-page.component').then(m => m.NotFoundPageComponent)
+  }
 ];

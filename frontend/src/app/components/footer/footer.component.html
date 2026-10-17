@@ -2,14 +2,14 @@
   <div class="footer-container">
     <div class="footer-main">
       <div class="footer-brand">
-        <a routerLink="/" class="footer-logo">Soundrate</a>
+        <a routerLink="/" class="footer-logo"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
         <p>Discover, rate and share the music that stays with you.</p>
       </div>
 
       <nav class="footer-navigation" aria-label="Footer navigation">
-        <a routerLink="/">Home</a>
-        <a routerLink="/about">About</a>
-        <a routerLink="/listen-later">Listen Later</a>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Home</a>
+        <a routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page">About</a>
+        <a routerLink="/listen-later" routerLinkActive="active" ariaCurrentWhenActive="page">Listen Later</a>
         <a href="https://www.deezer.com/" target="_blank" rel="noopener noreferrer">Deezer</a>
         <a
           href="https://github.com/viniciusmachak/sound-rate"

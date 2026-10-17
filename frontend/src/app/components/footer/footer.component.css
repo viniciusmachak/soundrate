@@ -143,3 +143,11 @@
     gap: 6px;
   }
 }
+
+.footer-navigation a.active {
+  color: var(--primary-text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}

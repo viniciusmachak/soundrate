@@ -218,7 +218,7 @@
 
 .register-btn {
   border-radius: 999px;
-  background-color: var(--accent-color);
+  background-color: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -272,7 +272,7 @@
   flex-direction: column;
   width: min(340px, calc(100vw - 32px));
   overflow-y: auto;
-  background-color: var(--background-dark);
+  background-color: var(--surface-dark);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 12px 0 32px rgba(0, 0, 0, 0.4);
   animation: slide-in 0.2s ease-out;
@@ -329,7 +329,7 @@
 }
 
 .sidebar-link:hover {
-  background-color: var(--surface-dark);
+  background-color: var(--surface-hover);
 }
 
 .sidebar-link mat-icon {
@@ -377,7 +377,7 @@
 }
 
 .recent-rating:hover {
-  background-color: var(--surface-dark);
+  background-color: var(--surface-hover);
 }
 
 .recent-rating img {
@@ -506,4 +506,15 @@
   .sidebar {
     animation: none;
   }
+}
+
+/* Current page in the sidebar (visibility of system status) */
+.sidebar-link.active {
+  background-color: var(--surface-hover);
+  color: var(--primary-text);
+  box-shadow: inset 3px 0 0 var(--accent-color);
+}
+
+.sidebar-link.active mat-icon {
+  color: var(--accent-text);
 }

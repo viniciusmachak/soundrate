@@ -6,7 +6,7 @@
       <mat-icon>menu</mat-icon>
     </button>
 
-    <a routerLink="/" class="app-title">Soundrate</a>
+    <a routerLink="/" class="app-title" aria-label="Soundrate home"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
 
     <form class="search-container" (submit)="submitSearch($event)">
       <button type="submit" class="search-submit" aria-label="Show all search results">
@@ -87,25 +87,25 @@
   <aside id="mobile-navigation" class="sidebar" role="dialog" aria-modal="true"
     aria-label="Main navigation" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <div class="sidebar-header">
-      <a routerLink="/" class="sidebar-brand" (click)="closeSidebar()">Soundrate</a>
+      <a routerLink="/" class="sidebar-brand" (click)="closeSidebar()"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
       <button mat-icon-button type="button" aria-label="Close navigation menu" (click)="closeSidebar()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
 
     <nav class="sidebar-navigation">
-      <a class="sidebar-link" routerLink="/" (click)="closeSidebar()">
+      <a class="sidebar-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" (click)="closeSidebar()">
         <mat-icon>home</mat-icon>
         <span>Home</span>
       </a>
 
-      <a class="sidebar-link" routerLink="/about" (click)="closeSidebar()">
+      <a class="sidebar-link" routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="closeSidebar()">
         <mat-icon>info</mat-icon>
         <span>About</span>
       </a>
 
       @if (currentUser$ | async; as user) {
-        <a class="sidebar-link" [routerLink]="['/user', user.username]" (click)="closeSidebar()">
+        <a class="sidebar-link" [routerLink]="['/user', user.username]" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="closeSidebar()">
           <img [src]="user.avatarUrl" alt="" class="sidebar-profile-image">
           <span>Profile</span>
         </a>
@@ -145,12 +145,12 @@
           }
         </section>
 
-        <a class="sidebar-link" routerLink="/listen-later" (click)="closeSidebar()">
+        <a class="sidebar-link" routerLink="/listen-later" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="closeSidebar()">
           <mat-icon>bookmark</mat-icon>
           <span>Listen Later</span>
         </a>
 
-        <a class="sidebar-link" routerLink="/settings" (click)="closeSidebar()">
+        <a class="sidebar-link" routerLink="/settings" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="closeSidebar()">
           <mat-icon>settings</mat-icon>
           <span>Settings</span>
         </a>

@@ -1,21 +1,32 @@
 /* ---------------------------------------------------------------------------
-   Soundrate visual system
-   Flat and quiet: one background, one surface, 1px dividers, a single accent.
-   No shadows, gradients or decorative badges.
+   Soundrate visual system — 60-30-10
+   60%  --background-dark  page background
+   30%  --surface-dark     header, sidebar, cards, inputs, player
+        + --secondary-text supporting copy
+   10%  --accent-color     the logo purple: primary actions, active states,
+                           ratings and focus. Never used for body text.
+
+   WCAG AA contrast on the background (#121212):
+     --primary-text   #f2f2f2  17:1
+     --secondary-text #b3b3b3  8.9:1
+     --accent-text    #c48bf0  7.4:1  accent-colored text and links
+     --accent-color   #a43fdb  3.9:1  non-text only (icons, borders, stars)
+     white on --accent-strong #9a35d4  5.5:1  filled buttons
 --------------------------------------------------------------------------- */
 
 :root {
-  --background-dark: #0e0f11;
-  --surface-dark: #181a1e;
-  --surface-hover: rgba(255, 255, 255, 0.05);
-  --divider: rgba(255, 255, 255, 0.08);
-  --primary-text: #eceef1;
-  --secondary-text: #8d949e;
-  --accent-color: #7066ff;
-  /* Darker accent for filled controls: white text on it passes WCAG AA (5.5:1). */
-  --accent-strong: #5b4ef0;
+  --background-dark: #121212;
+  --surface-dark: #1e1e1e;
+  --surface-raised: #2a2a2a;
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --divider: rgba(255, 255, 255, 0.1);
+  --primary-text: #f2f2f2;
+  --secondary-text: #b3b3b3;
+  --accent-color: #a43fdb;
+  --accent-strong: #9a35d4;
+  --accent-text: #c48bf0;
   --on-accent: #fff;
-  --warn-color: #f05252;
+  --warn-color: #ff8a8a;
 
   --font-sans: GraphikWeb, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --fs-display: clamp(2rem, 5vw, 3.5rem);
@@ -485,4 +496,21 @@ mat-paginator,
   .entity-backdrop {
     transition: none;
   }
+}
+
+/* Brand logo next to the wordmark (header, sidebar, footer, auth) */
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+}
+
+.app-title,
+.sidebar-brand,
+.footer-logo,
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }

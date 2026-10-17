@@ -132,8 +132,10 @@ export class SettingsPageComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Account?',
-        message: 'Are you sure you want to delete this account? This action cannot be undone'
+        title: 'Delete your account?',
+        message: 'You will be signed out and won\'t be able to sign in again. Your profile will no longer be visible. This can\'t be undone.',
+        confirmLabel: 'Delete account',
+        cancelLabel: 'Keep account'
       }
     });
     dialogRef.afterClosed().subscribe(result => {

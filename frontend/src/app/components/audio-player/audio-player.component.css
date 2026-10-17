@@ -25,7 +25,7 @@
     padding: 8px 24px 12px;
     border-top: 1px solid var(--divider);
     box-sizing: border-box;
-    background-color: var(--background-dark);
+    background-color: var(--surface-dark);
     animation: player-enter 0.28s ease-out;
 }
 
@@ -111,7 +111,7 @@
     align-items: center;
     gap: 8px;
     margin-top: 3px;
-    color: #ff9d9d;
+    color: var(--warn-color);
     font-size: 0.72rem;
 }
 
@@ -157,7 +157,7 @@
 .secondary-player-control:hover:not(:disabled),
 .close-control:hover {
     background-color: color-mix(in srgb, var(--accent-color) 12%, transparent);
-    color: var(--accent-color);
+    color: var(--accent-text);
 }
 
 .secondary-player-control mat-icon,

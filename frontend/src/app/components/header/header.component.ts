@@ -6,9 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { concat, Observable, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SearchResult } from '../../models/search-result.model';
 import { User } from '../../models/user.model';
 import { UserRating } from '../../models/user-rating.model';
@@ -37,6 +38,7 @@ interface RecentRatingsState {
     A11yModule,
     ReactiveFormsModule,
     RouterLink,
+    RouterLinkActive,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -72,6 +74,12 @@ export class HeaderComponent {
     private feedback: FeedbackService
   ) {
     this.currentUser$ = this.authService.currentUser$;
+
+    // Close the sidebar whenever the page changes, however the navigation started.
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe(() => this.isSidebarOpen = false);
     this.recentRatingsState$ = this.currentUser$.pipe(
       switchMap(user => user
         ? concat(

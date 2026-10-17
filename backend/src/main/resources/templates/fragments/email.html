@@ -4,7 +4,7 @@
   Shared pieces for transactional emails.
   Table layout and inline styles for broad email-client support.
   Colors meet WCAG AA on white: text #14181c (17:1), muted #4b5563 (7.6:1),
-  white on button #5b4ef0 (5.5:1).
+  white on button #9a35d4 (5.5:1), links #7e22ce.
 -->
 <head th:fragment="head(title)">
 <meta charset="UTF-8">
@@ -23,14 +23,18 @@
 <tr th:fragment="header">
 	<td style="padding: 28px 32px 20px; border-bottom: 1px solid #e5e7eb;">
 		<a th:href="${frontendUrl}" href="#"
-			style="color: #14181c; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; text-decoration: none;">Soundrate</a>
+			style="color: #14181c; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; text-decoration: none;">
+			<img th:src="${frontendUrl + '/logo-96.png'}" src="" width="32" height="32" alt=""
+				style="display: inline-block; width: 32px; height: 32px; border: 0; border-radius: 8px; vertical-align: middle; margin-right: 8px;">
+			<span style="vertical-align: middle;">Soundrate</span>
+		</a>
 	</td>
 </tr>
 
 <table th:fragment="button(href, label)" role="presentation" cellpadding="0" cellspacing="0" border="0"
 	style="margin: 28px 0;">
 	<tr>
-		<td style="border-radius: 999px; background: #5b4ef0;">
+		<td style="border-radius: 999px; background: #9a35d4;">
 			<a th:href="${href}" href="#" th:text="${label}"
 				style="display: inline-block; padding: 14px 28px; border-radius: 999px; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none;">Action</a>
 		</td>
