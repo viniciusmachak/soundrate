@@ -65,3 +65,6 @@ backend/preverified/
 .sass-cache/
 /connect.lock
 /coverage
+
+# Database backups
+backups/

@@ -92,6 +92,8 @@ APP_CORS_ORIGINS=http://localhost:4200
 
 # Production only (docker-compose.prod.yml)
 DOMAIN=yourdomain.com
+# Set automatically by docker-compose.prod.yml: fail at startup if MAIL_HOST is missing
+# MAIL_REQUIRED=true
 ```
 
 Notes:
@@ -165,6 +167,34 @@ Production runs the same Compose stack on a single VPS, with [Caddy](https://cad
    `docker-compose.prod.yml` sets `APP_FRONTEND_URL` and `APP_CORS_ORIGINS` to `https://$DOMAIN`.
 
 5. **Continuous deploy (optional)**: `.github/workflows/deploy.yml` pulls and rebuilds on every push to `main`. Add the repository secrets `SSH_HOST`, `SSH_USER` and `SSH_KEY` (a deploy key allowed on the server), and clone the repo at `~/sound-rate`.
+
+### Database migrations
+
+The schema is managed by [Flyway](https://flywaydb.org) (`backend/src/main/resources/db/migration`) and Hibernate only validates it (`ddl-auto=validate`). To change the schema, add a new file such as `V2__add_listening_date.sql`; never edit a migration that already ran. Existing databases created before Flyway are baselined at `V1` automatically.
+
+### Backups
+
+```bash
+./scripts/backup-db.sh            # writes backups/soundrate-<timestamp>.sql.gz, keeps the newest 14
+./scripts/restore-db.sh backups/soundrate-<timestamp>.sql.gz
+```
+
+On the server, schedule a daily backup with `crontab -e`:
+
+```cron
+0 3 * * * cd ~/sound-rate && ./scripts/backup-db.sh >> backups/backup.log 2>&1
+```
+
+Copy the `backups/` folder off the server regularly (e.g. `rclone` to object storage); a backup on the same disk does not survive losing the VPS.
+
+### Production safeguards
+
+- `docker-compose.prod.yml` sets `MAIL_REQUIRED=true`, so the API refuses to start without `MAIL_HOST` instead of logging password reset links.
+- Auth endpoints are rate limited per IP (login 10/min, register 5/10 min, forgot password 5/15 min, reset password 10/15 min) and answer `429` with `Retry-After`.
+- Caddy adds HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy` and `Permissions-Policy` headers.
+- Avatar uploads are limited to 5 MB.
+- The backend has a Docker health check on `/actuator/health`, which is only reachable inside the Compose network.
+- Use fresh secrets in production (`JWT_SECRET`, database password, Cloudinary and mail credentials); don't reuse development values.
 
 ## API Documentation
 
