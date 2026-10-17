@@ -1,11 +1,11 @@
-<section class="collage" [class.paused]="isPaused" aria-labelledby="home-intro">
+<section class="collage" [class.paused]="isPaused || !isInView" aria-labelledby="home-intro">
   <div class="collage-rows" aria-hidden="true">
     @for (row of rows; track $index) {
       <div class="collage-row" [class.reverse]="row.reverse" [style.--duration.s]="row.duration">
         <div class="collage-track">
           <!-- Two identical copies make the loop seamless. -->
           @for (copy of [0, 1]; track copy) {
-            @for (album of row.albums; track album.id) {
+            @for (album of row.albums; track $index) {
               <a class="collage-tile" [routerLink]="['/album', album.id]" tabindex="-1">
                 <img [src]="album.cover" [srcset]="album.cover + ' 250w, ' + largeCover(album.cover) + ' 500w'"
                   sizes="200px" alt="" width="250" height="250" loading="lazy" decoding="async">

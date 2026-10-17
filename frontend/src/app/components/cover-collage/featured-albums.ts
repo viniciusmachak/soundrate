@@ -24,7 +24,6 @@ export const FEATURED_ALBUMS: CollageAlbum[] = [
   { id: 6237061, title: 'Rumours', artist: 'Fleetwood Mac', cover: cover('9732751ce91d786dcf30069853697078') },
   { id: 96126, title: 'Thriller', artist: 'Michael Jackson', cover: cover('f01e09ceb8ad1e96707c1b4aadb5911b') },
   { id: 12114240, title: 'The Dark Side of the Moon', artist: 'Pink Floyd', cover: cover('e635a8510c1a74bc089b3566ebbb9cb8') },
-  { id: 1262014, title: 'Nevermind', artist: 'Nirvana', cover: cover('f0282817b697279e56df13909962a54a') },
   { id: 344137457, title: 'Blonde', artist: 'Frank Ocean', cover: cover('aa7e6de00b0810f5051aa60b489f58d8') },
   { id: 9896728, title: 'To Pimp a Butterfly', artist: 'Kendrick Lamar', cover: cover('00dd0da365a94b1829302d6b7fec70e6') },
   { id: 217795, title: 'Back to Black', artist: 'Amy Winehouse', cover: cover('5772b495f0dcdf660d0fc88c4c38a3fa') },
