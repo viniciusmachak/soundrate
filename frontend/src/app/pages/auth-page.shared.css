@@ -1,49 +1,89 @@
+/*
+  Auth screens (sign in, create account, forgot and reset password).
+
+  60-30-10:
+    60%  page background  (--background-dark)
+    30%  form surface     (--surface-dark card with a 1px border)
+    10%  accent           (primary button, focus ring, link underline)
+
+  Contrast (WCAG 2.2 AA), measured on the #181a1e surface:
+    primary text  #eceef1  ~15:1
+    labels/help   #b4bac3  ~8.9:1
+    errors        #ff8a8a  ~7.7:1  (always paired with an icon, never color alone)
+    button text   #fff on --accent-strong #5b4ef0  ~5.5:1
+    field borders rgba(255,255,255,.45)  ~4.5:1 (non-text contrast needs 3:1, 1.4.11)
+*/
+
 .auth-page {
   display: flex;
   justify-content: center;
-  padding: clamp(40px, 10vh, 96px) var(--gutter) 64px;
+  padding: clamp(32px, 8vh, 80px) var(--gutter) 64px;
 }
 
 .auth-shell {
   width: 100%;
-  max-width: 380px;
+  max-width: 420px;
 }
 
-/* mat-card is kept for structure but rendered flat, with no box around the form */
+.auth-brand {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: var(--primary-text);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .auth-card {
-  --mat-card-elevated-container-color: transparent;
-  --mat-card-outlined-container-color: transparent;
+  --mat-card-elevated-container-color: var(--surface-dark);
   --mat-card-elevated-container-elevation: none;
+  --mat-card-elevated-container-shape: 8px;
+  --mat-form-field-outlined-outline-color: rgba(255, 255, 255, 0.45);
+  --mat-form-field-outlined-hover-outline-color: rgba(255, 255, 255, 0.75);
+  --mat-form-field-outlined-focus-outline-color: var(--accent-color);
+  --mat-form-field-outlined-focus-outline-width: 2px;
+  --mat-form-field-outlined-label-text-color: #b4bac3;
+  --mat-form-field-outlined-hover-label-text-color: #d6dae0;
+  --mat-form-field-outlined-focus-label-text-color: #c9c4ff;
+  --mat-form-field-outlined-input-text-color: var(--primary-text);
+  --mat-form-field-outlined-caret-color: #c9c4ff;
+  --mat-form-field-outlined-error-outline-color: #ff8a8a;
+  --mat-form-field-outlined-error-focus-outline-color: #ff8a8a;
+  --mat-form-field-outlined-error-hover-outline-color: #ff8a8a;
+  --mat-form-field-outlined-error-label-text-color: #ff8a8a;
+  --mat-form-field-outlined-error-focus-label-text-color: #ff8a8a;
+  --mat-form-field-outlined-error-hover-label-text-color: #ff8a8a;
+  --mat-form-field-error-text-color: #ff8a8a;
+  --mat-form-field-supporting-text-color: #b4bac3;
+  --mat-form-field-trailing-icon-color: #b4bac3;
+  --mat-form-field-error-trailing-icon-color: #ff8a8a;
+  --mat-icon-button-icon-color: #b4bac3;
   display: block;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  padding: clamp(24px, 5vw, 36px);
+  border: 1px solid var(--divider);
+  border-radius: 8px;
+  background-color: var(--surface-dark);
   box-shadow: none;
 }
 
 .auth-card-header {
   display: block;
-  padding: 0 0 28px;
+  padding: 0 0 24px;
 }
 
-.auth-card-header mat-card-title,
 .auth-card h1 {
   margin: 0;
   color: var(--primary-text);
-  font-size: var(--fs-h1);
+  font-size: 1.625rem;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .auth-card-description {
   margin: 8px 0 0;
-  color: var(--secondary-text);
-  font-size: var(--fs-small);
+  color: #b4bac3;
+  font-size: 0.9375rem;
   line-height: 1.55;
-}
-
-.auth-card > .auth-card-description {
-  margin-bottom: 24px;
 }
 
 .auth-card mat-card-content {
@@ -53,22 +93,58 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .full-width {
   width: 100%;
 }
 
+/* Links are underlined so they are not identified by color alone (WCAG 1.4.1). */
+.inline-link {
+  color: var(--primary-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.inline-link:hover {
+  text-decoration-color: currentColor;
+}
+
+.forgot-link {
+  align-self: flex-end;
+  margin: -4px 0 8px;
+  font-size: 0.875rem;
+}
+
 .auth-error {
-  margin: 0 0 12px;
-  color: var(--warn-color);
-  font-size: var(--fs-small);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 138, 138, 0.5);
+  border-radius: 6px;
+  background-color: rgba(255, 138, 138, 0.08);
+  color: #ff8a8a;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.auth-error mat-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
 }
 
 .auth-submit {
-  height: 44px;
+  min-height: 48px;
   margin-top: 8px;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -77,40 +153,36 @@
   margin: 0 auto;
 }
 
-.auth-links {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  color: var(--secondary-text);
-  font-size: var(--fs-small);
+.auth-switch {
+  margin: 24px 0 0;
+  color: #b4bac3;
+  font-size: 0.9375rem;
   text-align: center;
 }
 
-.auth-links p {
-  margin: 0;
-}
-
-.auth-links a {
-  color: var(--primary-text);
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.auth-links a:hover {
-  text-decoration: underline;
-}
-
-.auth-state-card {
-  text-align: left;
-}
-
+/* Success state (forgot password) */
 .auth-state-icon {
-  display: none;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: #c9c4ff;
+  font-size: 48px;
 }
 
 .auth-state-card .email-text {
   color: var(--primary-text);
   font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.auth-state-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.secondary-action {
+  --mat-button-text-label-text-color: var(--primary-text);
+  min-height: 44px;
 }

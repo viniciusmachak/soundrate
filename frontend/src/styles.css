@@ -12,6 +12,8 @@
   --primary-text: #eceef1;
   --secondary-text: #8d949e;
   --accent-color: #7066ff;
+  /* Darker accent for filled controls: white text on it passes WCAG AA (5.5:1). */
+  --accent-strong: #5b4ef0;
   --on-accent: #fff;
   --warn-color: #f05252;
 
@@ -46,9 +48,9 @@
   --mat-sys-level3: none;
   --mat-sys-level4: none;
   --mat-sys-level5: none;
-  --mat-button-filled-container-color: var(--accent-color);
+  --mat-button-filled-container-color: var(--accent-strong);
   --mat-button-filled-label-text-color: var(--on-accent);
-  --mat-button-protected-container-color: var(--accent-color);
+  --mat-button-protected-container-color: var(--accent-strong);
   --mat-button-protected-label-text-color: var(--on-accent);
   --mat-button-outlined-label-text-color: var(--primary-text);
   --mat-button-outlined-outline-color: rgba(255, 255, 255, 0.24);
@@ -422,4 +424,65 @@ mat-paginator,
   --mat-form-field-outlined-label-text-color: var(--secondary-text);
   --mat-form-field-outlined-input-text-color: var(--primary-text);
   --mat-form-field-container-shape: var(--radius);
+}
+
+/* ---------------------------------------------------------------------------
+   Entity hero (album and artist pages)
+   An opaque backdrop tinted with the artwork's dominant color, with the
+   blurred artwork blended in. Mixed into the background so white text keeps
+   at least 4.5:1 contrast whatever the artwork color is.
+--------------------------------------------------------------------------- */
+
+.entity-hero {
+  --entity-accent: var(--accent-color);
+  position: relative;
+  isolation: isolate;
+  margin-top: -40px;
+  padding-top: 48px;
+  padding-bottom: 8px;
+}
+
+.entity-backdrop {
+  position: absolute;
+  top: 0;
+  right: calc(50% - 50vw);
+  bottom: -48px;
+  left: calc(50% - 50vw);
+  z-index: -1;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--entity-accent) 38%, var(--background-dark));
+  background-position: center;
+  background-size: 0 0;
+  transition: background-color 0.4s ease;
+}
+
+.entity-backdrop::before {
+  position: absolute;
+  inset: -60px;
+  background-image: inherit;
+  background-position: center;
+  background-size: cover;
+  content: '';
+  filter: blur(60px) saturate(1.2);
+  opacity: 0.28;
+}
+
+/* Fade into the page background so the tracklist sits on the base color. */
+.entity-backdrop::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, var(--background-dark));
+  content: '';
+}
+
+.entity-hero .entity-kind,
+.entity-hero .entity-meta,
+.entity-hero .muted {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entity-backdrop {
+    transition: none;
+  }
 }

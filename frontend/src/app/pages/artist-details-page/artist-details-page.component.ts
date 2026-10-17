@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, shareReplay, switchMap, tap } from 'rxjs';
 import { ApiService } from '../../services/api.service';
@@ -31,6 +31,8 @@ type DiscographyDirection = 'asc' | 'desc';
 
 import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
 
+import { extractDominantColor } from '../../utils/dominant-color';
+
 @Component({
   selector: 'app-artist-details-page',
   standalone: true,
@@ -49,6 +51,8 @@ import { DeezerButtonComponent } from '../../components/deezer-button/deezer-but
   styleUrl: './artist-details-page.component.css'
 })
 export class ArtistDetailsPageComponent implements OnInit {
+  accentColor = 'var(--accent-color)';
+  private accentSourceUrl = '';
   artistPage$!: Observable<ArtistPage>;
   private pageableSubject = new BehaviorSubject<Pageable>({
     page: 0,
@@ -76,7 +80,8 @@ export class ArtistDetailsPageComponent implements OnInit {
     public authService: AuthService,
     public audioService: AudioService,
     private feedback: FeedbackService,
-    private destroyRef: DestroyRef
+    private destroyRef: DestroyRef,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -106,6 +111,7 @@ export class ArtistDetailsPageComponent implements OnInit {
           tap(page => {
             this.isFollowed = page.isFollowedByCurrentUser;
             this.followersCount = page.followersCount;
+            this.updateAccentColor(page.artistDetails.picture_xl);
           })
         );
       }),
@@ -252,6 +258,18 @@ export class ArtistDetailsPageComponent implements OnInit {
       category: this.selectedCategory,
       sort: this.selectedSort,
       direction: this.selectedDirection
+    });
+  }
+
+  private updateAccentColor(imageUrl: string): void {
+    if (imageUrl === this.accentSourceUrl) return;
+    this.accentSourceUrl = imageUrl;
+    this.accentColor = 'var(--accent-color)';
+
+    extractDominantColor(imageUrl).then(color => {
+      if (imageUrl !== this.accentSourceUrl) return;
+      this.accentColor = color ?? 'var(--accent-color)';
+      this.changeDetectorRef.markForCheck();
     });
   }
 }

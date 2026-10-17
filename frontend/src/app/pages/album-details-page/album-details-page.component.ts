@@ -32,6 +32,8 @@ interface AlbumParticipant {
 
 import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
 
+import { extractDominantColor } from '../../utils/dominant-color';
+
 @Component({
   selector: 'app-album-details-page',
   standalone: true,
@@ -46,6 +48,8 @@ import { DeezerButtonComponent } from '../../components/deezer-button/deezer-but
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AlbumDetailsPageComponent implements OnInit {
+  accentColor = 'var(--accent-color)';
+  private accentSourceUrl = '';
   private albumDetailsSubject = new BehaviorSubject<AlbumDetails | null>(null);
   private trackRatingsById = new Map<string, number>();
   albumDetails$ = this.albumDetailsSubject.asObservable();
@@ -370,6 +374,19 @@ export class AlbumDetailsPageComponent implements OnInit {
     );
     this.albumContributors = this.collectAlbumContributors(details.deezerDetails);
     this.albumDetailsSubject.next(details);
+    this.updateAccentColor(this.getAlbumCover(details));
+  }
+
+  private updateAccentColor(coverUrl: string): void {
+    if (coverUrl === this.accentSourceUrl) return;
+    this.accentSourceUrl = coverUrl;
+    this.accentColor = 'var(--accent-color)';
+
+    extractDominantColor(coverUrl).then(color => {
+      if (coverUrl !== this.accentSourceUrl) return;
+      this.accentColor = color ?? 'var(--accent-color)';
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   private collectAlbumContributors(album: DeezerAlbum): AlbumParticipant[] {

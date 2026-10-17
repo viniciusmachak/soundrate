@@ -4,6 +4,9 @@
   @let isPlaying = audioService.isPlaying$ | async;
   @let artistIsPlaying = currentTrack?.artist?.id === artist.id && isPlaying;
   <div class="page">
+    <div class="entity-hero" [style.--entity-accent]="accentColor">
+    <div class="entity-backdrop" aria-hidden="true"
+      [style.background-image]="'url(' + artist.picture_xl + ')'"></div>
     <header class="entity-header">
       <img [src]="artist.picture_xl" [alt]="artist.name" class="artist-photo">
       <div class="entity-info">
@@ -41,6 +44,8 @@
 
       <app-deezer-button [href]="artist.link" label="Artist on Deezer" />
       <button type="button" class="text-action" (click)="shareArtist(artist.name)">Share</button>
+    </div>
+
     </div>
 
     <p class="community-line">

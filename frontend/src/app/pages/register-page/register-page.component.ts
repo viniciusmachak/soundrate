@@ -49,6 +49,8 @@ export class RegisterPageComponent {
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
+      // Show every field's error instead of silently ignoring the submit.
+      this.registerForm.markAllAsTouched();
       return;
     }
 

@@ -4,6 +4,9 @@
   @let isPlaying = audioService.isPlaying$ | async;
   @let albumIsPlaying = currentTrack?.album?.id === album.id && isPlaying;
   <div class="page">
+    <div class="entity-hero" [style.--entity-accent]="accentColor">
+    <div class="entity-backdrop" aria-hidden="true"
+      [style.background-image]="'url(' + getAlbumCover(details) + ')'"></div>
     <header class="entity-header">
       <button type="button" class="cover-button" (click)="openAlbumCover(details)"
         [attr.aria-label]="'Open cover of ' + album.title">
@@ -96,6 +99,8 @@
           }
         </div>
       }
+    </div>
+
     </div>
 
     <section class="page-section" aria-labelledby="tracks-title">

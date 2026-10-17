@@ -1,68 +1,72 @@
 <div class="auth-page">
   <div class="auth-shell">
+    <a routerLink="/" class="auth-brand">Soundrate</a>
     <mat-card class="auth-card">
       <mat-card-header class="auth-card-header">
-        <mat-card-title>Create account</mat-card-title>
-        <p class="auth-card-description">Start keeping a thoughtful record of your music.</p>
+        <mat-card-title><h1>Create your account</h1></mat-card-title>
+        <p class="auth-card-description">Rate albums, write reviews and keep a diary of what you hear.</p>
       </mat-card-header>
 
       <mat-card-content>
-        <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Username</mat-label>
-            <input matInput formControlName="username" type="text" autocomplete="username"
-              placeholder="Choose a username">
+            <input matInput formControlName="username" type="text" autocomplete="username">
+            <mat-hint>At least 3 characters. Shown on your public profile.</mat-hint>
             @if (registerForm.get('username')?.hasError('required')) {
-              <mat-error>Username is required</mat-error>
+              <mat-error>Choose a username.</mat-error>
             } @else if (registerForm.get('username')?.hasError('minlength')) {
-              <mat-error>Username must be at least 3 characters</mat-error>
+              <mat-error>Use at least 3 characters.</mat-error>
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input matInput formControlName="email" type="email" autocomplete="email"
-              placeholder="you@email.com">
+            <input matInput formControlName="email" type="email" autocomplete="email">
+            <mat-hint>We'll only use it for account emails, like password resets.</mat-hint>
             @if (registerForm.get('email')?.hasError('required')) {
-              <mat-error>Email is required</mat-error>
+              <mat-error>Enter your email.</mat-error>
             } @else if (registerForm.get('email')?.hasError('email')) {
-              <mat-error>Please enter a valid email address</mat-error>
+              <mat-error>Enter a valid email, like name&#64;example.com.</mat-error>
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Password</mat-label>
             <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
-              autocomplete="new-password" placeholder="At least 6 characters">
+              autocomplete="new-password">
             <button mat-icon-button matSuffix type="button" (click)="hide = !hide"
               [attr.aria-label]="hide ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hide">
               <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
+            <mat-hint>At least 6 characters.</mat-hint>
             @if (registerForm.get('password')?.hasError('required')) {
-              <mat-error>Password is required</mat-error>
+              <mat-error>Create a password.</mat-error>
             } @else if (registerForm.get('password')?.hasError('minlength')) {
-              <mat-error>Password must be at least 6 characters</mat-error>
+              <mat-error>Use at least 6 characters.</mat-error>
             }
           </mat-form-field>
 
           @if (errorMessage) {
-            <p class="auth-error" role="alert" aria-live="polite">{{ errorMessage }}</p>
+            <p class="auth-error" role="alert">
+              <mat-icon aria-hidden="true">error_outline</mat-icon>
+              <span>{{ errorMessage }}</span>
+            </p>
           }
 
-          <button mat-flat-button type="submit" [disabled]="registerForm.invalid || isLoading"
+          <button mat-flat-button type="submit" [disabled]="isLoading" [attr.aria-busy]="isLoading"
             class="full-width auth-submit">
             @if (isLoading) {
-              <mat-spinner diameter="20"></mat-spinner>
+              <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
+              <span class="visually-hidden">Creating your account…</span>
             } @else {
               <span>Create account</span>
             }
           </button>
-
-          <div class="auth-links">
-            <p>Already have an account? <a routerLink="/login">Sign in</a></p>
-          </div>
         </form>
       </mat-card-content>
     </mat-card>
+
+    <p class="auth-switch">Already have an account? <a routerLink="/login" class="inline-link">Sign in</a></p>
   </div>
 </div>

@@ -50,6 +50,8 @@ export class LoginPageComponent {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
+      // Show every field's error instead of silently ignoring the submit.
+      this.loginForm.markAllAsTouched();
       return;
     }
 

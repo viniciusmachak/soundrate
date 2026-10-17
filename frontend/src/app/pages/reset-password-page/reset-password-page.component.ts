@@ -6,6 +6,7 @@ import { ApiService, ResetPasswordRequest } from '../../services/api.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -23,7 +24,8 @@ export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): 
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
 ],
   templateUrl: './reset-password-page.component.html',
   styleUrl: '../auth-page.shared.css'
@@ -58,6 +60,8 @@ export class ResetPasswordPageComponent implements OnInit {
 
   onSubmit(): void {
     if (this.resetPasswordForm.invalid || !this.token) {
+      // Show every field's error instead of silently ignoring the submit.
+      this.resetPasswordForm.markAllAsTouched();
       return;
     }
 
