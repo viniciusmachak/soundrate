@@ -6,6 +6,7 @@ import { ApiService, ResetPasswordRequest } from '../../services/api.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -19,6 +20,7 @@ export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): 
   selector: 'app-reset-password-page',
   standalone: true,
   imports: [
+    MatTooltipModule,
     RouterLink,
     ReactiveFormsModule,
     MatFormFieldModule,

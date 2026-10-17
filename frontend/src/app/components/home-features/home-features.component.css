@@ -32,24 +32,16 @@ p {
   text-align: left;
 }
 
-/* Tinted circle (the only accent in the section) with the glyph masked on top. */
+/* Accent-colored glyph (the only touch of color in the section). */
 .feature-icon {
   --feature-icon: none;
-  position: relative;
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background-color: color-mix(in srgb, var(--accent-color) 15%, transparent);
-}
-
-.feature-icon::before {
-  position: absolute;
-  inset: 0;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
   background-color: var(--accent-text);
-  content: '';
-  mask: var(--feature-icon) center / 22px 22px no-repeat;
-  -webkit-mask: var(--feature-icon) center / 22px 22px no-repeat;
+  mask: var(--feature-icon) center / 26px 26px no-repeat;
+  -webkit-mask: var(--feature-icon) center / 26px 26px no-repeat;
 }
 
 .feature-icon-listen {

@@ -27,7 +27,9 @@
 }
 
 .auth-brand {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 20px;
   color: var(--primary-text);
   font-size: 1.25rem;

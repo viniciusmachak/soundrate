@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
@@ -15,6 +16,7 @@ import { FeedbackService } from '../../services/feedback.service';
   selector: 'app-register-page',
   standalone: true,
   imports: [
+    MatTooltipModule,
     RouterLink,
     ReactiveFormsModule,
     MatCardModule,

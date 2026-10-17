@@ -11,8 +11,8 @@
         <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Username</mat-label>
-            <input matInput formControlName="username" type="text" autocomplete="username">
-            <mat-hint>At least 3 characters. Shown on your public profile.</mat-hint>
+            <input matInput formControlName="username" type="text" autocomplete="username"
+              matTooltip="At least 3 characters. Shown on your public profile." matTooltipPosition="above">
             @if (registerForm.get('username')?.hasError('required')) {
               <mat-error>Choose a username.</mat-error>
             } @else if (registerForm.get('username')?.hasError('minlength')) {
@@ -22,8 +22,8 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input matInput formControlName="email" type="email" autocomplete="email">
-            <mat-hint>We'll only use it for account emails, like password resets.</mat-hint>
+            <input matInput formControlName="email" type="email" autocomplete="email"
+              matTooltip="We'll only use it for account emails, like password resets." matTooltipPosition="above">
             @if (registerForm.get('email')?.hasError('required')) {
               <mat-error>Enter your email.</mat-error>
             } @else if (registerForm.get('email')?.hasError('email')) {
@@ -34,12 +34,11 @@
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Password</mat-label>
             <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
-              autocomplete="new-password">
+              autocomplete="new-password" matTooltip="At least 6 characters." matTooltipPosition="above">
             <button mat-icon-button matSuffix type="button" (click)="hide = !hide"
               [attr.aria-label]="hide ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hide">
               <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
-            <mat-hint>At least 6 characters.</mat-hint>
             @if (registerForm.get('password')?.hasError('required')) {
               <mat-error>Create a password.</mat-error>
             } @else if (registerForm.get('password')?.hasError('minlength')) {
