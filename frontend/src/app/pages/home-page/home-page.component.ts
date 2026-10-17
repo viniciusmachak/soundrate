@@ -13,6 +13,8 @@ import { AlbumDashboard } from '../../models/album-details.model';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HomeFeaturesComponent } from '../../components/home-features/home-features.component';
+import { CoverCollageComponent } from '../../components/cover-collage/cover-collage.component';
+import { CollageAlbum } from '../../components/cover-collage/featured-albums';
 
 interface SearchState {
   isLoading: boolean;
@@ -25,7 +27,7 @@ interface SearchState {
   selector: 'app-home-page',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, RouterLink, HomeFeaturesComponent,
+    CommonModule, ReactiveFormsModule, RouterLink, HomeFeaturesComponent, CoverCollageComponent,
     AlbumCardComponent, ArtistCardComponent, UserCardComponent,
     MatButtonModule, SkeletonLoaderComponent,
   ],
@@ -50,6 +52,7 @@ export class HomePageComponent implements OnInit {
   }>;
 
   highestRatedAlbums$!: Observable<AlbumDashboard[]>;
+  collageExtras$!: Observable<CollageAlbum[]>;
 
   constructor(
     private apiService: ApiService,
@@ -65,6 +68,15 @@ export class HomePageComponent implements OnInit {
     this.highestRatedAlbums$ = this.apiService.getHighestRatedAlbums().pipe(
       catchError(() => of([])),
       shareReplay({ bufferSize: 1, refCount: true })
+    );
+
+    this.collageExtras$ = this.highestRatedAlbums$.pipe(
+      map(albums => albums.map(album => ({
+        id: album.id,
+        title: album.title,
+        artist: album.artistName,
+        cover: album.coverUrl
+      })))
     );
 
     const resultsState$ = this.route.queryParamMap.pipe(

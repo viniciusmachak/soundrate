@@ -1,12 +1,6 @@
 @if (resultsData$ | async; as data) {
   @if (data.query.length < 3) {
-    <section class="hero-section" aria-labelledby="home-intro">
-      <img class="hero-wallpaper" src="/home-wallpaper.jpg" width="1024" height="768" alt=""
-        fetchpriority="high" decoding="async">
-      <p id="home-intro">
-        Soundrate is your music diary for discovering, rating and remembering the albums that move you.
-      </p>
-    </section>
+    <app-cover-collage [extraAlbums]="(collageExtras$ | async) ?? []" />
   }
 }
 
