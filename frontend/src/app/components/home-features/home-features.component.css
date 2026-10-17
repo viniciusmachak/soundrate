@@ -19,33 +19,37 @@ p {
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 0 40px;
 }
 
+/* Open layout: not clickable, so no card surface or border suggesting it is. */
 .feature-card {
   display: flex;
   align-items: flex-start;
-  gap: 17px;
-  min-height: 132px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 6px;
-  background: var(--surface-dark);
+  gap: 16px;
+  padding: 24px 0;
+  border-top: 1px solid var(--divider);
   text-align: left;
 }
 
+/* Tinted circle (the only accent in the section) with the glyph masked on top. */
 .feature-icon {
   --feature-icon: none;
-  display: grid;
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--accent-color) 52%, transparent);
-  border-radius: 13px;
-  background-color: var(--accent-color);
-  mask: var(--feature-icon) center / 25px 25px no-repeat;
-  -webkit-mask: var(--feature-icon) center / 25px 25px no-repeat;
+  position: relative;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--accent-color) 15%, transparent);
+}
+
+.feature-icon::before {
+  position: absolute;
+  inset: 0;
+  background-color: var(--accent-text);
+  content: '';
+  mask: var(--feature-icon) center / 22px 22px no-repeat;
+  -webkit-mask: var(--feature-icon) center / 22px 22px no-repeat;
 }
 
 .feature-icon-listen {
@@ -73,8 +77,10 @@ p {
 }
 
 h3 {
-  margin: 3px 0 8px;
-  font-size: 1.03rem;
+  margin: 2px 0 6px;
+  color: var(--primary-text);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .feature-card p {
@@ -96,6 +102,6 @@ h3 {
   }
 
   .feature-card {
-    min-height: auto;
+    padding: 20px 0;
   }
 }
