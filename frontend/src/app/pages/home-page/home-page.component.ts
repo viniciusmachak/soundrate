@@ -11,7 +11,8 @@ import { ArtistCardComponent } from '../../components/artist-card/artist-card.co
 import { UserCardComponent } from '../../components/user-card/user-card.component';
 import { AlbumDashboard } from '../../models/album-details.model';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { HomeFeaturesComponent } from '../../components/home-features/home-features.component';
 
 interface SearchState {
   isLoading: boolean;
@@ -24,7 +25,7 @@ interface SearchState {
   selector: 'app-home-page',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule,
+    CommonModule, ReactiveFormsModule, RouterLink, HomeFeaturesComponent,
     AlbumCardComponent, ArtistCardComponent, UserCardComponent,
     MatButtonModule, SkeletonLoaderComponent,
   ],

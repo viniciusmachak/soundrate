@@ -30,6 +30,8 @@ interface AlbumParticipant {
   role: string;
 }
 
+import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
+
 @Component({
   selector: 'app-album-details-page',
   standalone: true,
@@ -37,7 +39,7 @@ interface AlbumParticipant {
     CommonModule, RouterLink, MatIconModule,
     StarRatingComponent, MatButtonModule, MatDialogModule,
     ReviewListComponent, FormatDurationPipe,
-    DecimalPipe, SlicePipe, SkeletonLoaderComponent
+    DecimalPipe, SlicePipe, SkeletonLoaderComponent, DeezerButtonComponent
   ],
   templateUrl: './album-details-page.component.html',
   styleUrl: './album-details-page.component.css',

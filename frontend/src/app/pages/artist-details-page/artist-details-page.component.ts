@@ -29,6 +29,8 @@ type DiscographyCategory = 'popular' | 'albums' | 'singles' | 'compilations';
 type DiscographySort = 'release' | 'popularity' | 'community';
 type DiscographyDirection = 'asc' | 'desc';
 
+import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
+
 @Component({
   selector: 'app-artist-details-page',
   standalone: true,
@@ -40,7 +42,8 @@ type DiscographyDirection = 'asc' | 'desc';
     MatIconModule,
     MatPaginatorModule,
     MatButtonModule,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    DeezerButtonComponent
   ],
   templateUrl: './artist-details-page.component.html',
   styleUrl: './artist-details-page.component.css'

@@ -32,6 +32,16 @@
           <app-skeleton-loader variant="cards" [count]="12" />
         }
       </section>
+
+      <app-home-features />
+
+      <section class="final-cta" aria-labelledby="cta-title">
+        <p id="cta-title">Turn every listen into a collection of ratings, reviews and memories.</p>
+        <div class="cta-actions">
+          <a mat-flat-button class="primary-action" routerLink="/register">Create your diary</a>
+          <a mat-stroked-button class="secondary-action" href="#ranking-title">Explore albums</a>
+        </div>
+      </section>
     } @else {
       <section aria-labelledby="search-results-title">
         <h1 id="search-results-title" class="search-title">

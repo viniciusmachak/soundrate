@@ -70,9 +70,7 @@
         </button>
       }
 
-      <a class="text-action" [href]="album.link" target="_blank" rel="noopener noreferrer">
-        Open in Deezer
-      </a>
+      <app-deezer-button [href]="album.link" />
 
       @if (authService.isAuthenticated()) {
         @if (!details.currentUserReview) {

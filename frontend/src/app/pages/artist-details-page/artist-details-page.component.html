@@ -39,7 +39,7 @@
         {{ isFollowed ? 'Following' : 'Follow' }}
       </button>
 
-      <a class="text-action" [href]="artist.link" target="_blank" rel="noopener noreferrer">Open in Deezer</a>
+      <app-deezer-button [href]="artist.link" label="Artist on Deezer" />
       <button type="button" class="text-action" (click)="shareArtist(artist.name)">Share</button>
     </div>
 
