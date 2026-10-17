@@ -488,15 +488,18 @@ mat-paginator,
   content: '';
 }
 
+/* Supporting hero text uses the same color as the title for an even, readable block. */
 .entity-hero .entity-kind,
 .entity-hero .entity-meta,
-.entity-hero .muted {
-  color: rgba(255, 255, 255, 0.85);
+.entity-hero .muted,
+.entity-hero .community-rating {
+  color: var(--primary-text);
 }
 
 .entity-hero h1,
 .entity-hero .entity-kind,
-.entity-hero .entity-meta {
+.entity-hero .entity-meta,
+.entity-hero .community-rating {
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
 }
 

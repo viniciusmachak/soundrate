@@ -31,17 +31,22 @@
   bottom: 88px;
   z-index: 900;
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   place-items: center;
-  border: 1px solid var(--divider);
-  border-radius: 50%;
-  background: var(--surface-dark);
-  color: var(--secondary-text);
+  border: 0;
+  background: none;
+  color: var(--accent-text);
   cursor: pointer;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.back-to-top .material-icons {
+  font-size: 32px;
 }
 
 .back-to-top:hover {
   color: var(--primary-text);
+  transform: translateY(-2px);
 }
