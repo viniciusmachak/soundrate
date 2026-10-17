@@ -291,7 +291,7 @@
   justify-content: center;
   width: clamp(150px, 14vw, 196px);
   height: 164px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 0;
   border-radius: 6px;
   background-color: transparent;
   color: var(--primary-text);
