@@ -64,8 +64,10 @@ export class LoginPageComponent {
         const username = this.authService.currentUserValue?.username ?? this.loginForm.value.username;
         this.feedback.success('Welcome back', `Signed in as @${username}. Your music is waiting.`);
       },
-      error: () => {
-        this.errorMessage = 'Invalid login or password. Please try again.';
+      error: (err) => {
+        this.errorMessage = err.status === 429
+          ? err.error?.message ?? 'Too many attempts. Please wait a minute and try again.'
+          : 'Invalid login or password. Please try again.';
       }
     });
   }

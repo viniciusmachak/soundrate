@@ -1,6 +1,7 @@
 package com.viniciusmcabral.sound_rate.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -40,7 +41,7 @@ class EmailServiceTest {
 	@BeforeEach
 	void setUp() {
 		emailService = new EmailService(mailSender, templateEngine, new SyncTaskExecutor(), "no-reply@soundrate.test",
-				"https://soundrate.test/", "smtp.soundrate.test");
+				"https://soundrate.test/", "smtp.soundrate.test", true);
 	}
 
 	@AfterEach
@@ -78,9 +79,17 @@ class EmailServiceTest {
 	}
 
 	@Test
+	void startupFailsWhenMailIsRequiredButNotConfigured() {
+		assertThatThrownBy(() -> new EmailService(mailSender, templateEngine,
+				new SyncTaskExecutor(), "no-reply@soundrate.test", "https://soundrate.test", " ", true))
+				.isInstanceOf(IllegalStateException.class)
+				.hasMessageContaining("MAIL_HOST");
+	}
+
+	@Test
 	void emailIsSkippedWhenMailHostIsMissing() {
 		var unconfigured = new EmailService(mailSender, templateEngine, new SyncTaskExecutor(),
-				"no-reply@soundrate.test", "https://soundrate.test", "");
+				"no-reply@soundrate.test", "https://soundrate.test", "", false);
 
 		unconfigured.sendWelcomeEmail("listener@example.com", "listener");
 

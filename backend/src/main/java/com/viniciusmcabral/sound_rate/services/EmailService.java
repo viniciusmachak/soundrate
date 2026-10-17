@@ -34,7 +34,11 @@ public class EmailService {
 
 	public EmailService(JavaMailSender mailSender, SpringTemplateEngine templateEngine, TaskExecutor taskExecutor,
 			@Value("${app.mail.from}") String fromEmail, @Value("${app.frontend-url}") String frontendUrl,
-			@Value("${spring.mail.host:}") String mailHost) {
+			@Value("${spring.mail.host:}") String mailHost, @Value("${app.mail.required:false}") boolean mailRequired) {
+		if (mailRequired && (mailHost == null || mailHost.isBlank())) {
+			// Without this, reset links would only reach the logs in production.
+			throw new IllegalStateException("MAIL_HOST must be set when app.mail.required is true.");
+		}
 		this.mailSender = mailSender;
 		this.templateEngine = templateEngine;
 		this.taskExecutor = taskExecutor;

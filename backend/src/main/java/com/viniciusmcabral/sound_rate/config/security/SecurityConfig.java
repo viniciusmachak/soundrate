@@ -51,6 +51,7 @@ public class SecurityConfig {
 					req.requestMatchers(HttpMethod.GET, "/api/v1/albums/**").permitAll();
 					req.requestMatchers(HttpMethod.GET, "/api/v1/artists/**").permitAll();
 					req.requestMatchers(HttpMethod.GET, "/api/v1/search").permitAll();
+					req.requestMatchers(HttpMethod.GET, "/actuator/health").permitAll();
 					if (apiDocsEnabled || swaggerUiEnabled) {
 						req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();
 					}

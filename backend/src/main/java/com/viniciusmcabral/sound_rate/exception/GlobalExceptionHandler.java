@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -103,6 +104,13 @@ public class GlobalExceptionHandler {
 			MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
 		String message = "Invalid value for parameter '" + ex.getName() + "'.";
 		return buildErrorResponse(HttpStatus.BAD_REQUEST, "Bad Request", message, request.getRequestURI());
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<Map<String, Object>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
+			HttpServletRequest request) {
+		return buildErrorResponse(HttpStatus.PAYLOAD_TOO_LARGE, "Payload Too Large",
+				"The image is too large. Choose a file up to 5 MB.", request.getRequestURI());
 	}
 
 	@ExceptionHandler(Exception.class)

@@ -62,7 +62,9 @@ export class ForgetPasswordPageComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = 'An unexpected error occurred. Please try again.';
+        this.errorMessage = err.status === 429
+          ? err.error?.message ?? 'Too many requests. Please wait a few minutes and try again.'
+          : 'An unexpected error occurred. Please try again.';
         console.error(err);
       }
     });

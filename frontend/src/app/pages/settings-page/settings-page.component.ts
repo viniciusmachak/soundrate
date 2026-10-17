@@ -20,6 +20,8 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
   const confirmPassword = control.get('confirmPassword');
   return password && confirmPassword && password.value !== confirmPassword.value ? { passwordMismatch: true } : null;
 };
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
+
 @Component({
   selector: 'app-settings-page',
   standalone: true,
@@ -165,7 +167,14 @@ export class SettingsPageComponent implements OnInit {
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
-      this.selectedFile = target.files[0];
+      const file = target.files[0];
+      // Same limit as the backend, checked here so the user knows before uploading.
+      if (file.size > MAX_AVATAR_BYTES) {
+        this.feedback.error('Image too large', 'Choose a PNG or JPEG up to 5 MB.');
+        target.value = '';
+        return;
+      }
+      this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
@@ -190,9 +199,9 @@ export class SettingsPageComponent implements OnInit {
         this.imagePreview = updatedUser.avatarUrl;
         this.selectedFile = null;
       },
-      error: () => this.feedback.error(
+      error: (err) => this.feedback.error(
         'Couldn’t upload your photo',
-        'Choose a valid image and try again.'
+        err.status === 413 ? 'The image is too large. Choose a file up to 5 MB.' : 'Choose a valid image and try again.'
       )
     });
   }
