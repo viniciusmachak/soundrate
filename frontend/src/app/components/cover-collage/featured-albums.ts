@@ -29,5 +29,12 @@ export const FEATURED_ALBUMS: CollageAlbum[] = [
   { id: 217795, title: 'Back to Black', artist: 'Amy Winehouse', cover: cover('5772b495f0dcdf660d0fc88c4c38a3fa') },
   { id: 1441464, title: 'Kind of Blue', artist: 'Miles Davis', cover: cover('88aec77a2c4a8ed8dd3c709a9fe418bc') },
   { id: 587849692, title: 'Purple Rain', artist: 'Prince', cover: cover('526d2d27a16da94b6f46fa4e786a34c9') },
-  { id: 302127, title: 'Discovery', artist: 'Daft Punk', cover: cover('5718f7c81c27e0b2417e2a4c45224f8a') }
+  { id: 302127, title: 'Discovery', artist: 'Daft Punk', cover: cover('5718f7c81c27e0b2417e2a4c45224f8a') },
+  { id: 94528282, title: 'Lemonade', artist: 'Beyoncé', cover: cover('bb119e6869e38e386abf276eef6fe1c2') },
+  { id: 10709540, title: 'Currents', artist: 'Tame Impala', cover: cover('de5b9b704cd4ec36f8bf49beb3e17ba2') },
+  { id: 6899610, title: 'AM', artist: 'Arctic Monkeys', cover: cover('64e54e307bd5e2bdb27ffeb662fd910d') },
+  { id: 6856704, title: 'London Calling', artist: 'The Clash', cover: cover('1dbb7d7bee08ed2b18deabffd675bd36') },
+  { id: 436186197, title: 'Pet Sounds', artist: 'The Beach Boys', cover: cover('ddfe7ab3d0a960099debb0bf56c70460') },
+  { id: 3095471, title: 'Graceland', artist: 'Paul Simon', cover: cover('8a8c3843f9daf46b8a660b26ef56cb4d') },
+  { id: 101618, title: 'Is This It', artist: 'The Strokes', cover: cover('700f0375d5ac8570f16a2c7eb128303f') }
 ];

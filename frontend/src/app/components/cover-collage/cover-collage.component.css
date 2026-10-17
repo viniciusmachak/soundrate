@@ -76,7 +76,8 @@
   }
 }
 
-/* Runs continuously while on screen; stops off screen and with the toggle (WCAG 2.2.2). */
+/* Runs while on screen; pauses off screen, on hover and with the toggle (WCAG 2.2.2). */
+.collage:hover .collage-track,
 .collage.paused .collage-track {
   animation-play-state: paused;
 }
