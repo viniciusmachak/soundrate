@@ -19,7 +19,7 @@ The API is responsible for:
 - Spring Security
 - Spring Data JPA / Hibernate
 - PostgreSQL
-- SendGrid
+- Spring Mail (SMTP)
 - Cloudinary
 - Springdoc OpenAPI
 
@@ -57,7 +57,12 @@ POSTGRES_PASSWORD=change-me
 
 JWT_SECRET=replace-with-a-long-random-secret
 CLOUDINARY_URL=cloudinary://<key>:<secret>@<cloud-name>
-SENDGRID_API_KEY=SG.xxxxx
+MAIL_HOST=smtp.resend.com
+MAIL_PORT=587
+MAIL_USERNAME=resend
+MAIL_PASSWORD=re_xxxxx
+MAIL_FROM=no-reply@yourdomain.com
+APP_FRONTEND_URL=http://localhost:4200
 ```
 
 ## Local Development
@@ -139,13 +144,9 @@ The backend fetches album and artist metadata from the Deezer API through `Deeze
 
 Avatar uploads are sent to Cloudinary through `StorageService`.
 
-### SendGrid
+### Email (SMTP)
 
-The backend sends:
-
-- welcome emails
-- password reset emails
-- account deletion emails
+`EmailService` sends welcome, password reset and account deletion emails through any SMTP provider configured with `MAIL_*`. Emails are sent after the surrounding transaction commits, off the request thread. Password reset links are built from `APP_FRONTEND_URL`. When `MAIL_HOST` is empty, emails are logged instead of sent.
 
 ## Testing
 

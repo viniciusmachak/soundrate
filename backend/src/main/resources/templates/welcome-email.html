@@ -2,23 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Welcome to Soundrate</title>
 </head>
-<body
-	style="font-family: Arial, sans-serif; text-align: center; color: #333;">
-	<div
-		style="max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
-		<h2>Welcome to Soundrate!</h2>
-		<p>
-			Hi, <strong th:text="${username}">User</strong>!
+<body style="margin: 0; padding: 32px 16px; background: #ffffff; font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; color: #14181c; line-height: 1.5;">
+	<div style="max-width: 480px; margin: 0 auto;">
+		<p style="margin: 0 0 32px; font-weight: 700; font-size: 18px;">Soundrate</p>
+		<p style="margin: 0 0 16px;">Hi <span th:text="${username}">listener</span>,</p>
+		<p style="margin: 0 0 24px;">Your account is ready. Rate albums, write reviews and keep a diary of everything you listen to.</p>
+		<p style="margin: 0 0 32px;">
+			<a th:href="${frontendUrl}" href="#"
+				style="display: inline-block; padding: 12px 20px; background: #7066ff; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: 600;">Open Soundrate</a>
 		</p>
-		<p>We're thrilled to have you join our community of music lovers.
-			Start discovering new albums, rating your favorites, and sharing your
-			opinions today.</p>
-		<a th:href="@{http://localhost:4200}"
-			style="background-color: #1DB954; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0;">
-			Explore Now </a>
-		<p>Happy listening!</p>
+		<p style="margin: 0; font-size: 13px; color: #6b7280;">Happy listening.</p>
 	</div>
 </body>
 </html>

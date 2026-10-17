@@ -77,10 +77,10 @@ public class AuthService implements UserDetailsService {
 
 	@Transactional
 	public void requestPasswordReset(String userEmail) {
-		Optional<UserModel> userOpt = userRepository.findByEmail(userEmail);
+		Optional<UserModel> userOpt = userRepository.findByEmailAndActiveTrue(userEmail);
 
 		if (userOpt.isEmpty()) {
-			logger.info("Password reset requested for non-existent email '{}'.", userEmail);
+			logger.info("Password reset requested for unknown or inactive email '{}'.", userEmail);
 			return;
 		}
 
@@ -95,8 +95,7 @@ public class AuthService implements UserDetailsService {
 		tokenRepository.save(passwordResetToken);
 		logger.info("Issued password reset token for user '{}'.", user.getUsername());
 
-		String resetLink = "http://localhost:4200/reset-password?token=" + tokenString;
-		emailService.sendPasswordResetEmail(user.getEmail(), user.getUsername(), resetLink);
+		emailService.sendPasswordResetEmail(user.getEmail(), user.getUsername(), tokenString);
 	}
 
 	@Transactional

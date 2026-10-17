@@ -3,8 +3,6 @@ package com.viniciusmcabral.sound_rate.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,21 +77,21 @@ class AuthServiceTest {
 	@Test
 	void requestPasswordResetCreatesFreshTokenAndSendsMail() {
 		var user = TestDataFactory.user(1L, "listener");
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+		when(userRepository.findByEmailAndActiveTrue(user.getEmail())).thenReturn(Optional.of(user));
 
 		authService.requestPasswordReset(user.getEmail());
 
 		ArgumentCaptor<PasswordResetTokenModel> tokenCaptor = ArgumentCaptor.forClass(PasswordResetTokenModel.class);
 		verify(tokenRepository).deleteByUser(user);
 		verify(tokenRepository).save(tokenCaptor.capture());
-		verify(emailService).sendPasswordResetEmail(eq(user.getEmail()), eq(user.getUsername()),
-				contains(tokenCaptor.getValue().getToken()));
+		verify(emailService).sendPasswordResetEmail(user.getEmail(), user.getUsername(),
+				tokenCaptor.getValue().getToken());
 		assertThat(tokenCaptor.getValue().getExpiryDate()).isAfter(LocalDateTime.now().plusMinutes(59));
 	}
 
 	@Test
 	void requestPasswordResetForUnknownEmailDoesNotLeakOrPersistAnything() {
-		when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
+		when(userRepository.findByEmailAndActiveTrue("missing@example.com")).thenReturn(Optional.empty());
 
 		authService.requestPasswordReset("missing@example.com");
 
