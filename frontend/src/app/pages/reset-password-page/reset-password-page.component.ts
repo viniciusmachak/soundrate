@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 
 export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('newPassword');
@@ -24,11 +23,10 @@ export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): 
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
-    MatIconModule
+    MatProgressSpinnerModule
 ],
   templateUrl: './reset-password-page.component.html',
-  styleUrls: ['../password-flow.shared.css', './reset-password-page.component.css']
+  styleUrl: '../auth-page.shared.css'
 })
 export class ResetPasswordPageComponent implements OnInit {
   resetPasswordForm!: FormGroup;

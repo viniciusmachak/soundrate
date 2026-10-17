@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
 interface AboutFeature {
   icon: string;
@@ -19,12 +18,11 @@ interface Technology {
 @Component({
   selector: 'app-about-page',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [],
   templateUrl: './about-page.component.html',
   styleUrl: './about-page.component.css',
 })
 export class AboutPageComponent {
-  isTechnologyMarqueePaused = false;
 
   readonly features: AboutFeature[] = [
     {
@@ -107,15 +105,5 @@ export class AboutPageComponent {
     },
   ];
 
-  hideUnavailableImage(event: Event): void {
-    const image = event.target;
 
-    if (image instanceof HTMLImageElement) {
-      image.hidden = true;
-    }
-  }
-
-  toggleTechnologyMarquee(): void {
-    this.isTechnologyMarqueePaused = !this.isTechnologyMarqueePaused;
-  }
 }

@@ -5,43 +5,44 @@
 .settings-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
   width: 100%;
-  max-width: 880px;
-  margin: 32px auto;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px var(--gutter) 72px;
+  box-sizing: border-box;
 }
 
 .settings-header {
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
 }
 
 .settings-header h1 {
   margin: 0;
   color: var(--primary-text);
-  font-size: clamp(2rem, 5vw, 2.7rem);
-  font-weight: 500;
-  letter-spacing: -0.04em;
+  font-size: var(--fs-h1);
+  font-weight: 700;
 }
 
 .settings-card {
-  padding: clamp(24px, 4vw, 34px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  background-color: var(--surface-dark);
+  --mat-card-elevated-container-color: transparent;
+  --mat-card-elevated-container-elevation: none;
+  padding: 28px 0;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
 }
 
 .section-header {
   display: block;
-  padding: 0 0 24px;
+  padding: 0 0 16px;
 }
 
 .section-header mat-card-title {
   color: var(--primary-text);
-  font-size: 1.3rem;
+  font-size: var(--fs-h2);
   font-weight: 600;
-  letter-spacing: -0.02em;
 }
 
 .settings-card mat-card-content {
@@ -147,7 +148,12 @@ button mat-spinner {
 }
 
 .danger-zone {
-  border-color: var(--warn-color);
+  border-bottom: 0;
+}
+
+.danger-button {
+  --mat-button-outlined-label-text-color: var(--warn-color);
+  --mat-button-outlined-outline-color: var(--warn-color);
 }
 
 .danger-zone .section-header mat-card-title {
@@ -181,9 +187,6 @@ button mat-spinner {
     margin: 20px auto;
   }
 
-  .settings-card {
-    padding: 24px 20px;
-  }
 
   .avatar-content {
     grid-template-columns: 1fr;

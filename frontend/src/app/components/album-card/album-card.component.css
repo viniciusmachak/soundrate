@@ -1,108 +1,54 @@
 :host {
-    display: block;
-    width: 220px;
-    height: 220px;
+  display: block;
+  min-width: 0;
 }
 
-.album-card-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 8px;
-    background-color: #333;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-        transform: scale(1.03);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
+.poster {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: inherit;
+  text-decoration: none;
 }
 
-.album-cover-container,
-.album-cover-button {
-    width: 100%;
-    height: 100%;
+.poster-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  margin-bottom: 8px;
+  border-radius: var(--radius-sm);
+  outline: 1px solid var(--divider);
+  outline-offset: -1px;
+  object-fit: cover;
+  background-color: var(--surface-dark);
+  transition: opacity 0.15s ease;
 }
 
-.album-cover-button {
-    display: block;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: zoom-in;
+.poster:hover .poster-cover {
+  opacity: 0.85;
 }
 
-.album-cover-button:focus-visible {
-    outline: 3px solid var(--accent-color);
-    outline-offset: -3px;
+.poster:hover .poster-title {
+  color: #fff;
 }
 
-.album-cover {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.3s ease;
+.poster-title,
+.poster-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.album-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 60%);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 16px;
-    box-sizing: border-box;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+.poster-title {
+  font-size: var(--fs-small);
+  font-weight: 500;
 }
 
-.album-card-wrapper:hover .album-overlay,
-.album-card-wrapper:focus-within .album-overlay {
-    opacity: 1;
+.poster-subtitle {
+  color: var(--secondary-text);
+  font-size: 0.75rem;
 }
 
-.album-card-wrapper:hover .album-cover,
-.album-card-wrapper:focus-within .album-cover {
-    opacity: 0.8;
-}
-
-.overlay-content {
-    flex-grow: 1;
-    overflow: hidden;
-}
-
-.album-title,
-.album-artist {
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-}
-
-.album-title {
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.album-artist {
-    font-size: 0.85rem;
-    font-weight: 400;
-    opacity: 0.9;
-}
-
-.details-button {
-    color: white;
-    flex-shrink: 0;
-    margin-left: 8px;
-    pointer-events: auto;
+.poster-rating {
+  margin-left: 6px;
+  color: var(--accent-color);
 }

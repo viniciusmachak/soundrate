@@ -1,17 +1,10 @@
-<div class="album-card-wrapper">
-    <div class="album-cover-container">
-        <button type="button" class="album-cover-button" (click)="openCover()"
-            [attr.aria-label]="'Open cover of ' + title">
-            <img [src]="coverUrl" [alt]="title" class="album-cover">
-        </button>
-    </div>
-    <div class="album-overlay">
-        <div class="overlay-content">
-            <h3 class="album-title">{{ title }}</h3>
-            <p class="album-artist">{{ artistName }}</p>
-        </div>
-        <a mat-icon-button class="details-button" [routerLink]="['/album', id]" title="View album details">
-            <mat-icon>arrow_forward</mat-icon>
-        </a>
-    </div>
-</div>
+<a class="poster" [routerLink]="['/album', id]" [title]="title + ' — ' + artistName">
+  <img [src]="coverUrl" [alt]="'Cover of ' + title" class="poster-cover" loading="lazy">
+  <span class="poster-title">{{ title }}</span>
+  <span class="poster-subtitle">
+    {{ artistName }}
+    @if (averageRating) {
+      <span class="poster-rating" [attr.aria-label]="averageRating + ' out of 5 stars'">★ {{ averageRating | number:'1.1-1' }}</span>
+    }
+  </span>
+</a>

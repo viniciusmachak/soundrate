@@ -1,55 +1,42 @@
 :host {
   display: block;
-  width: 100%;
+  min-width: 0;
 }
 
-.card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  outline: none;
-}
-
-.card-link:focus-visible {
-  outline: 3px solid var(--accent-color);
-  outline-offset: 3px;
-}
-
-.artist-card,
-.user-card {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 6px;
+.entity {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 2px;
+  color: inherit;
   text-align: center;
-  background-color: transparent;
-  transition: transform 0.3s ease, background-color 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    background-color: var(--surface-dark);
-  }
+  text-decoration: none;
 }
 
-.artist-photo,
-.user-avatar {
-  width: 150px;
-  height: 150px;
+.entity-image {
+  width: 100%;
+  aspect-ratio: 1;
+  margin-bottom: 8px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--surface-dark);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  margin-bottom: 1rem;
+  background-color: var(--surface-dark);
+  transition: opacity 0.15s ease;
 }
 
-.artist-name,
-.user-name {
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 0;
-  white-space: nowrap;
+.entity:hover .entity-image {
+  opacity: 0.85;
+}
+
+.entity-name {
+  max-width: 100%;
   overflow: hidden;
+  font-size: var(--fs-small);
+  font-weight: 500;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entity-type {
+  color: var(--secondary-text);
+  font-size: 0.75rem;
 }

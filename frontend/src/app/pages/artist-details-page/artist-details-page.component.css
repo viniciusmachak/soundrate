@@ -1,595 +1,253 @@
-:host {
-  display: block;
-}
-
-@keyframes artist-photo-enter {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.artist-page-container {
-  margin: -24px -24px 0;
-}
-
-.artist-header {
-  position: relative;
-  isolation: isolate;
-  min-height: clamp(390px, 54vw, 560px);
-  overflow: hidden;
-  background-color: #101215;
-}
-
-.artist-backdrop {
-  position: absolute;
-  inset: -56px;
-  z-index: -2;
-  background-position: center 28%;
-  background-size: cover;
-  filter: blur(38px) saturate(1.2);
-  opacity: 0.5;
-  transform: scale(1.14);
-}
-
-.artist-header::after {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  content: '';
-  background:
-    linear-gradient(90deg, rgba(8, 10, 12, 0.72), rgba(8, 10, 12, 0.9)),
-    linear-gradient(145deg, color-mix(in srgb, var(--artist-accent) 48%, transparent), transparent 64%);
-  transition: background 0.35s ease;
-}
-
-.artist-hero-content {
-  display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(28px, 5vw, 64px);
-  width: 100%;
-  max-width: 1280px;
-  min-height: inherit;
-  margin: 0 auto;
-  padding: clamp(44px, 7vw, 84px) clamp(24px, 6vw, 80px);
-  box-sizing: border-box;
+.entity-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
 }
 
 .artist-photo {
-  width: 100%;
-  max-width: 260px;
-  aspect-ratio: 1;
-  border: 3px solid color-mix(in srgb, var(--artist-accent) 56%, white);
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.46);
-  animation: artist-photo-enter 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  background-color: var(--surface-dark);
 }
 
-.artist-info {
+.entity-info {
   min-width: 0;
 }
 
-.artist-eyebrow {
+.entity-kind {
   color: var(--secondary-text);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: var(--fs-small);
+  font-weight: 500;
 }
 
-.artist-info h1 {
-  margin: 8px 0 14px;
-  overflow-wrap: anywhere;
-  font-size: clamp(2.6rem, 7vw, 5.6rem);
-  line-height: 0.96;
-}
-
-.artist-metadata {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 0.86rem;
-  font-weight: 650;
-}
-
-.artist-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 28px;
-}
-
-.popular-play-button,
-.artist-secondary-button {
-  height: 48px;
-  padding-inline: 18px;
-  border-radius: 12px;
-  box-sizing: border-box;
-  box-shadow: none !important;
+h1 {
+  margin: 4px 0 12px;
+  font-size: var(--fs-display);
   font-weight: 700;
-  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
 }
 
-.popular-play-button {
-  min-width: 170px;
+.entity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 32px 0 20px;
+}
+
+.play-button {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
   background-color: var(--accent-color);
   color: var(--on-accent);
+  cursor: pointer;
+  transition: transform 0.1s ease;
 }
 
-.popular-play-button:hover:not(:disabled) {
-  background-color: color-mix(in srgb, var(--accent-color) 90%, white);
+.play-button:hover:not(:disabled) {
+  transform: scale(1.04);
 }
 
-.popular-play-button:active:not(:disabled),
-.artist-secondary-button:active:not(:disabled) {
-  transform: scale(0.96);
+.play-button:disabled {
+  cursor: default;
+  opacity: 0.4;
 }
 
-.artist-secondary-button {
-  min-width: 116px;
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--primary-text);
+.play-button mat-icon {
+  width: 30px;
+  height: 30px;
+  font-size: 30px;
 }
 
-.artist-secondary-button:hover:not(:disabled),
-.artist-secondary-button.following {
-  border-color: var(--accent-color);
-  background-color: color-mix(in srgb, var(--accent-color) 14%, transparent);
-  color: var(--primary-text);
+.follow-button.following {
+  --mat-button-outlined-outline-color: var(--accent-color);
+  --mat-button-outlined-label-text-color: var(--accent-color);
 }
 
-.artist-deezer-link {
-  margin: 0;
-}
-
-.soundrate-followers {
-  display: block;
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 0.72rem;
-}
-
-.community-section,
-.discography-section {
-  width: min(1200px, calc(100% - 48px));
-  margin-top: 48px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.community-section {
-  padding-bottom: 48px;
-  border-bottom: 1px solid var(--surface-dark);
-}
-
-.community-heading h2 {
-  margin: 0;
-  font-size: clamp(1.7rem, 3vw, 2.35rem);
-}
-
-.community-overview {
-  display: grid;
-  grid-template-columns: minmax(280px, 1.7fr) repeat(3, minmax(150px, 1fr));
-  gap: 12px;
-  margin-top: 26px;
-}
-
-.highest-rated-album,
-.community-metric {
-  min-height: 112px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  background: #17191d;
-  box-sizing: border-box;
-}
-
-.highest-rated-album {
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  color: var(--primary-text);
+.text-action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--secondary-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: 500;
   text-decoration: none;
-  transition: border-color 0.18s ease, transform 0.18s ease;
 }
 
-a.highest-rated-album:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
+.text-action:hover {
+  color: var(--primary-text);
 }
 
-.highest-rated-album > img {
-  width: 88px;
-  aspect-ratio: 1;
-  border-radius: 10px;
+.community-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 14px 0;
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+}
+
+.community-line strong,
+.community-line a {
+  color: var(--primary-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.community-line a:hover {
+  text-decoration: underline;
+}
+
+.score {
+  margin-left: 4px;
+  color: var(--accent-color);
+}
+
+.poster-note {
+  display: block;
+  margin-top: 2px;
+  color: var(--secondary-text);
+  font-size: 0.75rem;
+}
+
+/* Recent reviews */
+.recent-review {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.recent-review-cover img {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
 }
 
-.highest-rated-album span,
-.community-metric span,
-.reviewed-album small {
-  color: var(--secondary-text);
-  font-size: 0.67rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.recent-review-body {
+  min-width: 0;
+  flex: 1;
+  font-size: var(--fs-small);
 }
 
-.highest-rated-album h3 {
-  margin: 5px 0 8px;
+.recent-review-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.album-title {
+  color: var(--primary-text);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.album-title:hover {
+  text-decoration: underline;
+}
+
+.recent-review-body .muted a {
+  color: var(--primary-text);
+  text-decoration: none;
+}
+
+.recent-review-body p {
+  display: -webkit-box;
+  margin: 8px 0 0;
   overflow: hidden;
-  font-size: 1rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
-.highest-rated-album span {
-  color: var(--secondary-text);
-}
-
-.highest-rated-album strong,
-.favorite-score {
+/* Discography sort */
+.sort-controls {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: var(--primary-text);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.highest-rated-album strong mat-icon,
-.favorite-score mat-icon {
-  width: 17px;
-  height: 17px;
-  color: var(--accent-color);
-  font-size: 17px;
-}
-
-.feature-arrow {
+.sort-controls select {
+  padding: 4px 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
   color: var(--secondary-text);
-}
-
-.community-empty-highlight {
-  grid-template-columns: 46px minmax(0, 1fr);
-  color: var(--secondary-text);
-}
-
-.community-empty-highlight > mat-icon {
-  width: 38px;
-  height: 38px;
-  color: var(--accent-color);
-  font-size: 38px;
-}
-
-.community-metric {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px;
-}
-
-.community-metric > mat-icon {
-  flex: 0 0 auto;
-  color: var(--accent-color);
-}
-
-.community-metric span {
-  display: block;
-  color: var(--secondary-text);
-  letter-spacing: 0.03em;
-}
-
-.community-metric strong {
-  display: block;
-  margin-top: 7px;
-  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
-}
-
-.community-content-block {
-  margin-top: 38px;
-}
-
-.community-block-heading {
-  margin-bottom: 18px;
-}
-
-.community-block-heading h3 {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.community-favorites-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.community-favorite {
-  min-width: 0;
-}
-
-.favorite-score {
-  margin-top: 8px;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.discography-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.section-title {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.discography-sort-controls {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.discography-sort {
-  display: grid;
-  gap: 6px;
-  color: var(--secondary-text);
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.discography-sort select {
-  min-width: 190px;
-  min-height: 42px;
-  padding: 0 38px 0 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 10px;
-  background: #181a1f;
-  color: var(--primary-text);
-  font: inherit;
-  font-size: 0.84rem;
   cursor: pointer;
+  font: inherit;
+  font-size: var(--fs-small);
+}
+
+.sort-controls select:hover {
+  color: var(--primary-text);
+}
+
+.sort-controls option {
+  background: var(--surface-dark);
+  color: var(--primary-text);
 }
 
 .direction-toggle {
-  display: inline-grid;
-  width: 42px;
-  height: 42px;
+  display: grid;
+  width: 28px;
+  height: 28px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 10px;
   place-items: center;
-  background: #181a1f;
-  color: var(--accent-color);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--secondary-text);
   cursor: pointer;
-  transition: border-color 0.18s ease, color 0.18s ease;
 }
 
 .direction-toggle:hover {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
-}
-
-.direction-toggle:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-.discography-sort select:focus-visible,
-.discography-tabs button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-.discography-tabs {
-  display: flex;
-  gap: 6px;
-  margin: 24px 0;
-  padding-bottom: 12px;
-  overflow-x: auto;
-  border-bottom: 1px solid var(--surface-dark);
-  scrollbar-width: thin;
-}
-
-.discography-tabs button {
-  flex: 0 0 auto;
-  padding: 10px 14px;
-  border: 0;
-  background: transparent;
-  color: var(--secondary-text);
-  font: inherit;
-  font-size: 0.84rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: color 0.18s ease;
-}
-
-.discography-tabs button:hover,
-.discography-tabs button.active {
-  background: transparent;
   color: var(--primary-text);
 }
 
-.albums-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+.direction-toggle mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 }
 
-.discography-release {
-  width: 100%;
-  min-width: 0;
-}
-
-.release-metadata,
-.release-stats {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 9px;
-  color: var(--secondary-text);
-  font-size: 0.76rem;
-}
-
-.release-stats {
-  justify-content: flex-start;
-  gap: 12px;
-  margin-top: 5px;
-}
-
-.explicit-badge {
-  display: inline-grid;
-  width: 17px;
-  height: 17px;
-  margin-left: 2px;
-  place-items: center;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.17);
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 0.64rem;
-  font-weight: 800;
-}
-
-.community-score {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  color: var(--primary-text);
-  font-weight: 750;
-}
-
-.community-score mat-icon {
-  width: 15px;
-  height: 15px;
-  font-size: 15px;
-  color: var(--accent-color);
-}
-
-.custom-paginator {
-  margin-top: 28px;
-}
-
-.no-content-message {
-  margin: 48px 0;
-  color: var(--secondary-text);
-  text-align: center;
-}
-
-@media (max-width: 992px) {
-  .community-overview {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .highest-rated-album {
-    grid-column: 1 / -1;
-  }
-
-  .community-favorites-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .albums-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
-}
-
-@media (max-width: 720px) {
-  .artist-hero-content {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    text-align: center;
+@media (max-width: 760px) {
+  .entity-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
   }
 
   .artist-photo {
     width: 160px;
-  }
-
-  .artist-metadata,
-  .artist-actions {
-    justify-content: center;
-  }
-
-  .artist-actions > * {
-    width: min(100%, 240px);
-  }
-
-  .community-section,
-  .discography-section {
-    width: min(calc(100% - 32px), 1200px);
-  }
-
-  .community-overview {
-    grid-template-columns: 1fr;
-  }
-
-  .highest-rated-album {
-    grid-column: auto;
-  }
-
-  .community-favorites-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .discography-header {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .discography-sort select {
-    width: 100%;
-  }
-
-  .discography-sort-controls {
-    align-items: flex-end;
-  }
-
-  .discography-sort {
-    flex: 1;
-  }
-
-  .albums-grid {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
-
-  ::ng-deep .custom-paginator .mat-mdc-paginator-page-size-options {
-    display: none;
-  }
-}
-
-@media (max-width: 460px) {
-  .community-favorites-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .artist-photo {
-    animation: none;
-  }
-
-  .artist-header::after,
-  .highest-rated-album,
-  .popular-play-button,
-  .artist-secondary-button {
-    transition: none;
-  }
-
-  .popular-play-button:active:not(:disabled),
-  .artist-secondary-button:active:not(:disabled) {
-    transform: none;
+    height: 160px;
   }
 }

@@ -1,66 +1,57 @@
-<div class="review-list-container">
+<div class="review-list">
   @for (review of reviews; track review.id) {
-    <article class="review-item">
-      <header class="review-item-header">
-        <a [routerLink]="['/user', review.author.username]" class="user-avatar-link"
-          [attr.aria-label]="'Open ' + review.author.username + ' profile'">
-          <img [src]="review.author.avatarUrl" alt="">
-        </a>
-        <div class="review-header-content">
-          <div class="review-info">
-            <h3 class="review-title">
-              <a [routerLink]="['/user', review.author.username]">{{ review.author.username }}</a>
-            </h3>
-            <time class="review-date" [attr.datetime]="review.createdAt">
-              {{ review.createdAt | date:'dd/MM/yyyy' }}
-            </time>
-          </div>
+    <article class="review">
+      <a [routerLink]="['/user', review.author.username]" class="review-avatar"
+        [attr.aria-label]="'Open ' + review.author.username + ' profile'">
+        <img [src]="review.author.avatarUrl" alt="">
+      </a>
+      <div class="review-body">
+        <header class="review-header">
+          <span class="review-byline">
+            Review by <a [routerLink]="['/user', review.author.username]">{{ review.author.username }}</a>
+          </span>
           <app-star-rating [rating]="review.rating" [readonly]="true"
             [label]="'Rating by ' + review.author.username">
           </app-star-rating>
-        </div>
-        @if (isAuthor(review)) {
-          <button mat-icon-button type="button" class="review-menu-trigger" [matMenuTriggerFor]="menu"
-            [attr.aria-label]="'Review actions for ' + review.author.username"
-            [disabled]="reviewMutationPending || deletingReviewIds.has(review.id) || updatingLikeIds.has(review.id)"
-            [attr.aria-busy]="reviewMutationPending || deletingReviewIds.has(review.id) || updatingLikeIds.has(review.id)">
-            <mat-icon aria-hidden="true">more_vert</mat-icon>
+          <time class="review-date" [attr.datetime]="review.createdAt">
+            {{ review.createdAt | date:'d MMM y' }}
+          </time>
+          @if (isAuthor(review)) {
+            <button mat-icon-button type="button" class="review-menu-trigger" [matMenuTriggerFor]="menu"
+              [attr.aria-label]="'Review actions for ' + review.author.username"
+              [disabled]="reviewMutationPending || deletingReviewIds.has(review.id) || updatingLikeIds.has(review.id)"
+              [attr.aria-busy]="reviewMutationPending || deletingReviewIds.has(review.id) || updatingLikeIds.has(review.id)">
+              <mat-icon aria-hidden="true">more_horiz</mat-icon>
+            </button>
+          }
+          <mat-menu #menu="matMenu" class="review-actions-menu" [overlapTrigger]="false">
+            <button mat-menu-item class="review-edit-action" (click)="edit.emit(review)"
+              [disabled]="reviewMutationPending">
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item class="review-delete-action" (click)="delete.emit(review.id)"
+              [disabled]="deletingReviewIds.has(review.id)">
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </header>
+        <p class="review-text">{{ review.text }}</p>
+        <footer class="review-footer">
+          <button type="button" class="like-button" (click)="toggleLike(review)"
+            [disabled]="!currentUser || updatingLikeIds.has(review.id) || deletingReviewIds.has(review.id)"
+            [class.liked]="review.isLikedByCurrentUser"
+            [attr.aria-pressed]="review.isLikedByCurrentUser"
+            [attr.aria-busy]="updatingLikeIds.has(review.id)"
+            [attr.aria-label]="review.isLikedByCurrentUser ? 'Unlike this review' : 'Like this review'">
+            <mat-icon aria-hidden="true">{{ review.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}</mat-icon>
+            <span>{{ review.likesCount }} {{ review.likesCount === 1 ? 'like' : 'likes' }}</span>
           </button>
-        }
-        <mat-menu #menu="matMenu" class="review-actions-menu" [overlapTrigger]="false">
-          <button mat-menu-item class="review-edit-action" (click)="edit.emit(review)"
-            [disabled]="reviewMutationPending">
-            <mat-icon aria-hidden="true">edit</mat-icon>
-            <span>Edit</span>
-          </button>
-          <button mat-menu-item class="review-delete-action" (click)="delete.emit(review.id)"
-            [disabled]="deletingReviewIds.has(review.id)">
-            <mat-icon aria-hidden="true">delete</mat-icon>
-            <span>Delete</span>
-          </button>
-        </mat-menu>
-      </header>
-      <div class="review-content">
-        <p>{{ review.text }}</p>
+        </footer>
       </div>
-      <footer class="review-actions">
-        <button mat-icon-button type="button" (click)="toggleLike(review)"
-          [disabled]="!currentUser || updatingLikeIds.has(review.id) || deletingReviewIds.has(review.id)"
-          [class.liked]="review.isLikedByCurrentUser"
-          [attr.aria-pressed]="review.isLikedByCurrentUser"
-          [attr.aria-busy]="updatingLikeIds.has(review.id)"
-          [attr.aria-label]="review.isLikedByCurrentUser ? 'Unlike this review' : 'Like this review'"
-          [title]="review.isLikedByCurrentUser ? 'Unlike' : 'Like'">
-          <mat-icon aria-hidden="true">{{ review.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}</mat-icon>
-        </button>
-        <span [attr.aria-label]="review.likesCount + (review.likesCount === 1 ? ' like' : ' likes')">
-          {{ review.likesCount }}
-        </span>
-      </footer>
     </article>
   }
 
   @if (reviews.length === 0) {
-    <p class="no-reviews-message">There are no reviews yet!</p>
+    <p class="empty-state">No reviews yet.</p>
   }
 </div>

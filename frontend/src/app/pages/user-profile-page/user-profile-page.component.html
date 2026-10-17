@@ -1,486 +1,321 @@
 @if (userProfile$ | async; as profile) {
-  <div class="profile-page-container">
+  <div class="page">
     <header class="profile-header">
-      <div class="profile-backdrop" aria-hidden="true"
-        [style.background-image]="'url(' + profile.user.avatarUrl + ')'">
-      </div>
+      <img [src]="profile.user.avatarUrl" alt="Avatar of {{ profile.user.username }}" class="avatar">
 
-      <div class="profile-hero-content">
-        <img [src]="profile.user.avatarUrl" alt="Avatar of {{ profile.user.username }}" class="profile-avatar">
-
-        <div class="profile-info">
-          <span class="profile-eyebrow">Listener profile</span>
-          <h1>{{ profile.user.username }}</h1>
-
-          @if (profile.bio) {
-            <p class="profile-bio">{{ profile.bio }}</p>
-          } @else if (isOwnProfile) {
-            <a class="profile-bio profile-bio-empty" routerLink="/settings">Add a short bio about your music taste</a>
-          } @else {
-            <p class="profile-bio profile-bio-empty">This user hasn't added a bio yet.</p>
+      <div class="profile-info">
+        <h1>{{ profile.user.username }}</h1>
+        @if (profile.bio) {
+          <p class="bio">{{ profile.bio }}</p>
+        } @else if (isOwnProfile) {
+          <a class="bio muted" routerLink="/settings">Add a short bio about your music taste</a>
+        }
+        <p class="meta">
+          @if (profile.joinedAt) {
+            <span>Joined {{ profile.joinedAt | date:'MMMM y' }}</span>
+            <span aria-hidden="true">·</span>
           }
-
-          <div class="profile-metadata" aria-label="Profile information">
-            <span>Soundrate listener</span>
-            @if (profile.joinedAt) {
-              <span aria-hidden="true">•</span>
-              <span>Joined {{ profile.joinedAt | date:'MMMM y' }}</span>
-            }
-            <span aria-hidden="true">•</span>
-            <span>{{ profile.totalAlbumRatings + profile.totalTrackRatings | number }} ratings</span>
-          </div>
-
-          <div class="profile-actions">
-            @if (isOwnProfile) {
-              <a mat-raised-button routerLink="/settings" class="profile-primary-button">
-                <mat-icon>edit</mat-icon>
-                Edit Profile
-              </a>
-            }
-            @if (authService.isAuthenticated() && !isOwnProfile) {
-              <button mat-raised-button type="button" class="profile-primary-button"
-                [class.following]="profile.isFollowedByCurrentUser" [disabled]="followRequestPending"
-                [attr.aria-busy]="followRequestPending"
-                (click)="toggleFollow()">
-                <mat-icon>{{ profile.isFollowedByCurrentUser ? 'check' : 'person_add' }}</mat-icon>
-                {{ profile.isFollowedByCurrentUser ? 'Following' : 'Follow' }}
-              </button>
-            }
-
-            <button mat-stroked-button type="button" class="profile-secondary-button"
-              (click)="shareProfile(profile.user.username)">
-              <mat-icon>share</mat-icon>
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="profile-overview">
-        <div class="profile-stats" aria-label="Profile activity">
-          <button type="button" class="stat-item stat-button"
-            aria-label="View followers" (click)="openFollowListDialog('followers', profile.followersCount)">
-            <span class="stat-value">{{ profile.followersCount | number }}</span>
-            <span class="stat-label">Followers</span>
-          </button>
-          <button type="button" class="stat-item stat-button"
-            aria-label="View following" (click)="openFollowListDialog('following', profile.followingCount)">
-            <span class="stat-value">{{ profile.followingCount | number }}</span>
-            <span class="stat-label">Following</span>
-          </button>
-          <div class="stat-item">
-            <span class="stat-value">{{ profile.totalAlbumRatings | number }}</span>
-            <span class="stat-label">Albums rated</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">{{ profile.totalTrackRatings | number }}</span>
-            <span class="stat-label">Tracks rated</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">{{ profile.totalReviews | number }}</span>
-            <span class="stat-label">Reviews</span>
-          </div>
-        </div>
-
-        <div class="profile-highlights">
-          <article class="profile-rating-highlight">
-            <mat-icon>star_rate</mat-icon>
-            <div>
-              <span>Average rating</span>
-              <strong>
-                {{ profile.averageRating !== null ? (profile.averageRating | number:'1.1-1') : '—' }}
-              </strong>
-            </div>
-          </article>
-
-          @if (profile.featuredAlbum; as featuredAlbum) {
-            <a class="featured-album" [routerLink]="['/album', featuredAlbum.album.id]">
-              <img [src]="featuredAlbum.album.cover_medium" [alt]="featuredAlbum.album.title">
-              <div>
-                <span>Highest-rated album</span>
-                <h2>{{ featuredAlbum.album.title }}</h2>
-                <strong>
-                  <mat-icon>star</mat-icon>
-                  {{ featuredAlbum.userRating | number:'1.1-1' }}
-                </strong>
-              </div>
-              <mat-icon class="feature-arrow">arrow_forward</mat-icon>
-            </a>
-          } @else {
-            <div class="featured-album featured-album-empty">
-              <mat-icon>album</mat-icon>
-              <div>
-                <span>Highest-rated album</span>
-                <h2>{{ isOwnProfile ? 'Waiting for your first rating' : "Waiting for this user's first rating" }}</h2>
-              </div>
-            </div>
+          <span>Average rating
+            <strong>{{ profile.averageRating !== null ? (profile.averageRating | number:'1.1-1') : '—' }}</strong>
+          </span>
+          @if (profile.featuredAlbum; as featured) {
+            <span aria-hidden="true">·</span>
+            <span>Top album <a [routerLink]="['/album', featured.album.id]">{{ featured.album.title }}</a></span>
           }
+        </p>
+        <div class="profile-actions">
+          @if (isOwnProfile) {
+            <a mat-stroked-button routerLink="/settings">Edit profile</a>
+          }
+          @if (authService.isAuthenticated() && !isOwnProfile) {
+            @if (profile.isFollowedByCurrentUser) {
+              <button mat-stroked-button type="button" [disabled]="followRequestPending"
+                [attr.aria-busy]="followRequestPending" aria-pressed="true" (click)="toggleFollow()">Following</button>
+            } @else {
+              <button mat-flat-button type="button" [disabled]="followRequestPending"
+                [attr.aria-busy]="followRequestPending" aria-pressed="false" (click)="toggleFollow()">Follow</button>
+            }
+          }
+          <button type="button" class="text-action" (click)="shareProfile(profile.user.username)">Share</button>
         </div>
       </div>
+
+      <dl class="stats" aria-label="Profile activity">
+        <div>
+          <dt>Albums</dt>
+          <dd>{{ profile.totalAlbumRatings | number }}</dd>
+        </div>
+        <div>
+          <dt>Reviews</dt>
+          <dd>{{ profile.totalReviews | number }}</dd>
+        </div>
+        <div>
+          <dt>
+            <button type="button" (click)="openFollowListDialog('followers', profile.followersCount)">Followers</button>
+          </dt>
+          <dd>{{ profile.followersCount | number }}</dd>
+        </div>
+        <div>
+          <dt>
+            <button type="button" (click)="openFollowListDialog('following', profile.followingCount)">Following</button>
+          </dt>
+          <dd>{{ profile.followingCount | number }}</dd>
+        </div>
+      </dl>
     </header>
 
-    <main class="profile-content">
-      <mat-tab-group animationDuration="0ms" [selectedIndex]="selectedTabIndex"
-        (selectedTabChange)="onProfileTabChange($event)">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Activity</span>
-            <span class="tab-count">{{ totalActivity | number }}</span>
-          </ng-template>
-
-          <div class="tab-content activity-content">
-            @if (activity$ | async; as activity) {
-              <header class="activity-heading">
-                <h2>Recent listening moments</h2>
-              </header>
-
-              <div class="activity-grid">
-                <section class="activity-panel" aria-labelledby="recent-ratings-title">
-                  <header class="activity-panel-header">
-                    <div>
-                      <mat-icon>star_rate</mat-icon>
-                      <h3 id="recent-ratings-title">Recent ratings</h3>
-                    </div>
-                    <button mat-button type="button" (click)="selectTab(1)">View all</button>
-                  </header>
-                  <div class="activity-list">
-                    @if (activityRatingsState === 'loading') {
-                      <app-skeleton-loader variant="list" [count]="3" />
-                    } @else if (activityRatingsState === 'error') {
-                      <div class="activity-section-state">
-                        <p>Ratings couldn't be loaded.</p>
-                        <button mat-stroked-button type="button" (click)="loadRecentRatings()">Try again</button>
-                      </div>
-                    } @else {
-                      @for (rating of activity.recentRatings; track rating.album.id) {
-                        <a class="activity-item" [routerLink]="['/album', rating.album.id]">
-                          <img [src]="rating.album.cover_medium" [alt]="rating.album.title">
-                          <div>
+    <mat-tab-group class="profile-tabs" animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start"
+      [selectedIndex]="selectedTabIndex" (selectedTabChange)="onProfileTabChange($event)">
+      <mat-tab label="Activity">
+        <div class="tab-content">
+          @if (activity$ | async; as activity) {
+            <div class="activity-grid">
+              <section aria-labelledby="recent-ratings-title">
+                <h2 id="recent-ratings-title" class="section-title">
+                  Recent ratings <a href="#" (click)="$event.preventDefault(); selectTab(1)">See all</a>
+                </h2>
+                @if (activityRatingsState === 'loading') {
+                  <app-skeleton-loader variant="list" [count]="3" />
+                } @else if (activityRatingsState === 'error') {
+                  <p class="state">Ratings couldn't be loaded. <button type="button" (click)="loadRecentRatings()">Try again</button></p>
+                } @else {
+                  <ul class="row-list">
+                    @for (rating of activity.recentRatings; track rating.album.id) {
+                      <li>
+                        <a class="row" [routerLink]="['/album', rating.album.id]">
+                          <img class="row-thumb" [src]="rating.album.cover_medium" alt="">
+                          <span class="row-copy">
                             <strong>{{ rating.album.title }}</strong>
-                            <span>{{ rating.ratingDate | date:'MMM d, y' }}</span>
-                          </div>
-                          <span class="activity-score"><mat-icon>star</mat-icon>{{ rating.rating | number:'1.1-1' }}</span>
+                            <small>{{ rating.ratingDate | date:'d MMM y' }}</small>
+                          </span>
+                          <app-star-rating [rating]="rating.rating" [readonly]="true" [label]="'Rated'" />
                         </a>
-                      } @empty {
-                        <p class="activity-empty">
-                          {{ isOwnProfile ? 'You have no recent ratings yet.' : 'This user has no recent ratings yet.' }}
-                        </p>
-                      }
+                      </li>
+                    } @empty {
+                      <li class="state">No ratings yet.</li>
                     }
-                  </div>
-                </section>
+                  </ul>
+                }
+              </section>
 
-                <section class="activity-panel" aria-labelledby="recent-reviews-title">
-                  <header class="activity-panel-header">
-                    <div>
-                      <mat-icon>rate_review</mat-icon>
-                      <h3 id="recent-reviews-title">Recent reviews</h3>
-                    </div>
-                    <button mat-button type="button" (click)="selectTab(2)">View all</button>
-                  </header>
-                  <div class="activity-list">
-                    @if (activityReviewsState === 'loading') {
-                      <app-skeleton-loader variant="list" [count]="3" />
-                    } @else if (activityReviewsState === 'error') {
-                      <div class="activity-section-state">
-                        <p>Reviews couldn't be loaded.</p>
-                        <button mat-stroked-button type="button" (click)="loadRecentReviews()">Try again</button>
-                      </div>
-                    } @else {
-                      @for (review of activity.recentReviews; track review.id) {
-                        <a class="activity-item activity-review-item" [routerLink]="['/album', review.album.id]">
-                          <img [src]="review.album.cover_medium" [alt]="review.album.title">
-                          <div>
+              <section aria-labelledby="recent-reviews-title">
+                <h2 id="recent-reviews-title" class="section-title">
+                  Recent reviews <a href="#" (click)="$event.preventDefault(); selectTab(2)">See all</a>
+                </h2>
+                @if (activityReviewsState === 'loading') {
+                  <app-skeleton-loader variant="list" [count]="3" />
+                } @else if (activityReviewsState === 'error') {
+                  <p class="state">Reviews couldn't be loaded. <button type="button" (click)="loadRecentReviews()">Try again</button></p>
+                } @else {
+                  <ul class="row-list">
+                    @for (review of activity.recentReviews; track review.id) {
+                      <li>
+                        <a class="row" [routerLink]="['/album', review.album.id]">
+                          <img class="row-thumb" [src]="review.album.cover_medium" alt="">
+                          <span class="row-copy">
                             <strong>{{ review.album.title }}</strong>
-                            <span>{{ review.text }}</span>
-                          </div>
+                            <small>{{ review.text }}</small>
+                          </span>
                         </a>
-                      } @empty {
-                        <p class="activity-empty">
-                          {{ isOwnProfile ? 'You have no recent reviews yet.' : 'This user has no recent reviews yet.' }}
-                        </p>
-                      }
+                      </li>
+                    } @empty {
+                      <li class="state">No reviews yet.</li>
                     }
-                  </div>
-                </section>
+                  </ul>
+                }
+              </section>
 
-                <section class="activity-panel" aria-labelledby="recent-likes-title">
-                  <header class="activity-panel-header">
-                    <div>
-                      <mat-icon>favorite</mat-icon>
-                      <h3 id="recent-likes-title">Recently liked</h3>
-                    </div>
-                    <button mat-button type="button" (click)="selectTab(3)">View all</button>
-                  </header>
-                  <div class="activity-list">
-                    @if (activityLikesState === 'loading') {
-                      <app-skeleton-loader variant="list" [count]="3" />
-                    } @else if (activityLikesState === 'error') {
-                      <div class="activity-section-state">
-                        <p>Liked albums couldn't be loaded.</p>
-                        <button mat-stroked-button type="button" (click)="loadRecentLikes()">Try again</button>
-                      </div>
-                    } @else {
-                      @for (album of activity.recentLikes; track album.id) {
-                        <a class="activity-item" [routerLink]="['/album', album.id]">
-                          <img [src]="album.cover_medium" [alt]="album.title">
-                          <div>
+              <section aria-labelledby="recent-likes-title">
+                <h2 id="recent-likes-title" class="section-title">
+                  Recently liked <a href="#" (click)="$event.preventDefault(); selectTab(3)">See all</a>
+                </h2>
+                @if (activityLikesState === 'loading') {
+                  <app-skeleton-loader variant="list" [count]="3" />
+                } @else if (activityLikesState === 'error') {
+                  <p class="state">Liked albums couldn't be loaded. <button type="button" (click)="loadRecentLikes()">Try again</button></p>
+                } @else {
+                  <ul class="row-list">
+                    @for (album of activity.recentLikes; track album.id) {
+                      <li>
+                        <a class="row" [routerLink]="['/album', album.id]">
+                          <img class="row-thumb" [src]="album.cover_medium" alt="">
+                          <span class="row-copy">
                             <strong>{{ album.title }}</strong>
-                            <span>{{ album.artist.name }}</span>
-                          </div>
-                          <mat-icon class="activity-end-icon">favorite</mat-icon>
+                            <small>{{ album.artist.name }}</small>
+                          </span>
                         </a>
-                      } @empty {
-                        <p class="activity-empty">
-                          {{ isOwnProfile ? 'You have no recent likes yet.' : 'This user has no recent likes yet.' }}
-                        </p>
-                      }
+                      </li>
+                    } @empty {
+                      <li class="state">No liked albums yet.</li>
                     }
-                  </div>
-                </section>
+                  </ul>
+                }
+              </section>
 
-                <section class="activity-panel" aria-labelledby="recent-artists-title">
-                  <header class="activity-panel-header">
-                    <div>
-                      <mat-icon>person_add</mat-icon>
-                      <h3 id="recent-artists-title">Recently followed artists</h3>
-                    </div>
-                  </header>
-                  <div class="activity-list">
-                    @if (activityArtistsState === 'loading') {
-                      <app-skeleton-loader variant="list" [count]="3" />
-                    } @else if (activityArtistsState === 'error') {
-                      <div class="activity-section-state">
-                        <p>Followed artists couldn't be loaded.</p>
-                        <button mat-stroked-button type="button" (click)="loadRecentArtists()">Try again</button>
-                      </div>
-                    } @else {
-                      @for (artist of activity.recentArtists; track artist.id) {
-                        <a class="activity-item artist-activity-item" [routerLink]="['/artist', artist.id]">
-                          <img [src]="artist.picture_medium" [alt]="artist.name">
-                          <div>
+              <section aria-labelledby="recent-artists-title">
+                <h2 id="recent-artists-title" class="section-title">Followed artists</h2>
+                @if (activityArtistsState === 'loading') {
+                  <app-skeleton-loader variant="list" [count]="3" />
+                } @else if (activityArtistsState === 'error') {
+                  <p class="state">Followed artists couldn't be loaded. <button type="button" (click)="loadRecentArtists()">Try again</button></p>
+                } @else {
+                  <ul class="row-list">
+                    @for (artist of activity.recentArtists; track artist.id) {
+                      <li>
+                        <a class="row" [routerLink]="['/artist', artist.id]">
+                          <img class="row-thumb round" [src]="artist.picture_medium" alt="">
+                          <span class="row-copy">
                             <strong>{{ artist.name }}</strong>
-                            <span>
-                              {{ artist.followedAt ? ('Followed ' + (artist.followedAt | date:'MMM d, y')) : 'Followed artist' }}
-                            </span>
-                          </div>
-                          <mat-icon class="activity-end-icon">arrow_forward</mat-icon>
+                            @if (artist.followedAt) {
+                              <small>Followed {{ artist.followedAt | date:'d MMM y' }}</small>
+                            }
+                          </span>
                         </a>
-                      } @empty {
-                        <p class="activity-empty">
-                          {{ isOwnProfile ? 'You have no recently followed artists.' : 'This user has no recently followed artists.' }}
-                        </p>
-                      }
+                      </li>
+                    } @empty {
+                      <li class="state">No followed artists yet.</li>
                     }
-                  </div>
-                </section>
-              </div>
-            }
-          </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Ratings</span>
-            <span class="tab-count">{{ totalRatings | number }}</span>
-          </ng-template>
-
-          <div class="tab-content">
-            @if (ratingsState === 'loading') {
-              <app-skeleton-loader variant="cards" [count]="6" />
-            } @else if (ratingsState === 'error') {
-              <div class="tab-state compact-state">
-                <mat-icon>cloud_off</mat-icon>
-                <p>We couldn't load these ratings.</p>
-                <button mat-stroked-button type="button" (click)="loadRatedAlbums()">Try again</button>
-              </div>
-            } @else if (ratings$ | async; as ratings) {
-              <div class="ratings-grid">
-                @for (rating of ratings; track rating.album.id) {
-                  <div class="rating-item">
-                    <app-album-card [album]="rating.album"></app-album-card>
-                    <div class="rating-info">
-                      <app-star-rating [rating]="rating.rating" [readonly]="true"></app-star-rating>
-                    </div>
-                  </div>
-                } @empty {
-                  <p class="no-content-message grid-empty">
-                    {{ isOwnProfile ? "You haven't rated any albums yet." : "This user hasn't rated any albums yet." }}
-                  </p>
+                  </ul>
                 }
-              </div>
-              @if (totalRatings > ratingsPageSize) {
-                <mat-paginator class="custom-paginator" [length]="totalRatings"
-                  [pageSize]="ratingsPageSize" [pageIndex]="currentRatingsPage"
-                  [disabled]="isPaginatingRatings" (page)="onRatingsPageChange($event)">
-                </mat-paginator>
-              }
-              @if (isPaginatingRatings) {
-                <p class="pagination-status" role="status">Loading ratings…</p>
-              }
-            }
-          </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Reviews</span>
-            <span class="tab-count">{{ totalReviews | number }}</span>
-          </ng-template>
-
-          <div class="tab-content">
-            @if (reviewsState === 'loading') {
-              <app-skeleton-loader variant="cards" [count]="4" />
-            } @else if (reviewsState === 'error') {
-              <div class="tab-state compact-state">
-                <mat-icon>cloud_off</mat-icon>
-                <p>We couldn't load these reviews.</p>
-                <button mat-stroked-button type="button" (click)="loadReviews()">Try again</button>
-              </div>
-            } @else if (reviews$ | async; as reviews) {
-              <div class="reviews-list">
-                @for (review of reviews; track review.id) {
-                  <article class="profile-review-card">
-                    <a class="review-album-cover" [routerLink]="['/album', review.album.id]">
-                      <img [src]="review.album.cover_medium" [alt]="review.album.title">
-                    </a>
-                    <div class="review-body">
-                      <header>
-                        <div>
-                          <span>Review · {{ review.reviewDate | date:'MMM d, y' }}</span>
-                          <a [routerLink]="['/album', review.album.id]">{{ review.album.title }}</a>
-                          <small>{{ review.album.artist.name }}</small>
-                        </div>
-                        <app-star-rating [rating]="review.rating" [readonly]="true"></app-star-rating>
-                      </header>
-                      <p>{{ review.text }}</p>
-                    </div>
-                  </article>
-                } @empty {
-                  <div class="tab-state">
-                    <mat-icon>rate_review</mat-icon>
-                    <h2>No reviews yet</h2>
-                    <p>
-                      {{ isOwnProfile ? "You haven't written an album review yet." : "This user hasn't written an album review yet." }}
-                    </p>
-                  </div>
-                }
-              </div>
-              @if (totalReviews > reviewsPageSize) {
-                <mat-paginator class="custom-paginator" [length]="totalReviews"
-                  [pageSize]="reviewsPageSize" [pageIndex]="currentReviewsPage"
-                  [disabled]="isPaginatingReviews" (page)="onReviewsPageChange($event)">
-                </mat-paginator>
-              }
-              @if (isPaginatingReviews) {
-                <p class="pagination-status" role="status">Loading reviews…</p>
-              }
-            }
-          </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span>Likes</span>
-            <span class="tab-count">{{ totalLikedAlbums | number }}</span>
-          </ng-template>
-
-          <div class="tab-content">
-            @if (likedAlbumsState === 'loading') {
-              <app-skeleton-loader variant="cards" [count]="6" />
-            } @else if (likedAlbumsState === 'error') {
-              <div class="tab-state compact-state">
-                <mat-icon>cloud_off</mat-icon>
-                <p>We couldn't load these liked albums.</p>
-                <button mat-stroked-button type="button" (click)="loadLikedAlbums()">Try again</button>
-              </div>
-            } @else if (likedAlbums$ | async; as likedAlbums) {
-              <div class="album-grid">
-                @for (album of likedAlbums; track album.id) {
-                  <div class="album-card-container">
-                    <app-album-card [album]="album"></app-album-card>
-                    @if (isOwnProfile) {
-                      <button mat-icon-button class="like-button" title="Remove from likes"
-                        aria-label="Remove album from likes"
-                        [disabled]="removingLikedAlbumIds.size > 0 || isPaginatingLikedAlbums"
-                        (click)="unlikeAlbum(album.id, $event)">
-                        <mat-icon>favorite</mat-icon>
-                      </button>
-                    }
-                  </div>
-                } @empty {
-                  <p class="no-content-message grid-empty">
-                    {{ isOwnProfile ? "You haven't liked any albums yet." : "This user hasn't liked any albums yet." }}
-                  </p>
-                }
-              </div>
-              @if (totalLikedAlbums > likedAlbumsPageSize) {
-                <mat-paginator class="custom-paginator" [length]="totalLikedAlbums"
-                  [pageSize]="likedAlbumsPageSize" [pageIndex]="currentLikedAlbumsPage"
-                  [disabled]="isPaginatingLikedAlbums" (page)="onLikedAlbumsPageChange($event)">
-                </mat-paginator>
-              }
-              @if (isPaginatingLikedAlbums) {
-                <p class="pagination-status" role="status">Loading liked albums…</p>
-              }
-            }
-          </div>
-        </mat-tab>
-
-        @if (isOwnProfile) {
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <span>Listen Later</span>
-              <span class="tab-count">{{ totalListenLater | number }}</span>
-            </ng-template>
-
-            <div class="tab-content">
-              @if (listenLaterState === 'loading') {
-                <app-skeleton-loader variant="cards" [count]="6" />
-              } @else if (listenLaterState === 'error') {
-                <div class="tab-state compact-state">
-                  <mat-icon>cloud_off</mat-icon>
-                  <p>We couldn't load your Listen Later list.</p>
-                  <button mat-stroked-button type="button" (click)="loadListenLater()">Try again</button>
-                </div>
-              } @else if (listenLater$ | async; as listenLaterAlbums) {
-                <div class="album-grid">
-                  @for (album of listenLaterAlbums; track album.id) {
-                    <div class="album-card-container">
-                      <app-album-card [album]="album"></app-album-card>
-                      <button mat-icon-button class="listen-later-button" title="Remove from Listen Later"
-                        aria-label="Remove album from Listen Later"
-                        [disabled]="removingListenLaterAlbumIds.size > 0 || isPaginatingListenLater"
-                        (click)="removeFromListenLater(album.id, $event)">
-                        <mat-icon>bookmark_remove</mat-icon>
-                      </button>
-                    </div>
-                  } @empty {
-                    <p class="no-content-message grid-empty">You don't have albums in Listen Later yet.</p>
-                  }
-                </div>
-                @if (totalListenLater > listenLaterPageSize) {
-                  <mat-paginator class="custom-paginator" [length]="totalListenLater"
-                    [pageSize]="listenLaterPageSize" [pageIndex]="currentListenLaterPage"
-                    [disabled]="isPaginatingListenLater" (page)="onListenLaterPageChange($event)">
-                  </mat-paginator>
-                }
-                @if (isPaginatingListenLater) {
-                  <p class="pagination-status" role="status">Loading Listen Later…</p>
-                }
-              }
+              </section>
             </div>
-          </mat-tab>
-        }
-      </mat-tab-group>
-    </main>
+          }
+        </div>
+      </mat-tab>
+
+      <mat-tab [label]="'Ratings · ' + (totalRatings | number)">
+        <div class="tab-content">
+          @if (ratingsState === 'loading') {
+            <app-skeleton-loader variant="cards" [count]="6" />
+          } @else if (ratingsState === 'error') {
+            <p class="state">We couldn't load these ratings. <button type="button" (click)="loadRatedAlbums()">Try again</button></p>
+          } @else if (ratings$ | async; as ratings) {
+            <ul class="poster-grid">
+              @for (rating of ratings; track rating.album.id) {
+                <li>
+                  <app-album-card [album]="rating.album" />
+                  <app-star-rating class="poster-stars" [rating]="rating.rating" [readonly]="true" [label]="'Rated'" />
+                </li>
+              } @empty {
+                <li class="state">{{ isOwnProfile ? "You haven't rated any albums yet." : "No ratings yet." }}</li>
+              }
+            </ul>
+            @if (totalRatings > ratingsPageSize) {
+              <mat-paginator class="custom-paginator" [length]="totalRatings"
+                [pageSize]="ratingsPageSize" [pageIndex]="currentRatingsPage"
+                [disabled]="isPaginatingRatings" (page)="onRatingsPageChange($event)">
+              </mat-paginator>
+            }
+          }
+        </div>
+      </mat-tab>
+
+      <mat-tab [label]="'Reviews · ' + (totalReviews | number)">
+        <div class="tab-content">
+          @if (reviewsState === 'loading') {
+            <app-skeleton-loader variant="list" [count]="4" />
+          } @else if (reviewsState === 'error') {
+            <p class="state">We couldn't load these reviews. <button type="button" (click)="loadReviews()">Try again</button></p>
+          } @else if (reviews$ | async; as reviews) {
+            <ul class="row-list">
+              @for (review of reviews; track review.id) {
+                <li class="profile-review">
+                  <a class="profile-review-cover" [routerLink]="['/album', review.album.id]">
+                    <img [src]="review.album.cover_medium" [alt]="review.album.title">
+                  </a>
+                  <div class="profile-review-body">
+                    <div class="profile-review-header">
+                      <a [routerLink]="['/album', review.album.id]" class="album-title">{{ review.album.title }}</a>
+                      <span class="muted">{{ review.album.artist.name }}</span>
+                    </div>
+                    <div class="profile-review-header">
+                      <app-star-rating [rating]="review.rating" [readonly]="true" [label]="'Rated'" />
+                      <span class="muted">{{ review.reviewDate | date:'d MMM y' }}</span>
+                    </div>
+                    <p>{{ review.text }}</p>
+                  </div>
+                </li>
+              } @empty {
+                <li class="state">{{ isOwnProfile ? "You haven't written a review yet." : "No reviews yet." }}</li>
+              }
+            </ul>
+            @if (totalReviews > reviewsPageSize) {
+              <mat-paginator class="custom-paginator" [length]="totalReviews"
+                [pageSize]="reviewsPageSize" [pageIndex]="currentReviewsPage"
+                [disabled]="isPaginatingReviews" (page)="onReviewsPageChange($event)">
+              </mat-paginator>
+            }
+          }
+        </div>
+      </mat-tab>
+
+      <mat-tab [label]="'Likes · ' + (totalLikedAlbums | number)">
+        <div class="tab-content">
+          @if (likedAlbumsState === 'loading') {
+            <app-skeleton-loader variant="cards" [count]="6" />
+          } @else if (likedAlbumsState === 'error') {
+            <p class="state">We couldn't load these liked albums. <button type="button" (click)="loadLikedAlbums()">Try again</button></p>
+          } @else if (likedAlbums$ | async; as likedAlbums) {
+            <ul class="poster-grid">
+              @for (album of likedAlbums; track album.id) {
+                <li>
+                  <app-album-card [album]="album" />
+                  @if (isOwnProfile) {
+                    <button type="button" class="poster-action"
+                      [disabled]="removingLikedAlbumIds.size > 0 || isPaginatingLikedAlbums"
+                      (click)="unlikeAlbum(album.id, $event)">Unlike</button>
+                  }
+                </li>
+              } @empty {
+                <li class="state">{{ isOwnProfile ? "You haven't liked any albums yet." : "No liked albums yet." }}</li>
+              }
+            </ul>
+            @if (totalLikedAlbums > likedAlbumsPageSize) {
+              <mat-paginator class="custom-paginator" [length]="totalLikedAlbums"
+                [pageSize]="likedAlbumsPageSize" [pageIndex]="currentLikedAlbumsPage"
+                [disabled]="isPaginatingLikedAlbums" (page)="onLikedAlbumsPageChange($event)">
+              </mat-paginator>
+            }
+          }
+        </div>
+      </mat-tab>
+
+      @if (isOwnProfile) {
+        <mat-tab [label]="'Listen later · ' + (totalListenLater | number)">
+          <div class="tab-content">
+            @if (listenLaterState === 'loading') {
+              <app-skeleton-loader variant="cards" [count]="6" />
+            } @else if (listenLaterState === 'error') {
+              <p class="state">We couldn't load your Listen later list. <button type="button" (click)="loadListenLater()">Try again</button></p>
+            } @else if (listenLater$ | async; as listenLaterAlbums) {
+              <ul class="poster-grid">
+                @for (album of listenLaterAlbums; track album.id) {
+                  <li>
+                    <app-album-card [album]="album" />
+                    <button type="button" class="poster-action"
+                      [disabled]="removingListenLaterAlbumIds.size > 0 || isPaginatingListenLater"
+                      (click)="removeFromListenLater(album.id, $event)">Remove</button>
+                  </li>
+                } @empty {
+                  <li class="state">Your Listen later list is empty.</li>
+                }
+              </ul>
+              @if (totalListenLater > listenLaterPageSize) {
+                <mat-paginator class="custom-paginator" [length]="totalListenLater"
+                  [pageSize]="listenLaterPageSize" [pageIndex]="currentListenLaterPage"
+                  [disabled]="isPaginatingListenLater" (page)="onListenLaterPageChange($event)">
+                </mat-paginator>
+              }
+            }
+          </div>
+        </mat-tab>
+      }
+    </mat-tab-group>
   </div>
 } @else if (profileState === 'error') {
-  <div class="tab-state profile-load-error">
-    <mat-icon>cloud_off</mat-icon>
-    <h2>Profile unavailable</h2>
-    <p>We couldn't load this user's profile.</p>
-    <button mat-stroked-button type="button" (click)="loadProfile()">Try again</button>
+  <div class="page empty-state" role="alert">
+    <strong>Profile unavailable</strong>
+    <p>We couldn't load this profile. <button type="button" class="text-action" (click)="loadProfile()">Try again</button></p>
   </div>
 } @else {
   <app-skeleton-loader variant="profile" [count]="6" />

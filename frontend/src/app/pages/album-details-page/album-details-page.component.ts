@@ -8,8 +8,6 @@ import { AuthService } from '../../services/auth.service';
 import { AlbumReview } from '../../models/review.model';
 import { AudioService } from '../../services/audio.service';
 import { CommonModule, DecimalPipe, SlicePipe } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +18,6 @@ import { FormatDurationPipe } from '../../pipes/format-duration.pipe';
 import { RatingRequest } from '../../models/rating.model';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
 import { AlbumCoverDialogComponent } from '../../components/album-cover-dialog/album-cover-dialog.component';
-import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
 import { DeezerAlbum, DeezerContributor, DeezerTrack } from '../../models/deezer.model';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { FeedbackService } from '../../services/feedback.service';
@@ -37,10 +34,10 @@ interface AlbumParticipant {
   selector: 'app-album-details-page',
   standalone: true,
   imports: [
-    CommonModule, RouterLink, MatCardModule, MatTabsModule, MatIconModule,
+    CommonModule, RouterLink, MatIconModule,
     StarRatingComponent, MatButtonModule, MatDialogModule,
     ReviewListComponent, FormatDurationPipe,
-    DecimalPipe, SlicePipe, SkeletonLoaderComponent, DeezerButtonComponent
+    DecimalPipe, SlicePipe, SkeletonLoaderComponent
   ],
   templateUrl: './album-details-page.component.html',
   styleUrl: './album-details-page.component.css',
@@ -49,10 +46,8 @@ interface AlbumParticipant {
 export class AlbumDetailsPageComponent implements OnInit {
   private albumDetailsSubject = new BehaviorSubject<AlbumDetails | null>(null);
   private trackRatingsById = new Map<string, number>();
-  private accentColorRequest = 0;
   albumDetails$ = this.albumDetailsSubject.asObservable();
   albumId!: string;
-  albumAccentColor = 'var(--accent-color)';
   albumContributors: AlbumParticipant[] = [];
   deletingReviewIds: ReadonlySet<number> = new Set<number>();
   isSavingReview = false;
@@ -373,7 +368,6 @@ export class AlbumDetailsPageComponent implements OnInit {
     );
     this.albumContributors = this.collectAlbumContributors(details.deezerDetails);
     this.albumDetailsSubject.next(details);
-    this.updateAlbumAccent(this.getAlbumCover(details));
   }
 
   private collectAlbumContributors(album: DeezerAlbum): AlbumParticipant[] {
@@ -462,67 +456,5 @@ export class AlbumDetailsPageComponent implements OnInit {
     }
 
     return [...new Set(names)];
-  }
-
-  private updateAlbumAccent(coverUrl: string): void {
-    const request = ++this.accentColorRequest;
-    this.albumAccentColor = 'var(--accent-color)';
-    const image = new Image();
-    image.crossOrigin = 'anonymous';
-    image.decoding = 'async';
-
-    image.onload = () => {
-      if (request !== this.accentColorRequest) return;
-
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 40;
-        canvas.height = 40;
-        const context = canvas.getContext('2d', { willReadFrequently: true });
-        if (!context) return;
-
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-        const buckets = new Map<number, { count: number; red: number; green: number; blue: number }>();
-
-        for (let index = 0; index < pixels.length; index += 16) {
-          const red = pixels[index];
-          const green = pixels[index + 1];
-          const blue = pixels[index + 2];
-          const alpha = pixels[index + 3];
-          const brightness = (red * 299 + green * 587 + blue * 114) / 1000;
-
-          if (alpha < 180 || brightness < 24 || brightness > 232) continue;
-
-          const key = (red >> 5) << 6 | (green >> 5) << 3 | (blue >> 5);
-          const bucket = buckets.get(key) ?? { count: 0, red: 0, green: 0, blue: 0 };
-          bucket.count++;
-          bucket.red += red;
-          bucket.green += green;
-          bucket.blue += blue;
-          buckets.set(key, bucket);
-        }
-
-        const dominant = [...buckets.values()].sort((left, right) => right.count - left.count)[0];
-        if (!dominant) return;
-
-        const red = Math.round(dominant.red / dominant.count);
-        const green = Math.round(dominant.green / dominant.count);
-        const blue = Math.round(dominant.blue / dominant.count);
-        this.albumAccentColor = `rgb(${red}, ${green}, ${blue})`;
-        this.changeDetectorRef.markForCheck();
-      } catch {
-        this.albumAccentColor = 'var(--accent-color)';
-        this.changeDetectorRef.markForCheck();
-      }
-    };
-
-    image.onerror = () => {
-      if (request !== this.accentColorRequest) return;
-      this.albumAccentColor = 'var(--accent-color)';
-      this.changeDetectorRef.markForCheck();
-    };
-
-    image.src = coverUrl;
   }
 }

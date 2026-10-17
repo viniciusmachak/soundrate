@@ -21,13 +21,11 @@
     align-items: center;
     gap: 32px;
     width: 100%;
-    min-height: 96px;
-    padding: 12px 24px 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    min-height: 72px;
+    padding: 8px 24px 12px;
+    border-top: 1px solid var(--divider);
     box-sizing: border-box;
-    background-color: rgba(20, 24, 28, 0.97);
-    box-shadow: 0 -12px 36px rgba(0, 0, 0, 0.42);
-    backdrop-filter: blur(18px);
+    background-color: var(--background-dark);
     animation: player-enter 0.28s ease-out;
 }
 
@@ -39,12 +37,11 @@
 }
 
 .track-cover {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     object-fit: cover;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
 .track-details {
@@ -273,6 +270,7 @@
 
 .track-progress-slider::-webkit-slider-runnable-track {
     height: 4px;
+    /* Hard-stop fill shows playback progress (functional, not decorative). */
     background: linear-gradient(
         to right,
         var(--accent-color) 0,
@@ -326,16 +324,15 @@
 .queue-panel {
     position: fixed;
     right: 16px;
-    bottom: 108px;
+    bottom: 84px;
     z-index: 2001;
     display: flex;
     width: min(430px, calc(100vw - 32px));
     max-height: min(520px, calc(100vh - 140px));
     flex-direction: column;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    background-color: #14181c;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius);
+    background-color: var(--surface-dark);
     overflow: hidden;
 }
 

@@ -34,7 +34,7 @@
             <p class="auth-error" role="alert" aria-live="polite">{{ errorMessage }}</p>
           }
 
-          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading"
+          <button mat-flat-button type="submit" [disabled]="loginForm.invalid || isLoading"
             class="full-width auth-submit">
             @if (isLoading) {
               <mat-spinner diameter="20"></mat-spinner>

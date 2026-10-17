@@ -1,27 +1,23 @@
-<div class="page-container">
-  <h1>Listen Later</h1>
-  <p class="page-subtitle">Albums you saved to explore</p>
+<div class="page">
+  <h1>Listen later</h1>
+  <p class="muted subtitle">Albums you saved to explore.</p>
 
   @if (isLoading) {
-    <app-skeleton-loader variant="cards" [count]="8" />
-  }
-
-  @if (!isLoading) {
-    <div>
-      @if ((albums$ | async); as albums) {
-        <div class="album-grid">
-          @for (album of albums; track album.id) {
-            <app-album-card [album]="album"></app-album-card>
-          } @empty {
-            <p class="info-message grid-empty">Your Listen Later list is empty.</p>
-          }
-        </div>
-      }
-      @if (totalAlbums > pageSize) {
-        <mat-paginator [length]="totalAlbums" [pageSize]="pageSize"
-          [pageIndex]="currentPage" (page)="onPageChange($event)">
-        </mat-paginator>
-      }
-    </div>
+    <app-skeleton-loader variant="cards" [count]="12" />
+  } @else {
+    @if ((albums$ | async); as albums) {
+      <ul class="poster-grid">
+        @for (album of albums; track album.id) {
+          <li><app-album-card [album]="album" /></li>
+        } @empty {
+          <li class="empty-state grid-empty">Your Listen later list is empty.</li>
+        }
+      </ul>
+    }
+    @if (totalAlbums > pageSize) {
+      <mat-paginator [length]="totalAlbums" [pageSize]="pageSize"
+        [pageIndex]="currentPage" (page)="onPageChange($event)">
+      </mat-paginator>
+    }
   }
 </div>

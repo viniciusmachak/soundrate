@@ -4,13 +4,11 @@ import { Observable, combineLatest, concat, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SearchResult } from '../../models/search-result.model';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AlbumCardComponent } from '../../components/album-card/album-card.component';
 import { ArtistCardComponent } from '../../components/artist-card/artist-card.component';
-import { HomeFeaturesComponent } from '../../components/home-features/home-features.component';
 import { UserCardComponent } from '../../components/user-card/user-card.component';
 import { AlbumDashboard } from '../../models/album-details.model';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
@@ -28,14 +26,20 @@ interface SearchState {
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, RouterLink,
-    MatIconModule, AlbumCardComponent, ArtistCardComponent, UserCardComponent,
-    HomeFeaturesComponent, MatButtonModule, MatButtonToggleModule, SkeletonLoaderComponent,
+    AlbumCardComponent, ArtistCardComponent, UserCardComponent,
+    MatButtonModule, SkeletonLoaderComponent,
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
 })
 export class HomePageComponent implements OnInit {
-  filterControl = new FormControl<'all' | 'album' | 'artist' | 'user'>('all');
+  filterControl = new FormControl<'all' | 'album' | 'artist' | 'user'>('all', { nonNullable: true });
+  readonly filters = [
+    { value: 'all', label: 'All' },
+    { value: 'album', label: 'Albums' },
+    { value: 'artist', label: 'Artists' },
+    { value: 'user', label: 'Members' }
+  ] as const;
 
   resultsData$!: Observable<{
     isLoading: boolean;
@@ -49,7 +53,8 @@ export class HomePageComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public authService: AuthService
   ) { }
 
   resultKey(result: SearchResult): string {

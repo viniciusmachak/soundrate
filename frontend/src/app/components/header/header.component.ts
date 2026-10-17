@@ -4,6 +4,7 @@ import { Component, HostListener } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink } from '@angular/router';
@@ -11,7 +12,6 @@ import { concat, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SearchResult } from '../../models/search-result.model';
 import { User } from '../../models/user.model';
-import { UserRating } from '../../models/user-rating.model';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackService } from '../../services/feedback.service';
@@ -20,12 +20,6 @@ interface HeaderSearchState {
   isLoading: boolean;
   query: string;
   results: SearchResult[];
-  error: boolean;
-}
-
-interface RecentRatingsState {
-  isLoading: boolean;
-  ratings: UserRating[];
   error: boolean;
 }
 
@@ -39,6 +33,7 @@ interface RecentRatingsState {
     RouterLink,
     MatToolbarModule,
     MatIconModule,
+    MatMenuModule,
     MatButtonModule,
     MatProgressSpinnerModule
   ],
@@ -47,10 +42,8 @@ interface RecentRatingsState {
 })
 export class HeaderComponent {
   currentUser$: Observable<User | null>;
-  recentRatingsState$: Observable<RecentRatingsState>;
   searchControl = new FormControl('', { nonNullable: true });
   searchState$: Observable<HeaderSearchState>;
-  readonly ratingStars = [1, 2, 3, 4, 5];
   isSearchFocused = false;
   activeSearchIndex = -1;
   isSidebarOpen = false;
@@ -72,31 +65,6 @@ export class HeaderComponent {
     private feedback: FeedbackService
   ) {
     this.currentUser$ = this.authService.currentUser$;
-    this.recentRatingsState$ = this.currentUser$.pipe(
-      switchMap(user => user
-        ? concat(
-          of<RecentRatingsState>({ isLoading: true, ratings: [], error: false }),
-          this.apiService.getRatedAlbums(user.username, 0, 5).pipe(
-            map(page => ({
-              isLoading: false,
-              ratings: page.content
-                .slice()
-                .sort((a, b) => Date.parse(b.ratingDate) - Date.parse(a.ratingDate))
-                .slice(0, 5),
-              error: false
-            })),
-            catchError(() => of<RecentRatingsState>({
-              isLoading: false,
-              ratings: [],
-              error: true
-            }))
-          )
-        )
-        : of<RecentRatingsState>({ isLoading: false, ratings: [], error: false })
-      ),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
-
     this.searchState$ = this.searchControl.valueChanges.pipe(
       startWith(''),
       map(query => query.trim()),

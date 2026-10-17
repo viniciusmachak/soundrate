@@ -1,168 +1,95 @@
-.review-list-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding-top: 1rem;
-}
-
-.review-header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  gap: 16px;
-  margin: 0 16px;
-}
-
-.review-item {
-  overflow: visible;
-  background: transparent;
-
-  .review-item-header {
-    display: flex;
-    align-items: center;
-    padding-top: 16px;
-    padding-inline: 16px;
-  }
-
-  .review-content p {
-    margin: 0;
-    padding: 18px 16px 12px;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-  }
-
-  .review-title {
-    margin: 0;
-    min-width: 0;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .review-title a {
-    color: var(--primary-text);
-    text-decoration: none;
-    overflow-wrap: anywhere;
-  }
-
-  .review-title a:hover,
-  .review-title a:focus-visible {
-    color: var(--primary-text);
-    text-decoration: underline;
-  }
-}
-
-.review-item:not(:last-of-type) {
-  border-bottom: 1px solid color-mix(in srgb, var(--accent-color) 38%, transparent);
-}
-
-.review-info {
-  min-width: 0;
-}
-
-.review-date {
-  color: var(--secondary-text);
-  font-size: 0.82rem;
-}
-
-.user-avatar-link {
+:host {
   display: block;
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
-  overflow: hidden;
-  border: 2px solid var(--accent-color);
-  border-radius: 50%;
-  line-height: 0;
+}
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+.review {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.review:first-child {
+  padding-top: 4px;
+}
+
+.review-avatar {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.review-avatar img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.review-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-height: 32px;
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+}
+
+.review-byline a {
+  color: var(--primary-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.review-byline a:hover {
+  text-decoration: underline;
 }
 
 .review-menu-trigger {
-  flex-shrink: 0;
-  color: color-mix(in srgb, var(--accent-color) 65%, white);
-
-  &:hover {
-    background-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
-  }
-}
-
-.no-reviews-message {
-  margin: 0;
-  padding: 2rem;
+  margin-left: auto;
   color: var(--secondary-text);
-  text-align: center;
-  font-style: italic;
 }
 
-.review-actions {
-  display: flex;
+.review-text {
+  margin: 8px 0 12px;
+  color: var(--primary-text);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.like-button {
+  display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0 16px 8px;
-
-  button {
-    color: var(--secondary-text);
-  }
-
-  button:not(:disabled):hover {
-    background-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
-    color: var(--primary-text);
-  }
-
-  button.liked {
-    color: var(--warn-color);
-  }
-
-  span {
-    color: var(--secondary-text);
-    font-size: 0.9rem;
-  }
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--secondary-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--fs-small);
 }
 
-@media (max-width: 620px) {
-  .review-item .review-item-header {
-    display: grid;
-    grid-template-columns: 40px minmax(0, 1fr) 40px;
-    align-items: start;
-    gap: 10px;
-    padding-inline: 12px;
-  }
-
-  .review-header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    margin: 0;
-  }
-
-  .review-item .review-content p {
-    padding-inline: 12px;
-  }
-
-  .review-actions {
-    padding-inline: 8px;
-  }
-
-  .review-header-content app-star-rating {
-    max-width: 100%;
-  }
+.like-button:hover:not(:disabled) {
+  color: var(--primary-text);
 }
 
-@media (max-width: 380px) {
-  .review-item .review-item-header {
-    grid-template-columns: 36px minmax(0, 1fr) 36px;
-    gap: 8px;
-  }
+.like-button:disabled {
+  cursor: default;
+}
 
-  .user-avatar-link {
-    width: 36px;
-    height: 36px;
-    flex-basis: 36px;
-  }
+.like-button mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.like-button.liked mat-icon {
+  color: var(--accent-color);
 }

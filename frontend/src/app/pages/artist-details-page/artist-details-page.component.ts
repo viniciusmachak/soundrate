@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, shareReplay, switchMap, tap } from 'rxjs';
 import { ApiService } from '../../services/api.service';
@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { PageEvent } from '@angular/material/paginator';
 import { ArtistPage } from '../../models/artist-page.model';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
-import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../services/auth.service';
 import { AudioService } from '../../services/audio.service';
@@ -41,8 +40,7 @@ type DiscographyDirection = 'asc' | 'desc';
     MatIconModule,
     MatPaginatorModule,
     MatButtonModule,
-    SkeletonLoaderComponent,
-    DeezerButtonComponent
+    SkeletonLoaderComponent
   ],
   templateUrl: './artist-details-page.component.html',
   styleUrl: './artist-details-page.component.css'
@@ -56,12 +54,16 @@ export class ArtistDetailsPageComponent implements OnInit {
     sort: 'popularity',
     direction: 'desc'
   });
-  private accentColorRequest = 0;
-  artistAccentColor = 'var(--accent-color)';
   isFollowed = false;
   followersCount = 0;
   followRequestPending = false;
   selectedCategory: DiscographyCategory = 'popular';
+  readonly categories: { value: DiscographyCategory; label: string }[] = [
+    { value: 'popular', label: 'Popular' },
+    { value: 'albums', label: 'Albums' },
+    { value: 'singles', label: 'Singles & EPs' },
+    { value: 'compilations', label: 'Compilations' }
+  ];
   selectedSort: DiscographySort = 'popularity';
   selectedDirection: DiscographyDirection = 'desc';
 
@@ -71,8 +73,7 @@ export class ArtistDetailsPageComponent implements OnInit {
     public authService: AuthService,
     public audioService: AudioService,
     private feedback: FeedbackService,
-    private destroyRef: DestroyRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private destroyRef: DestroyRef
   ) { }
 
   ngOnInit(): void {
@@ -102,7 +103,6 @@ export class ArtistDetailsPageComponent implements OnInit {
           tap(page => {
             this.isFollowed = page.isFollowedByCurrentUser;
             this.followersCount = page.followersCount;
-            this.updateArtistAccent(page.artistDetails.picture_xl);
           })
         );
       }),
@@ -250,61 +250,5 @@ export class ArtistDetailsPageComponent implements OnInit {
       sort: this.selectedSort,
       direction: this.selectedDirection
     });
-  }
-
-  private updateArtistAccent(imageUrl: string): void {
-    const request = ++this.accentColorRequest;
-    this.artistAccentColor = 'var(--accent-color)';
-    if (!imageUrl) return;
-
-    const image = new Image();
-    image.crossOrigin = 'anonymous';
-    image.decoding = 'async';
-
-    image.onload = () => {
-      if (request !== this.accentColorRequest) return;
-
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 40;
-        canvas.height = 40;
-        const context = canvas.getContext('2d', { willReadFrequently: true });
-        if (!context) return;
-
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-        const buckets = new Map<number, { count: number; red: number; green: number; blue: number }>();
-
-        for (let index = 0; index < pixels.length; index += 16) {
-          const red = pixels[index];
-          const green = pixels[index + 1];
-          const blue = pixels[index + 2];
-          const alpha = pixels[index + 3];
-          const brightness = (red * 299 + green * 587 + blue * 114) / 1000;
-          if (alpha < 180 || brightness < 24 || brightness > 232) continue;
-
-          const key = (red >> 5) << 6 | (green >> 5) << 3 | (blue >> 5);
-          const bucket = buckets.get(key) ?? { count: 0, red: 0, green: 0, blue: 0 };
-          bucket.count++;
-          bucket.red += red;
-          bucket.green += green;
-          bucket.blue += blue;
-          buckets.set(key, bucket);
-        }
-
-        const dominant = [...buckets.values()].sort((left, right) => right.count - left.count)[0];
-        if (!dominant) return;
-
-        this.artistAccentColor = `rgb(${Math.round(dominant.red / dominant.count)}, ${Math.round(dominant.green / dominant.count)}, ${Math.round(dominant.blue / dominant.count)})`;
-        this.changeDetectorRef.markForCheck();
-      } catch {
-        this.artistAccentColor = 'var(--accent-color)';
-      }
-    };
-
-    image.onerror = () => {
-      if (request === this.accentColorRequest) this.artistAccentColor = 'var(--accent-color)';
-    };
-    image.src = imageUrl;
   }
 }

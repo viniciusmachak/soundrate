@@ -1,104 +1,24 @@
-<div class="about-page">
-  <section class="hero-section" aria-labelledby="about-title">
-    <div class="section-shell hero-layout">
-      <div class="hero-copy">
-        <span class="eyebrow hero-eyebrow">About Soundrate</span>
-        <h1 id="about-title">Every album that stays with you, in one place.</h1>
-        <p>
-          Soundrate turns music discovery into memory. Explore the Deezer catalog, keep an
-          honest record of what you hear and connect through the albums worth talking about.
-        </p>
+<div class="page about">
+  <h1>About Soundrate</h1>
+  <p class="lead">
+    Soundrate is a music diary. Explore the Deezer catalog, rate albums and tracks, write
+    reviews and see what the people you follow are listening to.
+  </p>
+
+  <dl class="features">
+    @for (feature of features; track feature.title) {
+      <div>
+        <dt>{{ feature.title }}</dt>
+        <dd>{{ feature.description }}</dd>
       </div>
+    }
+  </dl>
 
-      <figure class="deezer-partner">
-        <span>Music catalog powered by</span>
-        <img src="/deezer-logo.jpeg" alt="Deezer" />
-      </figure>
-    </div>
-  </section>
-
-  <section class="features-section" aria-labelledby="features-title">
-    <div class="section-shell">
-      <header class="section-heading features-heading">
-        <span class="eyebrow">Made for listeners</span>
-        <h2 id="features-title">What can you do on Soundrate?</h2>
-        <p>From the first discovery to the review you come back to years later.</p>
-      </header>
-
-      <div class="feature-list">
-        @for (feature of features; track feature.title) {
-          <article class="feature-item" [class.feature-item-reversed]="feature.reversed">
-            <div class="feature-media">
-              <div class="feature-placeholder" aria-hidden="true">
-                <mat-icon>{{ feature.icon }}</mat-icon>
-              </div>
-              <img
-                [src]="feature.image"
-                [alt]="feature.imageAlt"
-                loading="lazy"
-                (error)="hideUnavailableImage($event)"
-              />
-              <span class="feature-number" aria-hidden="true">0{{ $index + 1 }}</span>
-            </div>
-
-            <div class="feature-copy">
-              <span class="eyebrow">{{ feature.label }}</span>
-              <h3>{{ feature.title }}</h3>
-              <p>{{ feature.description }}</p>
-            </div>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="technologies-section" aria-labelledby="technologies-title">
-    <div class="section-shell">
-      <header class="section-heading technologies-heading">
-        <span class="eyebrow">Under the hood</span>
-        <h2 id="technologies-title">The technology behind Soundrate.</h2>
-        <p>A full-stack project built with a modern, production-ready toolset.</p>
-        <button type="button" class="marquee-toggle"
-          [attr.aria-pressed]="isTechnologyMarqueePaused"
-          (click)="toggleTechnologyMarquee()">
-          <mat-icon aria-hidden="true">{{ isTechnologyMarqueePaused ? 'play_arrow' : 'pause' }}</mat-icon>
-          <span>{{ isTechnologyMarqueePaused ? 'Resume technologies' : 'Pause technologies' }}</span>
-        </button>
-      </header>
-    </div>
-
-    <div class="technology-marquee" aria-label="Technologies used by Soundrate">
-      <div class="technology-track" [class.is-paused]="isTechnologyMarqueePaused">
-        <ul class="technology-group">
-          @for (technology of technologies; track technology.name) {
-            <li class="technology-card">
-              <span class="technology-logo">
-                <img
-                  [src]="technology.image"
-                  [alt]="technology.name"
-                  loading="lazy"
-                  (error)="hideUnavailableImage($event)"
-                />
-              </span>
-            </li>
-          }
-        </ul>
-
-        <ul class="technology-group" aria-hidden="true">
-          @for (technology of technologies; track technology.name) {
-            <li class="technology-card">
-              <span class="technology-logo">
-                <img
-                  [src]="technology.image"
-                  alt=""
-                  loading="lazy"
-                  (error)="hideUnavailableImage($event)"
-                />
-              </span>
-            </li>
-          }
-        </ul>
-      </div>
-    </div>
-  </section>
+  <p class="muted credits">
+    Built with
+    @for (technology of technologies; track technology.name; let last = $last) {
+      {{ technology.name }}{{ last ? '.' : ', ' }}
+    }
+    Music data provided by <a href="https://www.deezer.com/" target="_blank" rel="noopener noreferrer">Deezer</a>.
+  </p>
 </div>

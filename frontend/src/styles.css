@@ -1,12 +1,340 @@
+/* ---------------------------------------------------------------------------
+   Soundrate visual system
+   Flat and quiet: one background, one surface, 1px dividers, a single accent.
+   No shadows, gradients or decorative badges.
+--------------------------------------------------------------------------- */
+
 :root {
-  --background-dark: #0c0e10;
-  --surface-dark: #14181c;
-  --primary-text: #e1e3e5;
-  --secondary-text: #9ab;
+  --background-dark: #0e0f11;
+  --surface-dark: #181a1e;
+  --surface-hover: rgba(255, 255, 255, 0.05);
+  --divider: rgba(255, 255, 255, 0.08);
+  --primary-text: #eceef1;
+  --secondary-text: #8d949e;
   --accent-color: #7066ff;
   --on-accent: #fff;
-  --warn-color: #f44336;
+  --warn-color: #f05252;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --fs-display: clamp(2rem, 5vw, 3.5rem);
+  --fs-h1: 1.5rem;
+  --fs-h2: 1.125rem;
+  --fs-body: 0.9375rem;
+  --fs-small: 0.8125rem;
+
+  --radius-sm: 3px;
+  --radius: 6px;
+  --page-max: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+
+  /* Angular Material: flat, on-brand defaults */
+  --mat-sys-primary: var(--accent-color);
+  --mat-sys-on-primary: var(--on-accent);
+  --mat-sys-surface: var(--background-dark);
+  --mat-sys-surface-container: var(--surface-dark);
+  --mat-sys-surface-container-low: var(--surface-dark);
+  --mat-sys-surface-container-high: var(--surface-dark);
+  --mat-sys-surface-container-highest: var(--surface-dark);
+  --mat-sys-on-surface: var(--primary-text);
+  --mat-sys-on-surface-variant: var(--secondary-text);
+  --mat-sys-outline: rgba(255, 255, 255, 0.24);
+  --mat-sys-outline-variant: var(--divider);
+  --mat-sys-error: var(--warn-color);
+  --mat-sys-level0: none;
+  --mat-sys-level1: none;
+  --mat-sys-level2: none;
+  --mat-sys-level3: none;
+  --mat-sys-level4: none;
+  --mat-sys-level5: none;
+  --mat-sys-body-large-font: var(--font-sans);
+  --mat-sys-body-medium-font: var(--font-sans);
+  --mat-sys-body-small-font: var(--font-sans);
+  --mat-sys-label-large-font: var(--font-sans);
+  --mat-sys-label-medium-font: var(--font-sans);
+  --mat-sys-label-small-font: var(--font-sans);
+  --mat-sys-title-large-font: var(--font-sans);
+  --mat-sys-title-medium-font: var(--font-sans);
+  --mat-sys-title-small-font: var(--font-sans);
+  --mat-sys-headline-large-font: var(--font-sans);
+  --mat-sys-headline-medium-font: var(--font-sans);
+  --mat-sys-headline-small-font: var(--font-sans);
+  --mat-button-filled-container-color: var(--accent-color);
+  --mat-button-filled-label-text-color: var(--on-accent);
+  --mat-button-protected-container-color: var(--accent-color);
+  --mat-button-protected-label-text-color: var(--on-accent);
+  --mat-button-outlined-label-text-color: var(--primary-text);
+  --mat-button-outlined-outline-color: rgba(255, 255, 255, 0.24);
+  --mat-button-text-label-text-color: var(--primary-text);
+  --mat-icon-button-icon-color: var(--secondary-text);
+  --mat-button-filled-label-text-tracking: 0;
+  --mat-button-outlined-label-text-tracking: 0;
+  --mat-button-text-label-text-tracking: 0;
+  --mat-button-protected-label-text-tracking: 0;
+  --mat-tab-label-text-tracking: 0;
+  --mat-button-filled-container-shape: 999px;
+  --mat-button-outlined-container-shape: 999px;
+  --mat-button-text-container-shape: 999px;
+  --mat-button-protected-container-shape: 999px;
+  --mat-dialog-container-shape: var(--radius);
+  --mat-menu-container-shape: var(--radius);
+  --mat-menu-container-color: var(--surface-dark);
+  --mat-snack-bar-container-shape: var(--radius);
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  background-color: var(--background-dark);
+  color: var(--primary-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+mat-spinner,
+mat-progress-spinner {
+  --mat-progress-spinner-active-indicator-color: var(--accent-color);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Layout primitives shared by pages
+--------------------------------------------------------------------------- */
+
+.page {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 40px var(--gutter) 72px;
+  box-sizing: border-box;
+}
+
+.page-section + .page-section {
+  margin-top: 48px;
+}
+
+.section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.section-title a {
+  color: var(--secondary-text);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: none;
+}
+
+.section-title a:hover {
+  color: var(--primary-text);
+}
+
+.muted {
+  color: var(--secondary-text);
+}
+
+/* Letterboxd-style poster grid */
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 28px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 520px) {
+  .poster-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 10px;
+  }
+}
+
+/* Spotify-style row list */
+.row-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
+}
+
+.row:hover {
+  background-color: var(--surface-hover);
+}
+
+.row-index {
+  width: 24px;
+  flex-shrink: 0;
+  color: var(--secondary-text);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.row-thumb {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+.row-thumb.round {
+  border-radius: 50%;
+}
+
+.row-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.row-copy strong,
+.row-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-copy strong {
+  font-weight: 500;
+}
+
+.row-copy small {
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+}
+
+.row-meta {
+  flex-shrink: 0;
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Text tabs */
+.text-tabs {
+  display: flex;
+  gap: 24px;
+  margin: 0 0 24px;
+  padding: 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--divider);
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.text-tabs button,
+.text-tabs a {
+  margin-bottom: -1px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--secondary-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.text-tabs button:hover,
+.text-tabs a:hover {
+  color: var(--primary-text);
+}
+
+.text-tabs .active,
+.text-tabs [aria-selected='true'] {
+  border-bottom-color: var(--accent-color);
+  color: var(--primary-text);
+}
+
+.text-tabs .count {
+  margin-left: 6px;
+  color: var(--secondary-text);
+  font-weight: 400;
+}
+
+/* Empty states */
+.empty-state {
+  padding: 48px 0;
+  color: var(--secondary-text);
+  text-align: center;
+}
+
+.empty-state strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--primary-text);
+  font-weight: 500;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Material tabs, menus, dialogs, snackbar, paginator
+--------------------------------------------------------------------------- */
 
 .mat-mdc-tab-group,
 .mat-mdc-tab-nav-bar {
@@ -19,38 +347,67 @@
   --mat-tab-active-indicator-color: var(--accent-color);
   --mat-tab-active-focus-indicator-color: var(--accent-color);
   --mat-tab-active-hover-indicator-color: var(--accent-color);
-  --mat-tab-active-ripple-color: var(--accent-color);
-  --mat-tab-inactive-ripple-color: var(--accent-color);
+  --mat-tab-active-ripple-color: transparent;
+  --mat-tab-inactive-ripple-color: transparent;
+  --mat-tab-divider-color: var(--divider);
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  overflow-x: clip;
+.mat-mdc-menu-panel {
+  border: 1px solid var(--divider);
+  background-color: var(--surface-dark) !important;
+  box-shadow: none !important;
 }
 
-body {
-  font-family: GraphikWeb, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  background-color: var(--background-dark);
+.mat-mdc-menu-item:hover:not([disabled]) {
+  background-color: var(--surface-hover) !important;
+}
+
+.review-actions-menu .review-delete-action,
+.review-actions-menu .review-delete-action mat-icon {
+  color: var(--warn-color);
+}
+
+.mdc-dialog__surface {
+  box-shadow: none !important;
+}
+
+.user-list-dialog .mat-mdc-dialog-container .mdc-dialog__surface,
+.review-dialog-container .mat-mdc-dialog-container .mdc-dialog__surface {
+  border: 1px solid var(--divider);
+  background-color: var(--surface-dark);
   color: var(--primary-text);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
-mat-spinner,
-mat-progress-spinner {
-  --mat-progress-spinner-active-indicator-color: var(--accent-color);
+.review-confirmation-dialog [mat-dialog-title] {
+  margin: 0;
+  padding: 24px 24px 8px;
+  color: var(--primary-text);
 }
 
-:where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 3px solid var(--accent-color);
-  outline-offset: 3px;
+.review-confirmation-dialog [mat-dialog-content] {
+  padding: 8px 24px 16px;
+  color: var(--secondary-text);
+}
+
+.review-confirmation-dialog [mat-dialog-content] p {
+  margin: 0;
+}
+
+.review-confirmation-dialog [mat-dialog-actions] {
+  gap: 8px;
+  padding: 8px 24px 20px;
+}
+
+.image-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: transparent !important;
+  border-radius: var(--radius-sm);
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .soundrate-feedback-panel {
-  --mdc-snackbar-container-color: transparent;
-  --mdc-snackbar-supporting-text-color: var(--primary-text);
   margin: 0 12px 16px !important;
 }
 
@@ -58,15 +415,15 @@ mat-progress-spinner {
   min-width: 0 !important;
   max-width: none !important;
   padding: 0 !important;
-  overflow: hidden;
-  border: 1px solid var(--accent-color);
-  border-radius: 15px !important;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius) !important;
   background: var(--surface-dark) !important;
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.52) !important;
+  box-shadow: none !important;
 }
 
 .soundrate-feedback-panel .mat-mdc-snack-bar-label {
   padding: 0 !important;
+  color: var(--primary-text) !important;
 }
 
 @media (max-width: 520px) {
@@ -75,517 +432,19 @@ mat-progress-spinner {
   }
 }
 
-.image-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 4px;
-}
-
-.user-list-dialog,
-.review-dialog-container {
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    background-color: var(--background-dark);
-  }
-}
-
-.review-dialog-container .mat-mdc-dialog-container .mdc-dialog__surface {
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--accent-color) 72%, transparent);
-  border-radius: 16px;
-  background: var(--background-dark);
-  color: var(--primary-text);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
-}
-
-.review-actions-menu.mat-mdc-menu-panel {
-  --mat-menu-container-color: var(--surface-dark);
-  min-width: 180px;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--accent-color) 70%, transparent);
-  border-radius: 12px;
-  background-color: var(--surface-dark);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
-}
-
-.review-actions-menu .mat-mdc-menu-content {
-  padding: 6px;
-  background: var(--surface-dark);
-}
-
-.review-actions-menu .mat-mdc-menu-item {
-  min-height: 44px;
-  border-radius: 8px;
-  color: var(--primary-text);
-}
-
-.review-actions-menu .mat-mdc-menu-item:hover,
-.review-actions-menu .mat-mdc-menu-item:focus-visible {
-  background-color: color-mix(in srgb, var(--accent-color) 24%, transparent);
-}
-
-.review-actions-menu .mat-mdc-menu-item:focus-visible {
-  outline-offset: -2px;
-}
-
-.review-actions-menu .review-edit-action mat-icon {
-  color: color-mix(in srgb, var(--accent-color) 58%, white);
-}
-
-.review-actions-menu .review-delete-action,
-.review-actions-menu .review-delete-action mat-icon {
-  color: color-mix(in srgb, var(--warn-color) 78%, white);
-}
-
-.review-confirmation-dialog [mat-dialog-title] {
-  margin: 0;
-  padding: 24px 24px 16px;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent-color) 55%, transparent);
-  color: var(--primary-text);
-}
-
-.review-confirmation-dialog [mat-dialog-content] {
-  padding: 20px 24px;
-  color: var(--secondary-text);
-}
-
-.review-confirmation-dialog [mat-dialog-content] p {
-  margin: 0;
-  line-height: 1.55;
-}
-
-.review-confirmation-dialog [mat-dialog-actions] {
-  gap: 10px;
-  padding: 12px 24px 20px;
-  border-top: 1px solid color-mix(in srgb, var(--accent-color) 35%, transparent);
-}
-
-mat-paginator {
-  margin-top: 24px;
-}
-
+mat-paginator,
 .custom-paginator {
-  .mat-mdc-paginator-container {
-    background-color: var(--background-dark);
-    color: var(--secondary-text);
-  }
-
-  .mat-mdc-icon-button {
-    color: var(--secondary-text);
-  }
-
-  .mat-mdc-icon-button:disabled {
-    color: var(--surface-dark);
-  }
-
-  .mat-mdc-form-field-underline {
-    display: none;
-  }
-
-  .mat-mdc-paginator-range-label {
-    color: var(--secondary-text);
-    font-weight: 500;
-  }
+  margin-top: 24px;
+  --mat-paginator-container-background-color: transparent;
+  --mat-paginator-container-text-color: var(--secondary-text);
 }
 
-app-album-details-page .artist-identity {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  margin: 0 0 14px;
-}
-
-app-album-details-page .artist-avatar-link {
-  flex-shrink: 0;
-  border-radius: 50%;
-  line-height: 0;
-}
-
-app-album-details-page .artist-avatar-link:focus-visible {
-  outline: 3px solid var(--accent-color);
-  outline-offset: 3px;
-}
-
-app-album-details-page .artist-avatar {
-  width: 48px;
-  height: 48px;
-  border: 2px solid color-mix(in srgb, var(--album-accent) 55%, white);
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-app-album-details-page .artist-copy {
-  min-width: 0;
-}
-
-app-album-details-page .artist-copy > span {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-app-album-details-page .album-metadata {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 7px;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-app-album-details-page .metadata-separator {
-  color: color-mix(in srgb, var(--album-accent) 55%, white);
-}
-
-app-album-details-page .explicit-badge {
-  display: inline-grid;
-  place-items: center;
-  width: 19px;
-  height: 19px;
-  margin-left: 3px;
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.72);
-  color: #15171a;
-  font-size: 0.68rem;
-  font-weight: 800;
-}
-
-app-album-details-page .track-explicit-badge {
-  display: inline-grid;
-  place-items: center;
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-  border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.6);
-  color: #14181c;
-  font-size: 0.6rem;
-  font-weight: 800;
-}
-
-app-album-details-page .track-deezer-button {
-  justify-self: center;
-  width: 72px;
-  height: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  box-sizing: border-box;
-  background-color: #0d0a10;
-  background-image: url('/listen-deezer-image.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  transition:
-    border-color 0.18s ease,
-    background-color 0.18s ease;
-}
-
-app-album-details-page .track-deezer-button:hover,
-app-album-details-page .track-deezer-button:focus-visible {
-  border-color: var(--accent-color);
-  background-color: #19121d;
-  outline: none;
-}
-
-app-album-details-page .track-deezer-button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-app-album-details-page .tab-count {
-  display: inline-grid;
-  place-items: center;
-  min-width: 20px;
-  height: 20px;
-  margin-left: 7px;
-  padding-inline: 5px;
-  border-radius: 999px;
-  box-sizing: border-box;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--secondary-text);
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
-app-album-details-page .mat-mdc-tab-body-content {
-  overflow: hidden;
-}
-
-app-album-details-page .album-credits {
-  max-width: 1280px;
-  margin: 48px auto 24px;
-  padding: 36px clamp(20px, 4vw, 52px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  box-sizing: border-box;
-}
-
-app-album-details-page .editorial-item.genres-item > span {
-  color: var(--secondary-text);
-}
-
-app-album-details-page .credits-heading h2 {
-  margin: 0 0 28px;
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-}
-
-app-album-details-page .album-editorial-details {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-app-album-details-page .editorial-item {
-  min-width: 0;
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  background-color: var(--surface-dark);
-}
-
-app-album-details-page .editorial-item > span,
-app-album-details-page .contributors-section h3 {
-  color: var(--secondary-text);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-app-album-details-page .editorial-item strong {
-  display: block;
-  margin-top: 8px;
-  overflow-wrap: anywhere;
-  font-size: 0.86rem;
-}
-
-app-album-details-page .genre-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-app-album-details-page .genre-list span {
-  padding: 0;
-  background: none;
-  color: var(--primary-text);
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-app-album-details-page .contributors-section {
-  margin-top: 30px;
-}
-
-app-album-details-page .contributors-section h3 {
-  margin: 0 0 12px;
-}
-
-app-album-details-page .contributors-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-app-album-details-page .contributor-link {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  min-width: 0;
-  padding: 10px;
-  border-radius: 10px;
-  color: var(--primary-text);
-  text-decoration: none;
-  transition: background-color 0.18s ease;
-}
-
-app-album-details-page .contributor-link:hover {
-  background-color: var(--surface-dark);
-}
-
-app-album-details-page .contributor-link:focus-visible {
-  background-color: var(--surface-dark);
-  outline: 3px solid var(--accent-color);
-  outline-offset: 2px;
-}
-
-app-album-details-page .contributor-link-static {
-  cursor: default;
-}
-
-app-album-details-page .contributor-avatar {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--secondary-text);
-}
-
-app-album-details-page .contributor-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-app-album-details-page .contributor-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 3px;
-}
-
-app-album-details-page .contributor-copy strong,
-app-album-details-page .contributor-copy small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-app-album-details-page .contributor-copy strong {
-  font-size: 0.82rem;
-}
-
-app-album-details-page .contributor-copy small {
-  color: var(--secondary-text);
-  font-size: 0.7rem;
-}
-
-@media (max-width: 760px) {
-  app-album-details-page .album-credits {
-    margin-top: 32px;
-    padding-inline: 8px;
-  }
-
-  app-album-details-page .album-editorial-details {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-app-artist-details-page .recent-reviews-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-app-artist-details-page .artist-review-card {
-  min-width: 0;
-  padding: 20px 16px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-app-artist-details-page .artist-review-card:not(:last-child) {
-  border-bottom: 1px solid color-mix(in srgb, var(--accent-color) 38%, transparent);
-}
-
-app-artist-details-page .reviewed-album {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  color: var(--primary-text);
-  text-decoration: none;
-}
-
-app-artist-details-page .reviewed-album img {
-  width: 48px;
-  height: 48px;
-  border-radius: 7px;
-  object-fit: cover;
-}
-
-app-artist-details-page .reviewed-album span {
-  min-width: 0;
-}
-
-app-artist-details-page .reviewed-album strong,
-app-artist-details-page .reviewed-album small {
-  display: block;
-}
-
-app-artist-details-page .reviewed-album strong {
-  margin-top: 4px;
-  overflow: hidden;
-  font-size: 0.84rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-app-artist-details-page .artist-review-author {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-app-artist-details-page .artist-review-author > a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  color: var(--secondary-text);
-  font-size: 0.78rem;
-  text-decoration: none;
-}
-
-app-artist-details-page .artist-review-author > a:hover {
-  color: var(--primary-text);
-}
-
-app-artist-details-page .artist-review-author img {
-  width: 28px;
-  height: 28px;
-  box-sizing: border-box;
-  border: 2px solid var(--accent-color);
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-app-artist-details-page .artist-review-author strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-app-artist-details-page .artist-review-card > p {
-  display: -webkit-box;
-  margin: 16px 0 6px;
-  overflow: hidden;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 0.84rem;
-  line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-app-artist-details-page .artist-review-card footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--secondary-text);
-  font-size: 0.7rem;
-}
-
-app-artist-details-page .artist-review-card footer span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-app-artist-details-page .artist-review-card footer mat-icon {
-  width: 14px;
-  height: 14px;
-  color: var(--accent-color);
-  font-size: 14px;
+/* Material form fields on the dark background */
+.mat-mdc-form-field {
+  --mat-form-field-outlined-outline-color: rgba(255, 255, 255, 0.16);
+  --mat-form-field-outlined-hover-outline-color: rgba(255, 255, 255, 0.32);
+  --mat-form-field-outlined-focus-outline-color: var(--accent-color);
+  --mat-form-field-outlined-label-text-color: var(--secondary-text);
+  --mat-form-field-outlined-input-text-color: var(--primary-text);
+  --mat-form-field-container-shape: var(--radius);
 }

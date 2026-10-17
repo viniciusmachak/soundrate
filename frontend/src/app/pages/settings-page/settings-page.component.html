@@ -28,7 +28,7 @@
           </button>
 
           @if (selectedFile) {
-            <button mat-raised-button color="primary" type="button" (click)="onUploadAvatar()"
+            <button mat-flat-button type="button" (click)="onUploadAvatar()"
               [disabled]="isUploadingAvatar">
               @if (isUploadingAvatar) {
                 <mat-spinner diameter="18"></mat-spinner>
@@ -78,7 +78,7 @@
         </mat-form-field>
 
         <div class="settings-actions">
-          <button mat-raised-button color="primary" type="submit"
+          <button mat-flat-button type="submit"
             [disabled]="profileForm.invalid || !hasProfileChanges || isUpdatingProfile">
             @if (isUpdatingProfile) {
               <mat-spinner diameter="18"></mat-spinner>
@@ -150,7 +150,7 @@
         </div>
 
         <div class="settings-actions">
-          <button mat-raised-button color="primary" type="submit"
+          <button mat-flat-button type="submit"
             [disabled]="passwordForm.invalid || passwordForm.pristine || isUpdatingPassword">
             @if (isUpdatingPassword) {
               <mat-spinner diameter="18"></mat-spinner>
@@ -170,7 +170,7 @@
 
     <mat-card-content class="danger-content">
       <p>Deleting your account is permanent and will remove all your data.</p>
-      <button mat-stroked-button color="warn" type="button" (click)="deleteAccount()"
+      <button mat-stroked-button class="danger-button" type="button" (click)="deleteAccount()"
         [disabled]="isDeletingAccount">
         @if (isDeletingAccount) {
           <mat-spinner diameter="18"></mat-spinner>

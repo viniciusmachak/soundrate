@@ -63,14 +63,14 @@
 
       @if (!isLoadingUsers && !usersError && users.length === 0) {
         <div class="state-container empty-state">
-          <mat-icon>group_off</mat-icon>
+          
           <p>{{ peopleEmptyMessage }}</p>
         </div>
       }
 
       @if (usersError) {
         <div class="state-container error-state" role="alert">
-          <mat-icon>error_outline</mat-icon>
+          
           <p>We couldn't load the people in this list.</p>
           <button mat-stroked-button type="button" (click)="retryUsers()">Try again</button>
         </div>
@@ -108,14 +108,14 @@
 
       @if (!isLoadingArtists && !artistsError && artists.length === 0) {
         <div class="state-container empty-state">
-          <mat-icon>library_music</mat-icon>
+          
           <p>{{ artistsEmptyMessage }}</p>
         </div>
       }
 
       @if (artistsError) {
         <div class="state-container error-state" role="alert">
-          <mat-icon>error_outline</mat-icon>
+          
           <p>We couldn't load the artists in this list.</p>
           <button mat-stroked-button type="button" (click)="retryArtists()">Try again</button>
         </div>
