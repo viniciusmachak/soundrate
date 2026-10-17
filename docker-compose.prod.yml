@@ -1,0 +1,34 @@
+# Production override: run with
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Caddy terminates HTTPS for $DOMAIN; backend and frontend are only reachable through it.
+services:
+  backend:
+    ports: !reset []
+    environment:
+      APP_FRONTEND_URL: https://${DOMAIN}
+      APP_CORS_ORIGINS: https://${DOMAIN}
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60
+
+  frontend:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    container_name: soundrate_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+
+volumes:
+  caddy_data:
+  caddy_config:

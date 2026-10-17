@@ -19,7 +19,7 @@ This repository is a monorepo with two application folders:
 - Spring Security with JWT
 - Spring Data JPA / Hibernate
 - PostgreSQL
-- SendGrid
+- Spring Mail (SMTP)
 - Cloudinary
 - Springdoc OpenAPI
 
@@ -78,13 +78,27 @@ POSTGRES_PASSWORD=change-me
 JWT_SECRET=replace-with-a-long-random-secret
 
 CLOUDINARY_URL=cloudinary://<key>:<secret>@<cloud-name>
-SENDGRID_API_KEY=SG.xxxxx
+
+# Email over SMTP (works with Resend, SendGrid, Mailgun, etc.)
+MAIL_HOST=smtp.resend.com
+MAIL_PORT=587
+MAIL_USERNAME=resend
+MAIL_PASSWORD=re_xxxxx
+MAIL_FROM=no-reply@yourdomain.com
+
+# Used in email links and CORS (defaults to http://localhost:4200)
+APP_FRONTEND_URL=http://localhost:4200
+APP_CORS_ORIGINS=http://localhost:4200
+
+# Production only (docker-compose.prod.yml)
+DOMAIN=yourdomain.com
 ```
 
 Notes:
 
 - The backend loads `.env` from the repository root in local development.
-- `CLOUDINARY_URL` and `SENDGRID_API_KEY` are currently required for the backend to start because both integrations are configured during application initialization.
+- `CLOUDINARY_URL` is required for the backend to start.
+- When `MAIL_HOST` is empty, emails are not sent: the backend logs them instead (including password reset links), which is handy in development. Always set it in production.
 
 ## Running With Docker
 
@@ -132,6 +146,25 @@ npm start
 ```
 
 The Angular dev server runs on `http://localhost:4200` and proxies `/api/v1` to the backend.
+
+## Deploy
+
+Production runs the same Compose stack on a single VPS, with [Caddy](https://caddyserver.com) in front issuing HTTPS certificates automatically. Only ports 80 and 443 are exposed; the API is served from the same origin under `/api/v1`.
+
+1. **Domain and DNS**: buy a domain (e.g. Cloudflare Registrar or Porkbun) and create `A` records for `@` and `www` pointing to the VPS IP.
+2. **Server**: create an Ubuntu VPS (2 vCPU / 4 GB, e.g. Hetzner CX22), install Docker, and allow only ports 22, 80 and 443 in the firewall.
+3. **Email**: add the domain to your email provider (e.g. Resend) and publish the SPF, DKIM and DMARC records it shows. Use `no-reply@yourdomain.com` as `MAIL_FROM`.
+4. **App**:
+
+   ```bash
+   git clone <repo-url> ~/sound-rate && cd ~/sound-rate
+   cp /path/to/production.env .env   # set DOMAIN, MAIL_*, strong secrets
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+   ```
+
+   `docker-compose.prod.yml` sets `APP_FRONTEND_URL` and `APP_CORS_ORIGINS` to `https://$DOMAIN`.
+
+5. **Continuous deploy (optional)**: `.github/workflows/deploy.yml` pulls and rebuilds on every push to `main`. Add the repository secrets `SSH_HOST`, `SSH_USER` and `SSH_KEY` (a deploy key allowed on the server), and clone the repo at `~/sound-rate`.
 
 ## API Documentation
 
