@@ -1,20 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome to Soundrate</title>
-</head>
-<body style="margin: 0; padding: 32px 16px; background: #ffffff; font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; color: #14181c; line-height: 1.5;">
-	<div style="max-width: 480px; margin: 0 auto;">
-		<p style="margin: 0 0 32px; font-weight: 700; font-size: 18px;">Soundrate</p>
-		<p style="margin: 0 0 16px;">Hi <span th:text="${username}">listener</span>,</p>
-		<p style="margin: 0 0 24px;">Your account is ready. Rate albums, write reviews and keep a diary of everything you listen to.</p>
-		<p style="margin: 0 0 32px;">
-			<a th:href="${frontendUrl}" href="#"
-				style="display: inline-block; padding: 12px 20px; background: #7066ff; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: 600;">Open Soundrate</a>
-		</p>
-		<p style="margin: 0; font-size: 13px; color: #6b7280;">Happy listening.</p>
-	</div>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/email :: head('Welcome to Soundrate')}"></head>
+<body style="margin: 0; padding: 0; background: #f4f5f7; font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; color: #14181c;">
+	<div th:replace="~{fragments/email :: preheader('Your account is ready. Here is how to get started.')}"></div>
+	<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #f4f5f7;">
+		<tr>
+			<td align="center" style="padding: 32px 16px;">
+				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+					style="max-width: 560px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;">
+					<tr th:replace="~{fragments/email :: header}"></tr>
+					<tr>
+						<td style="padding: 32px; font-size: 16px; line-height: 1.6;">
+							<h1 style="margin: 0 0 16px; font-size: 24px; line-height: 1.3;">Welcome, <span th:text="${username}">listener</span></h1>
+							<p style="margin: 0 0 20px;">Your Soundrate account is ready. Here's how to start your music diary:</p>
+							<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 15px;">
+								<tr>
+									<td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;"><strong>1. Rate an album.</strong> <span style="color: #4b5563;">Search for one you love and give it stars.</span></td>
+								</tr>
+								<tr>
+									<td style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;"><strong>2. Write a review.</strong> <span style="color: #4b5563;">Say what it means to you.</span></td>
+								</tr>
+								<tr>
+									<td style="padding: 10px 0;"><strong>3. Follow people and artists.</strong> <span style="color: #4b5563;">See what others are listening to.</span></td>
+								</tr>
+							</table>
+							<table th:replace="~{fragments/email :: button(${frontendUrl}, 'Open Soundrate')}"></table>
+							<p style="margin: 0; color: #4b5563; font-size: 14px;">Happy listening.</p>
+						</td>
+					</tr>
+					<tr th:replace="~{fragments/email :: footer('You received this email because you created a Soundrate account.')}"></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </body>
 </html>

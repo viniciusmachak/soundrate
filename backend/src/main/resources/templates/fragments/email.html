@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<!--
+  Shared pieces for transactional emails.
+  Table layout and inline styles for broad email-client support.
+  Colors meet WCAG AA on white: text #14181c (17:1), muted #4b5563 (7.6:1),
+  white on button #5b4ef0 (5.5:1).
+-->
+<head th:fragment="head(title)">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title th:text="${title}">Soundrate</title>
+</head>
+<body>
+
+<!-- Hidden inbox preview line -->
+<div th:fragment="preheader(text)"
+	style="display: none; max-height: 0; overflow: hidden; mso-hide: all; font-size: 1px; line-height: 1px; color: #f4f5f7;"
+	th:text="${text}">Preview text</div>
+
+<tr th:fragment="header">
+	<td style="padding: 28px 32px 20px; border-bottom: 1px solid #e5e7eb;">
+		<a th:href="${frontendUrl}" href="#"
+			style="color: #14181c; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; text-decoration: none;">Soundrate</a>
+	</td>
+</tr>
+
+<table th:fragment="button(href, label)" role="presentation" cellpadding="0" cellspacing="0" border="0"
+	style="margin: 28px 0;">
+	<tr>
+		<td style="border-radius: 999px; background: #5b4ef0;">
+			<a th:href="${href}" href="#" th:text="${label}"
+				style="display: inline-block; padding: 14px 28px; border-radius: 999px; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none;">Action</a>
+		</td>
+	</tr>
+</table>
+
+<tr th:fragment="footer(reason)">
+	<td style="padding: 24px 32px 32px; border-top: 1px solid #e5e7eb; color: #4b5563; font-size: 13px; line-height: 1.6;">
+		<p style="margin: 0 0 8px;" th:text="${reason}">You received this email because of activity on your account.</p>
+		<p style="margin: 0;">
+			<a th:href="${frontendUrl}" href="#" style="color: #4b5563; text-decoration: underline;">Soundrate</a>
+			· Your music diary
+		</p>
+	</td>
+</tr>
+
+</body>
+</html>
