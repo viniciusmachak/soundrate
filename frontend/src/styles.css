@@ -15,7 +15,7 @@
   --on-accent: #fff;
   --warn-color: #f05252;
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-sans: GraphikWeb, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --fs-display: clamp(2rem, 5vw, 3.5rem);
   --fs-h1: 1.5rem;
   --fs-h2: 1.125rem;
@@ -46,18 +46,6 @@
   --mat-sys-level3: none;
   --mat-sys-level4: none;
   --mat-sys-level5: none;
-  --mat-sys-body-large-font: var(--font-sans);
-  --mat-sys-body-medium-font: var(--font-sans);
-  --mat-sys-body-small-font: var(--font-sans);
-  --mat-sys-label-large-font: var(--font-sans);
-  --mat-sys-label-medium-font: var(--font-sans);
-  --mat-sys-label-small-font: var(--font-sans);
-  --mat-sys-title-large-font: var(--font-sans);
-  --mat-sys-title-medium-font: var(--font-sans);
-  --mat-sys-title-small-font: var(--font-sans);
-  --mat-sys-headline-large-font: var(--font-sans);
-  --mat-sys-headline-medium-font: var(--font-sans);
-  --mat-sys-headline-small-font: var(--font-sans);
   --mat-button-filled-container-color: var(--accent-color);
   --mat-button-filled-label-text-color: var(--on-accent);
   --mat-button-protected-container-color: var(--accent-color);
@@ -66,11 +54,6 @@
   --mat-button-outlined-outline-color: rgba(255, 255, 255, 0.24);
   --mat-button-text-label-text-color: var(--primary-text);
   --mat-icon-button-icon-color: var(--secondary-text);
-  --mat-button-filled-label-text-tracking: 0;
-  --mat-button-outlined-label-text-tracking: 0;
-  --mat-button-text-label-text-tracking: 0;
-  --mat-button-protected-label-text-tracking: 0;
-  --mat-tab-label-text-tracking: 0;
   --mat-button-filled-container-shape: 999px;
   --mat-button-outlined-container-shape: 999px;
   --mat-button-text-container-shape: 999px;
@@ -90,18 +73,10 @@ body {
 
 body {
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  line-height: 1.5;
   background-color: var(--background-dark);
   color: var(--primary-text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-
-h1,
-h2,
-h3 {
-  letter-spacing: -0.01em;
 }
 
 a {

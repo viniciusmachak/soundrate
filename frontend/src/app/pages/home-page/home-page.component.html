@@ -1,13 +1,18 @@
+@if (resultsData$ | async; as data) {
+  @if (data.query.length < 3) {
+    <section class="hero-section" aria-labelledby="home-intro">
+      <img class="hero-wallpaper" src="/home-wallpaper.jpg" width="1024" height="768" alt=""
+        fetchpriority="high" decoding="async">
+      <p id="home-intro">
+        Soundrate is your music diary for discovering, rating and remembering the albums that move you.
+      </p>
+    </section>
+  }
+}
+
 <div class="page">
   @if (resultsData$ | async; as data) {
     @if (data.query.length < 3) {
-      @if (!authService.isAuthenticated()) {
-        <section class="intro" aria-labelledby="home-intro">
-          <h1 id="home-intro">Rate the albums you love.<br>Keep a diary of everything you hear.</h1>
-          <a mat-flat-button routerLink="/register">Create your free account</a>
-        </section>
-      }
-
       <section aria-labelledby="ranking-title">
         <h2 id="ranking-title" class="section-title">Highest rated</h2>
         @if (highestRatedAlbums$ | async; as albums) {

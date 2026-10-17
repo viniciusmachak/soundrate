@@ -1,14 +1,148 @@
-.intro {
-  padding: 32px 0 56px;
+@keyframes hero-blur-drift {
+  0%,
+  100% {
+    background-position: 48% 48%;
+    filter: blur(18px) saturate(0.96) contrast(0.96);
+    transform: translate3d(-1.5%, -1%, 0) scale(1.08);
+  }
+
+  45% {
+    background-position: 53% 51%;
+    filter: blur(25px) saturate(1.02) contrast(0.96);
+    transform: translate3d(1.5%, 1%, 0) scale(1.12);
+  }
+
+  72% {
+    background-position: 50% 54%;
+    filter: blur(21px) saturate(0.98) contrast(0.96);
+    transform: translate3d(0, -0.5%, 0) scale(1.1);
+  }
 }
 
-.intro h1 {
-  max-width: 820px;
-  margin: 0 0 28px;
-  font-size: var(--fs-display);
+
+.hero-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: auto;
+  height: min(68.18vw, 600px);
+  max-height: 600px;
+  margin: 0 calc(50% - 50vw);
+  padding: 0;
+  background-color: transparent;
+}
+
+.hero-section::before {
+  position: absolute;
+  inset: -28px;
+  z-index: 0;
+  background: url('/home-wallpaper.jpg') 48% 48% / cover no-repeat;
+  content: '';
+  filter: blur(18px) saturate(0.96) contrast(0.96);
+  opacity: 1;
+  animation: hero-blur-drift 16s ease-in-out infinite;
+  transform: translate3d(-1.5%, -1%, 0) scale(1.08);
+  will-change: transform, filter, background-position;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0,
+    rgba(0, 0, 0, 0.4) calc(50% - 440px),
+    rgba(0, 0, 0, 0.4) calc(50% + 440px),
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0,
+    rgba(0, 0, 0, 0.4) calc(50% - 440px),
+    rgba(0, 0, 0, 0.4) calc(50% + 440px),
+    #000 100%
+  );
+}
+
+.hero-wallpaper {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(100%, 880px);
+  height: 100%;
+  max-height: 600px;
+  margin: 0 auto;
+  object-fit: cover;
+  filter: saturate(0.96) contrast(0.98);
+  opacity: 0.45;
+  image-rendering: auto;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.15) 0%,
+    #000 12%,
+    #000 88%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.15) 0%,
+    #000 12%,
+    #000 88%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+.hero-section::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  top: 0;
+  background: transparent;
+  box-shadow:
+    inset 74px -74px 92px -58px rgba(0, 0, 0, 0.82),
+    inset -74px -74px 92px -58px rgba(0, 0, 0, 0.82),
+    inset 0 -84px 92px -72px rgba(0, 0, 0, 0.72);
+  content: '';
+  pointer-events: none;
+}
+
+.hero-section > p {
+  position: absolute;
+  bottom: clamp(26px, 5vw, 48px);
+  left: 50%;
+  z-index: 3;
+  width: min(620px, calc(100% - 48px));
+  margin: 0;
+  color: var(--primary-text);
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  line-height: 1.45;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 900px) {
+  .hero-section::before {
+    display: none;
+  }
+
+  .hero-wallpaper {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .hero-section > p {
+    bottom: 16px;
+    width: calc(100% - 32px);
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section::before {
+    animation: none;
+    transform: scale(1.08);
+  }
 }
 
 .search-title {
@@ -28,3 +162,4 @@ app-skeleton-loader {
 app-skeleton-loader ::ng-deep .skeleton-loader {
   padding: 0;
 }
+

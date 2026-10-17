@@ -4,7 +4,6 @@ import { Observable, combineLatest, concat, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { SearchResult } from '../../models/search-result.model';
 import { ApiService } from '../../services/api.service';
-import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AlbumCardComponent } from '../../components/album-card/album-card.component';
@@ -12,7 +11,7 @@ import { ArtistCardComponent } from '../../components/artist-card/artist-card.co
 import { UserCardComponent } from '../../components/user-card/user-card.component';
 import { AlbumDashboard } from '../../models/album-details.model';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 interface SearchState {
   isLoading: boolean;
@@ -25,7 +24,7 @@ interface SearchState {
   selector: 'app-home-page',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, RouterLink,
+    CommonModule, ReactiveFormsModule,
     AlbumCardComponent, ArtistCardComponent, UserCardComponent,
     MatButtonModule, SkeletonLoaderComponent,
   ],
@@ -53,8 +52,7 @@ export class HomePageComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute,
-    public authService: AuthService
+    private route: ActivatedRoute
   ) { }
 
   resultKey(result: SearchResult): string {

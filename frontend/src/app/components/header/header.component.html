@@ -59,24 +59,24 @@
       }
     </form>
 
-    <nav class="nav-actions" aria-label="Account">
+    <div class="nav-actions">
       @if (currentUser$ | async; as user) {
-        <a class="nav-link desktop-only" routerLink="/listen-later">Listen later</a>
-        <button type="button" class="avatar-button" [matMenuTriggerFor]="accountMenu"
-          [attr.aria-label]="'Account menu for ' + user.username">
-          <img [src]="user.avatarUrl" alt="" class="toolbar-avatar">
+        <a mat-icon-button class="profile-link" [routerLink]="['/user', user.username]"
+          [attr.aria-label]="'Open ' + user.username + ' profile'">
+          <img [src]="user.avatarUrl" alt="Avatar of {{ user.username }}" class="toolbar-avatar">
+        </a>
+        <a mat-icon-button routerLink="/settings" class="nav-icon-link" aria-label="Settings">
+          <mat-icon>settings</mat-icon>
+        </a>
+        <button mat-button class="logout-button" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span class="logout-label">Logout</span>
         </button>
-        <mat-menu #accountMenu="matMenu" xPosition="before">
-          <a mat-menu-item [routerLink]="['/user', user.username]">Profile</a>
-          <a mat-menu-item routerLink="/listen-later">Listen later</a>
-          <a mat-menu-item routerLink="/settings">Settings</a>
-          <button mat-menu-item type="button" (click)="logout()">Log out</button>
-        </mat-menu>
       } @else {
-        <a class="nav-link" routerLink="/login">Sign in</a>
-        <a mat-flat-button class="register-btn" routerLink="/register">Create account</a>
+        <a mat-button class="nav-link" routerLink="/login">Login</a>
+        <a mat-flat-button class="nav-link register-btn" routerLink="/register">Register</a>
       }
-    </nav>
+    </div>
   </div>
 </mat-toolbar>
 
@@ -94,17 +94,72 @@
     </div>
 
     <nav class="sidebar-navigation">
-      <a class="sidebar-link" routerLink="/" (click)="closeSidebar()">Home</a>
+      <a class="sidebar-link" routerLink="/" (click)="closeSidebar()">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </a>
+
+      <a class="sidebar-link" routerLink="/about" (click)="closeSidebar()">
+        <mat-icon>info</mat-icon>
+        <span>About</span>
+      </a>
+
       @if (currentUser$ | async; as user) {
-        <a class="sidebar-link" [routerLink]="['/user', user.username]" (click)="closeSidebar()">Profile</a>
-        <a class="sidebar-link" routerLink="/listen-later" (click)="closeSidebar()">Listen later</a>
-        <a class="sidebar-link" routerLink="/settings" (click)="closeSidebar()">Settings</a>
-        <a class="sidebar-link" routerLink="/about" (click)="closeSidebar()">About</a>
-        <button type="button" class="sidebar-link" (click)="closeSidebar(); logout()">Log out</button>
+        <a class="sidebar-link" [routerLink]="['/user', user.username]" (click)="closeSidebar()">
+          <img [src]="user.avatarUrl" alt="" class="sidebar-profile-image">
+          <span>Profile</span>
+        </a>
+
+        <section class="recent-ratings" aria-labelledby="recent-ratings-title">
+          <h2 id="recent-ratings-title">Recently rated</h2>
+          @if (recentRatingsState$ | async; as state) {
+            @if (state.isLoading) {
+              <div class="recent-ratings-loading">
+                <mat-spinner diameter="28"></mat-spinner>
+                <span>Loading ratings...</span>
+              </div>
+            } @else if (state.ratings.length > 0) {
+              <div class="recent-rating-list">
+                @for (rating of state.ratings; track rating.album.id) {
+                  <a class="recent-rating" [routerLink]="['/album', rating.album.id]" (click)="closeSidebar()">
+                    <img [src]="rating.album.cover_medium" [alt]="rating.album.title">
+                    <span class="recent-rating-copy">
+                      <strong>{{ rating.album.title }}</strong>
+                      <span class="recent-rating-stars"
+                        [attr.aria-label]="'Rating: ' + rating.rating + ' out of 5'">
+                        @for (star of ratingStars; track star) {
+                          <mat-icon aria-hidden="true">
+                            {{ rating.rating >= star ? 'star' : rating.rating >= star - 0.5 ? 'star_half' : 'star_border' }}
+                          </mat-icon>
+                        }
+                      </span>
+                    </span>
+                  </a>
+                }
+              </div>
+            } @else {
+              <p class="empty-ratings">
+                {{ state.error ? 'Unable to load ratings.' : 'No rated albums yet.' }}
+              </p>
+            }
+          }
+        </section>
+
+        <a class="sidebar-link" routerLink="/listen-later" (click)="closeSidebar()">
+          <mat-icon>bookmark</mat-icon>
+          <span>Listen Later</span>
+        </a>
+
+        <a class="sidebar-link" routerLink="/settings" (click)="closeSidebar()">
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </a>
       } @else {
-        <a class="sidebar-link" routerLink="/about" (click)="closeSidebar()">About</a>
-        <a class="sidebar-link" routerLink="/login" (click)="closeSidebar()">Sign in</a>
-        <a class="sidebar-link" routerLink="/register" (click)="closeSidebar()">Create account</a>
+        <div class="sidebar-auth">
+          <p>Sign in to see your profile, ratings and Listen Later list.</p>
+          <a mat-stroked-button routerLink="/login" (click)="closeSidebar()">Login</a>
+          <a mat-flat-button class="register-btn" routerLink="/register" (click)="closeSidebar()">Register</a>
+        </div>
       }
     </nav>
   </aside>
