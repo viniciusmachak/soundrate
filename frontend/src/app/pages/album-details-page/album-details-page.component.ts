@@ -32,7 +32,7 @@ interface AlbumParticipant {
 
 import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
 
-import { extractDominantColor } from '../../utils/dominant-color';
+import { extractBackdropColor } from '../../utils/dominant-color';
 
 @Component({
   selector: 'app-album-details-page',
@@ -382,7 +382,7 @@ export class AlbumDetailsPageComponent implements OnInit {
     this.accentSourceUrl = coverUrl;
     this.accentColor = 'var(--accent-color)';
 
-    extractDominantColor(coverUrl).then(color => {
+    extractBackdropColor(coverUrl).then(color => {
       if (coverUrl !== this.accentSourceUrl) return;
       this.accentColor = color ?? 'var(--accent-color)';
       this.changeDetectorRef.markForCheck();

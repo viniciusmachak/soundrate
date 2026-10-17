@@ -59,3 +59,66 @@ export function extractDominantColor(imageUrl: string): Promise<string | null> {
     image.src = imageUrl;
   });
 }
+
+/**
+ * Turns a dominant color into a vivid hero backdrop: saturation is boosted, then
+ * lightness is lowered until white text on it keeps at least 4.5:1 contrast.
+ */
+export function toVividBackdropColor(rgb: string): string {
+  const match = rgb.match(/\d+/g);
+  if (!match) return rgb;
+
+  const [hue, saturation, lightness] = rgbToHsl(+match[0], +match[1], +match[2]);
+  const vividSaturation = Math.min(1, saturation * 1.5 + 0.2);
+  // Relative luminance ≤ 0.18 keeps white text at ≥ 4.5:1.
+  let vividLightness = Math.min(lightness, 0.5);
+  let color = hslToRgb(hue, vividSaturation, vividLightness);
+  while (relativeLuminance(color) > 0.18 && vividLightness > 0.05) {
+    vividLightness -= 0.02;
+    color = hslToRgb(hue, vividSaturation, vividLightness);
+  }
+
+  return `rgb(${color.map(Math.round).join(', ')})`;
+}
+
+/** Dominant color of an image, already made vivid and text-safe for a backdrop. */
+export async function extractBackdropColor(imageUrl: string): Promise<string | null> {
+  const dominant = await extractDominantColor(imageUrl);
+  return dominant ? toVividBackdropColor(dominant) : null;
+}
+
+function rgbToHsl(red: number, green: number, blue: number): [number, number, number] {
+  const r = red / 255, g = green / 255, b = blue / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const lightness = (max + min) / 2;
+  if (max === min) return [0, 0, lightness];
+
+  const delta = max - min;
+  const saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+  const hue = max === r ? (g - b) / delta + (g < b ? 6 : 0)
+    : max === g ? (b - r) / delta + 2
+    : (r - g) / delta + 4;
+  return [hue / 6, saturation, lightness];
+}
+
+function hslToRgb(hue: number, saturation: number, lightness: number): number[] {
+  const q = lightness < 0.5 ? lightness * (1 + saturation) : lightness + saturation - lightness * saturation;
+  const p = 2 * lightness - q;
+  const channel = (t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  return [channel(hue + 1 / 3), channel(hue), channel(hue - 1 / 3)].map(value => value * 255);
+}
+
+function relativeLuminance([red, green, blue]: number[]): number {
+  const linear = (value: number) => {
+    const channel = value / 255;
+    return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue);
+}

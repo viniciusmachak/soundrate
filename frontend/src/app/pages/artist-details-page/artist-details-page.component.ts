@@ -31,7 +31,7 @@ type DiscographyDirection = 'asc' | 'desc';
 
 import { DeezerButtonComponent } from '../../components/deezer-button/deezer-button.component';
 
-import { extractDominantColor } from '../../utils/dominant-color';
+import { extractBackdropColor } from '../../utils/dominant-color';
 
 @Component({
   selector: 'app-artist-details-page',
@@ -266,7 +266,7 @@ export class ArtistDetailsPageComponent implements OnInit {
     this.accentSourceUrl = imageUrl;
     this.accentColor = 'var(--accent-color)';
 
-    extractDominantColor(imageUrl).then(color => {
+    extractBackdropColor(imageUrl).then(color => {
       if (imageUrl !== this.accentSourceUrl) return;
       this.accentColor = color ?? 'var(--accent-color)';
       this.changeDetectorRef.markForCheck();

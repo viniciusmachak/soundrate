@@ -439,9 +439,9 @@ mat-paginator,
 
 /* ---------------------------------------------------------------------------
    Entity hero (album and artist pages)
-   An opaque backdrop tinted with the artwork's dominant color, with the
-   blurred artwork blended in. Mixed into the background so white text keeps
-   at least 4.5:1 contrast whatever the artwork color is.
+   A vivid backdrop in the artwork's dominant color (saturated and darkened in
+   toVividBackdropColor until white text keeps ≥ 4.5:1), with the blurred
+   artwork blended in for texture, fading into the page background.
 --------------------------------------------------------------------------- */
 
 .entity-hero {
@@ -462,7 +462,7 @@ mat-paginator,
   left: calc(50% - 50vw);
   z-index: -1;
   overflow: hidden;
-  background-color: color-mix(in srgb, var(--entity-accent) 38%, var(--background-dark));
+  background-color: color-mix(in srgb, var(--entity-accent) 92%, var(--background-dark));
   background-position: center;
   background-size: 0 0;
   transition: background-color 0.4s ease;
@@ -475,22 +475,29 @@ mat-paginator,
   background-position: center;
   background-size: cover;
   content: '';
-  filter: blur(60px) saturate(1.2);
-  opacity: 0.28;
+  filter: blur(60px) saturate(1.8);
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
 }
 
 /* Fade into the page background so the tracklist sits on the base color. */
 .entity-backdrop::after {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, var(--background-dark));
+  background: linear-gradient(to bottom, transparent 55%, var(--background-dark));
   content: '';
 }
 
 .entity-hero .entity-kind,
 .entity-hero .entity-meta,
 .entity-hero .muted {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.entity-hero h1,
+.entity-hero .entity-kind,
+.entity-hero .entity-meta {
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {
