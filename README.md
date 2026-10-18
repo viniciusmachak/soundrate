@@ -92,6 +92,8 @@ APP_CORS_ORIGINS=http://localhost:4200
 
 # Production only (docker-compose.prod.yml)
 DOMAIN=yourdomain.com
+# Umami analytics session secret (openssl rand -hex 32)
+UMAMI_APP_SECRET=replace-with-a-long-random-secret
 # Set automatically by docker-compose.prod.yml: fail at startup if MAIL_HOST is missing
 # MAIL_REQUIRED=true
 ```
@@ -153,7 +155,7 @@ The Angular dev server runs on `http://localhost:4200` and proxies `/api/v1` to 
 
 Production runs the same Compose stack on a single VPS, with [Caddy](https://caddyserver.com) in front issuing HTTPS certificates automatically. Only ports 80 and 443 are exposed; the API is served from the same origin under `/api/v1`.
 
-1. **Domain and DNS**: buy a domain (e.g. Cloudflare Registrar or Porkbun) and create `A` records for `@` and `www` pointing to the VPS IP.
+1. **Domain and DNS**: buy a domain (e.g. Cloudflare Registrar or Porkbun) and create `A` records for `@`, `www` and `analytics` pointing to the VPS IP.
 2. **Server**: create an Ubuntu VPS (2 vCPU / 4 GB, e.g. Hetzner CX22), install Docker, and allow only ports 22, 80 and 443 in the firewall.
 3. **Email**: add the domain to your email provider (e.g. Resend) and publish the SPF, DKIM and DMARC records it shows. Use `no-reply@yourdomain.com` as `MAIL_FROM`.
 4. **App**:
@@ -167,6 +169,16 @@ Production runs the same Compose stack on a single VPS, with [Caddy](https://cad
    `docker-compose.prod.yml` sets `APP_FRONTEND_URL` and `APP_CORS_ORIGINS` to `https://$DOMAIN`.
 
 5. **Continuous deploy (optional)**: `.github/workflows/deploy.yml` pulls and rebuilds on every push to `main`. Add the repository secrets `SSH_HOST`, `SSH_USER` and `SSH_KEY` (a deploy key allowed on the server), and clone the repo at `~/sound-rate`.
+
+### Analytics
+
+[Umami](https://umami.is) runs in the production stack and records page views without cookies: unique visitors, referrers and UTM campaigns, country and city, time of day, pages, browsers, operating systems and device types. Visitors are counted per device (a hash of IP and browser), not per page view. It stores its tables in the `umami` schema of the app database, so the backup scripts cover it.
+
+1. Open `https://analytics.yourdomain.com`, sign in with `admin` / `umami` and change the password right away.
+2. Go to **Settings > Websites**, add the site with your domain and copy its **Website ID**.
+3. Set `umamiWebsiteId` in `frontend/src/environments/environment.prod.ts` and deploy.
+
+The tracker loads from `/stats.js` on the site's own domain and is skipped on `localhost`. Since `DATABASE_URL` is built from `POSTGRES_PASSWORD`, keep that password URL-safe (letters, digits, `-`, `_`).
 
 ### Database migrations
 

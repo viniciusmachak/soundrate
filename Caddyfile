@@ -10,7 +10,28 @@
 		-Server
 	}
 
-	reverse_proxy frontend:80
+	# Umami tracker and its collect endpoint, served same-origin so the frontend needs no extra host.
+	@analytics path /stats.js /api/send
+	handle @analytics {
+		reverse_proxy umami:3000
+	}
+
+	handle {
+		reverse_proxy frontend:80
+	}
+}
+
+analytics.{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy umami:3000
 }
 
 www.{$DOMAIN} {

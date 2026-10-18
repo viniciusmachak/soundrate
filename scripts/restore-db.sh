@@ -13,11 +13,13 @@ printf 'This replaces ALL data in the Soundrate database with %s. Type "restore"
 read -r answer
 [ "$answer" = "restore" ] || { echo "Cancelled."; exit 1; }
 
-# Stop the API so nothing writes during the restore.
+# Stop the API and Umami (when running) so nothing writes during the restore.
 docker compose stop backend
+docker compose stop umami 2>/dev/null || true
 
-docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
+docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -c "DROP SCHEMA IF EXISTS umami CASCADE; DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
 gunzip -c "$FILE" | docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -q'
 
 docker compose start backend
+docker compose start umami 2>/dev/null || true
 echo "Restored $FILE."
