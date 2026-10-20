@@ -53,7 +53,7 @@ export class FeedbackService {
       data,
       duration,
       horizontalPosition: 'right',
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
       panelClass: ['soundrate-feedback-panel', `soundrate-feedback-panel--${kind}`],
       politeness: kind === 'error' || kind === 'warning' ? 'assertive' : 'polite',
       announcementMessage: `${title}. ${message}`

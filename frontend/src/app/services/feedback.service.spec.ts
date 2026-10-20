@@ -29,7 +29,7 @@ describe('FeedbackService', () => {
       jasmine.objectContaining({
         duration: 3200,
         horizontalPosition: 'right',
-        verticalPosition: 'bottom',
+        verticalPosition: 'top',
         politeness: 'polite',
         panelClass: ['soundrate-feedback-panel', 'soundrate-feedback-panel--success'],
         data: jasmine.objectContaining({
