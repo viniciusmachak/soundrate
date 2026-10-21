@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 import { CollageAlbum, FEATURED_ALBUMS } from './featured-albums';
 
 interface CollageRow {
@@ -20,7 +21,7 @@ const MIN_TILES_PER_COPY = 14;
 @Component({
   selector: 'app-cover-collage',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './cover-collage.component.html',
   styleUrl: './cover-collage.component.css'
 })

@@ -2,16 +2,13 @@
   <section class="hero-section" aria-labelledby="about-title">
     <div class="section-shell hero-layout">
       <div class="hero-copy">
-        <span class="eyebrow hero-eyebrow">About Soundrate</span>
-        <h1 id="about-title">Every album that stays with you, in one place.</h1>
-        <p>
-          Soundrate turns music discovery into memory. Explore the Deezer catalog, keep an
-          honest record of what you hear and connect through the albums worth talking about.
-        </p>
+        <span class="eyebrow hero-eyebrow">{{ 'about.eyebrow' | t }}</span>
+        <h1 id="about-title">{{ 'about.title' | t }}</h1>
+        <p>{{ 'about.intro' | t }}</p>
       </div>
 
       <figure class="deezer-partner">
-        <span>Music catalog powered by</span>
+        <span>{{ 'about.poweredBy' | t }}</span>
         <img src="/deezer-logo.jpeg" alt="Deezer" />
       </figure>
     </div>
@@ -20,9 +17,9 @@
   <section class="features-section" aria-labelledby="features-title">
     <div class="section-shell">
       <header class="section-heading features-heading">
-        <span class="eyebrow">Made for listeners</span>
-        <h2 id="features-title">What can you do on Soundrate?</h2>
-        <p>From the first discovery to the review you come back to years later.</p>
+        <span class="eyebrow">{{ 'about.featuresEyebrow' | t }}</span>
+        <h2 id="features-title">{{ 'about.featuresTitle' | t }}</h2>
+        <p>{{ 'about.featuresIntro' | t }}</p>
       </header>
 
       <div class="feature-list">
@@ -34,7 +31,7 @@
               </div>
               <img
                 [src]="feature.image"
-                [alt]="feature.imageAlt"
+                [alt]="feature.imageAlt | t"
                 loading="lazy"
                 (error)="hideUnavailableImage($event)"
               />
@@ -42,9 +39,9 @@
             </div>
 
             <div class="feature-copy">
-              <span class="eyebrow">{{ feature.label }}</span>
-              <h3>{{ feature.title }}</h3>
-              <p>{{ feature.description }}</p>
+              <span class="eyebrow">{{ feature.label | t }}</span>
+              <h3>{{ feature.title | t }}</h3>
+              <p>{{ feature.description | t }}</p>
             </div>
           </article>
         }
@@ -55,19 +52,19 @@
   <section class="technologies-section" aria-labelledby="technologies-title">
     <div class="section-shell">
       <header class="section-heading technologies-heading">
-        <span class="eyebrow">Under the hood</span>
-        <h2 id="technologies-title">The technology behind Soundrate.</h2>
-        <p>A full-stack project built with a modern, production-ready toolset.</p>
+        <span class="eyebrow">{{ 'about.techEyebrow' | t }}</span>
+        <h2 id="technologies-title">{{ 'about.techTitle' | t }}</h2>
+        <p>{{ 'about.techIntro' | t }}</p>
         <button type="button" class="marquee-toggle"
           [attr.aria-pressed]="isTechnologyMarqueePaused"
           (click)="toggleTechnologyMarquee()">
           <mat-icon aria-hidden="true">{{ isTechnologyMarqueePaused ? 'play_arrow' : 'pause' }}</mat-icon>
-          <span>{{ isTechnologyMarqueePaused ? 'Resume technologies' : 'Pause technologies' }}</span>
+          <span>{{ (isTechnologyMarqueePaused ? 'about.resumeTech' : 'about.pauseTech') | t }}</span>
         </button>
       </header>
     </div>
 
-    <div class="technology-marquee" aria-label="Technologies used by Soundrate">
+    <div class="technology-marquee" [attr.aria-label]="'about.techLabel' | t">
       <div class="technology-track" [class.is-paused]="isTechnologyMarqueePaused">
         <ul class="technology-group">
           @for (technology of technologies; track technology.name) {

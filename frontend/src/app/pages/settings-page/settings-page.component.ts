@@ -14,6 +14,9 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs/operators';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { LanguageSwitcherComponent } from '../../components/language-switcher/language-switcher.component';
 
 export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('newPassword');
@@ -32,8 +35,10 @@ const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
-],
+    MatProgressSpinnerModule,
+    TranslatePipe,
+    LanguageSwitcherComponent
+  ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
 })
@@ -64,7 +69,8 @@ export class SettingsPageComponent implements OnInit {
     private apiService: ApiService,
     private authService: AuthService,
     private feedback: FeedbackService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private i18n: I18nService
   ) { }
 
   ngOnInit(): void {
@@ -99,13 +105,13 @@ export class SettingsPageComponent implements OnInit {
         this.authService.updateCurrentUser(updatedUser);
         this.profileForm.markAsPristine();
         this.feedback.success(
-          'Profile updated',
-          `@${updatedUser.username}, your email and bio are up to date.`
+          this.i18n.t('settings.feedback.profileUpdated'),
+          this.i18n.t('settings.feedback.profileUpdatedMessage', { username: updatedUser.username })
         );
       },
       error: () => this.feedback.error(
-        'Couldn’t update your profile',
-        'That email may already be in use. Review it and try again.'
+        this.i18n.t('settings.feedback.profileError'),
+        this.i18n.t('settings.feedback.profileErrorMessage')
       )
     });
   }
@@ -119,12 +125,15 @@ export class SettingsPageComponent implements OnInit {
       finalize(() => this.isUpdatingPassword = false)
     ).subscribe({
       next: () => {
-        this.feedback.success('Password changed', 'Your account now uses the new password.');
+        this.feedback.success(
+          this.i18n.t('settings.feedback.passwordChanged'),
+          this.i18n.t('settings.feedback.passwordChangedMessage')
+        );
         this.passwordForm.reset();
       },
       error: () => this.feedback.error(
-        'Couldn’t change your password',
-        'Check your current password and try again.'
+        this.i18n.t('settings.feedback.passwordError'),
+        this.i18n.t('settings.feedback.passwordErrorMessage')
       )
     });
   }
@@ -134,10 +143,10 @@ export class SettingsPageComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete your account?',
-        message: 'You will be signed out and won\'t be able to sign in again. Your profile will no longer be visible. This can\'t be undone.',
-        confirmLabel: 'Delete account',
-        cancelLabel: 'Keep account'
+        title: this.i18n.t('settings.feedback.deleteTitle'),
+        message: this.i18n.t('settings.feedback.deleteMessage'),
+        confirmLabel: this.i18n.t('settings.feedback.deleteConfirm'),
+        cancelLabel: this.i18n.t('settings.feedback.deleteCancel')
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -148,15 +157,17 @@ export class SettingsPageComponent implements OnInit {
         ).subscribe({
           next: () => {
             this.feedback.success(
-              'Account deleted',
-              `Your Soundrate data was removed${this.currentUser?.username ? `, @${this.currentUser.username}` : ''}. We’ll miss you.`,
+              this.i18n.t('settings.feedback.accountDeleted'),
+              this.currentUser?.username
+                ? this.i18n.t('settings.feedback.accountDeletedMessage', { username: this.currentUser.username })
+                : this.i18n.t('settings.feedback.accountDeletedAnonymous'),
               5200
             );
             this.authService.logout();
           },
           error: () => this.feedback.error(
-            'Couldn’t delete your account',
-            'Nothing was removed. Please wait a moment and try again.',
+            this.i18n.t('settings.feedback.deleteError'),
+            this.i18n.t('settings.feedback.deleteErrorMessage'),
             5200
           )
         });
@@ -170,7 +181,10 @@ export class SettingsPageComponent implements OnInit {
       const file = target.files[0];
       // Same limit as the backend, checked here so the user knows before uploading.
       if (file.size > MAX_AVATAR_BYTES) {
-        this.feedback.error('Image too large', 'Choose a PNG or JPEG up to 5 MB.');
+        this.feedback.error(
+          this.i18n.t('settings.feedback.imageTooLarge'),
+          this.i18n.t('settings.feedback.imageTooLargeMessage')
+        );
         target.value = '';
         return;
       }
@@ -193,15 +207,18 @@ export class SettingsPageComponent implements OnInit {
       finalize(() => this.isUploadingAvatar = false)
     ).subscribe({
       next: (updatedUser) => {
-        this.feedback.success('Profile photo updated', 'Your new image is now visible across Soundrate.');
+        this.feedback.success(
+          this.i18n.t('settings.feedback.photoUpdated'),
+          this.i18n.t('settings.feedback.photoUpdatedMessage')
+        );
         this.currentUser = updatedUser;
         this.authService.updateCurrentUser(updatedUser);
         this.imagePreview = updatedUser.avatarUrl;
         this.selectedFile = null;
       },
       error: (err) => this.feedback.error(
-        'Couldn’t upload your photo',
-        err.status === 413 ? 'The image is too large. Choose a file up to 5 MB.' : 'Choose a valid image and try again.'
+        this.i18n.t('settings.feedback.uploadError'),
+        this.i18n.t(err.status === 413 ? 'settings.feedback.uploadTooLarge' : 'settings.feedback.uploadInvalid')
       )
     });
   }
@@ -212,15 +229,18 @@ export class SettingsPageComponent implements OnInit {
       finalize(() => this.isResettingAvatar = false)
     ).subscribe({
       next: (updatedUser) => {
-        this.feedback.success('Default photo restored', 'Your profile is using the Soundrate default image.');
+        this.feedback.success(
+          this.i18n.t('settings.feedback.photoReset'),
+          this.i18n.t('settings.feedback.photoResetMessage')
+        );
         this.currentUser = updatedUser;
         this.authService.updateCurrentUser(updatedUser);
         this.imagePreview = updatedUser.avatarUrl;
         this.selectedFile = null;
       },
       error: () => this.feedback.error(
-        'Couldn’t reset your photo',
-        'Your current profile image was kept. Please try again.'
+        this.i18n.t('settings.feedback.resetError'),
+        this.i18n.t('settings.feedback.resetErrorMessage')
       )
     });
   }

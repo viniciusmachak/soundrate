@@ -5,20 +5,19 @@
   @let artistIsPlaying = currentTrack?.artist?.id === artist.id && isPlaying;
   <div class="page">
     <div class="entity-hero" [style.--entity-accent]="accentColor">
-    <div class="entity-backdrop" aria-hidden="true"
-      [style.background-image]="'url(' + artist.picture_xl + ')'"></div>
+    <div class="entity-backdrop" aria-hidden="true"></div>
     <header class="entity-header">
       <img [src]="artist.picture_xl" [alt]="artist.name" class="artist-photo">
       <div class="entity-info">
-        <span class="entity-kind">Artist</span>
+        <span class="entity-kind">{{ 'common.artist' | t }}</span>
         <h1>{{ artist.name }}</h1>
         <p class="entity-meta">
-          <span>{{ formatCompact(artist.nb_fan) }} fans on Deezer</span>
+          <span>{{ 'artist.fansOnDeezer' | t: { fans: formatCompact(artist.nb_fan) } }}</span>
           <span aria-hidden="true">·</span>
-          <span>{{ artist.nb_album }} {{ artist.nb_album === 1 ? 'album' : 'albums' }}</span>
+          <span>{{ 'artist.albumCount' | t: { count: artist.nb_album } }}</span>
           @if (followersCount > 0) {
             <span aria-hidden="true">·</span>
-            <span>{{ followersCount | number }} {{ followersCount === 1 ? 'follower' : 'followers' }} on Soundrate</span>
+            <span>{{ 'artist.followerCount' | t: { count: followersCount } }}</span>
           }
         </p>
       </div>
@@ -28,8 +27,8 @@
       <button type="button" class="play-button"
         [disabled]="!hasPlayableTracks(page.popularTracks)"
         (click)="togglePopularPlayback(page.popularTracks)"
-        [attr.aria-label]="artistIsPlaying ? 'Pause popular previews' : 'Play popular previews'"
-        [title]="artistIsPlaying ? 'Pause' : 'Play popular previews'">
+        [attr.aria-label]="(artistIsPlaying ? 'artist.pausePopular' : 'artist.playPopular') | t"
+        [title]="(artistIsPlaying ? 'artist.pause' : 'artist.playPopular') | t">
         <mat-icon>{{ artistIsPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
       </button>
 
@@ -39,38 +38,38 @@
         [attr.aria-busy]="followRequestPending"
         [attr.aria-pressed]="isFollowed"
         (click)="toggleFollow(artist.id, artist.name)">
-        {{ isFollowed ? 'Following' : 'Follow' }}
+        {{ (isFollowed ? 'artist.following' : 'artist.follow') | t }}
       </button>
 
-      <app-deezer-button [href]="artist.link" label="Artist on Deezer" />
-      <button type="button" class="text-action" (click)="shareArtist(artist.name)">Share</button>
+      <app-deezer-button [href]="artist.link" [label]="'artist.onDeezer' | t" />
+      <button type="button" class="text-action" (click)="shareArtist(artist.name)">{{ 'artist.share' | t }}</button>
     </div>
 
     </div>
 
     <p class="community-line">
-      <span>Soundrate average
-        <strong>{{ page.community.discographyAverage !== null ? (page.community.discographyAverage | number:'1.1-1') : '—' }}</strong>
+      <span>{{ 'artist.soundrateAverage' | t }}
+        <strong>{{ page.community.discographyAverage !== null ? (page.community.discographyAverage | localNumber:'1.1-1') : '—' }}</strong>
       </span>
       <span aria-hidden="true">·</span>
-      <span>{{ page.community.ratingsCount | number }} ratings</span>
+      <span>{{ 'artist.ratingCount' | t: { count: page.community.ratingsCount } }}</span>
       <span aria-hidden="true">·</span>
-      <span>{{ page.community.reviewsCount | number }} reviews</span>
+      <span>{{ 'artist.reviewCount' | t: { count: page.community.reviewsCount } }}</span>
       @if (page.community.highestRatedAlbum; as top) {
         <span aria-hidden="true">·</span>
-        <span>Top rated: <a [routerLink]="['/album', top.id]">{{ top.title }}</a>
-          <span class="score">★ {{ top.community_score | number:'1.1-1' }}</span></span>
+        <span>{{ 'artist.topRated' | t }} <a [routerLink]="['/album', top.id]">{{ top.title }}</a>
+          <span class="score">★ {{ top.community_score | localNumber:'1.1-1' }}</span></span>
       }
     </p>
 
     @if (page.community.communityFavorites.length > 0) {
       <section class="page-section" aria-labelledby="favorites-title">
-        <h2 id="favorites-title" class="section-title">Community favorites</h2>
+        <h2 id="favorites-title" class="section-title">{{ 'artist.communityFavorites' | t }}</h2>
         <ul class="poster-grid">
           @for (album of page.community.communityFavorites; track album.id) {
             <li>
               <app-album-card [album]="album" [artistNameOverride]="artist.name" />
-              <span class="poster-note">★ {{ album.community_score | number:'1.1-1' }}</span>
+              <span class="poster-note">★ {{ album.community_score | localNumber:'1.1-1' }}</span>
             </li>
           }
         </ul>
@@ -79,7 +78,7 @@
 
     @if (page.community.recentReviews.length > 0) {
       <section class="page-section" aria-labelledby="recent-reviews-title">
-        <h2 id="recent-reviews-title" class="section-title">Recent reviews</h2>
+        <h2 id="recent-reviews-title" class="section-title">{{ 'artist.recentReviews' | t }}</h2>
         <ul class="row-list">
           @for (item of page.community.recentReviews; track item.review.id) {
             <li class="recent-review">
@@ -90,11 +89,11 @@
                 <div class="recent-review-header">
                   <a [routerLink]="['/album', item.album.id]" class="album-title">{{ item.album.title }}</a>
                   <app-star-rating [rating]="item.review.rating" [readonly]="true"
-                    [label]="'Rating by ' + item.review.author.username" />
+                    [label]="'artist.ratingBy' | t: { username: item.review.author.username }" />
                 </div>
                 <span class="muted">
-                  by <a [routerLink]="['/user', item.review.author.username]">{{ item.review.author.username }}</a>
-                  · {{ item.review.createdAt | date:'d MMM y' }}
+                  {{ 'artist.by' | t }} <a [routerLink]="['/user', item.review.author.username]">{{ item.review.author.username }}</a>
+                  · {{ item.review.createdAt | localDate:'d MMM y' }}
                 </span>
                 <p>{{ item.review.text }}</p>
               </div>
@@ -106,30 +105,30 @@
 
     <section class="page-section" aria-labelledby="discography-title">
       <h2 id="discography-title" class="section-title">
-        Discography
+        {{ 'artist.discography' | t }}
         <span class="sort-controls">
           <label>
-            <span class="visually-hidden">Sort by</span>
+            <span class="visually-hidden">{{ 'artist.sortBy' | t }}</span>
             <select [value]="selectedSort" (change)="onSortChange($any($event.target).value)">
-              <option value="release">Release date</option>
-              <option value="popularity">Popularity</option>
-              <option value="community">Community rating</option>
+              <option value="release">{{ 'artist.sort.release' | t }}</option>
+              <option value="popularity">{{ 'artist.sort.popularity' | t }}</option>
+              <option value="community">{{ 'artist.sort.community' | t }}</option>
             </select>
           </label>
           <button type="button" class="direction-toggle"
-            [attr.aria-label]="selectedDirection === 'desc' ? 'Sort ascending' : 'Sort descending'"
-            [title]="selectedDirection === 'desc' ? 'Descending' : 'Ascending'"
+            [attr.aria-label]="(selectedDirection === 'desc' ? 'artist.sortAscending' : 'artist.sortDescending') | t"
+            [title]="(selectedDirection === 'desc' ? 'artist.descending' : 'artist.ascending') | t"
             (click)="toggleSortDirection()">
             <mat-icon>{{ selectedDirection === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
           </button>
         </span>
       </h2>
 
-      <nav class="text-tabs" aria-label="Discography categories">
+      <nav class="text-tabs" [attr.aria-label]="'artist.categoriesLabel' | t">
         @for (category of categories; track category.value) {
           <button type="button" [class.active]="selectedCategory === category.value"
             [attr.aria-pressed]="selectedCategory === category.value"
-            (click)="selectCategory(category.value)">{{ category.label }}</button>
+            (click)="selectCategory(category.value)">{{ categoryLabel(category) }}</button>
         }
       </nav>
 
@@ -142,14 +141,14 @@
                 {{ formatRecordType(album.record_type) }}
                 @if (releaseYear(album.release_date); as year) { · {{ year }} }
                 @if (album.community_score !== null && album.community_score !== undefined) {
-                  <span class="score">★ {{ album.community_score | number:'1.1-1' }}</span>
+                  <span class="score">★ {{ album.community_score | localNumber:'1.1-1' }}</span>
                 }
               </span>
             </li>
           }
         </ul>
       } @else {
-        <p class="empty-state">No {{ categoryTitle.toLowerCase() }} to display.</p>
+        <p class="empty-state">{{ emptyCategoryMessage }}</p>
       }
 
       @if (page.albums && page.albums.totalElements > page.albums.size) {
@@ -159,6 +158,14 @@
         </mat-paginator>
       }
     </section>
+  </div>
+} @else if (loadState === 'not-found') {
+  <app-not-found-page kind="artist" />
+} @else if (loadState === 'error') {
+  <div class="page empty-state" role="alert">
+    <strong>{{ 'loadError.title' | t }}</strong>
+    <p>{{ 'loadError.artist' | t }}</p>
+    <button mat-stroked-button type="button" (click)="retryLoad()">{{ 'common.tryAgain' | t }}</button>
   </div>
 } @else {
   <app-skeleton-loader variant="profile" [count]="6" />

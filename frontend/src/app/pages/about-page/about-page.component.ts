@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
 
 interface AboutFeature {
   icon: string;
   image: string;
-  imageAlt: string;
-  label: string;
-  title: string;
-  description: string;
+  imageAlt: TranslationKey;
+  label: TranslationKey;
+  title: TranslationKey;
+  description: TranslationKey;
   reversed: boolean;
 }
 
@@ -19,7 +21,7 @@ interface Technology {
 @Component({
   selector: 'app-about-page',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, TranslatePipe],
   templateUrl: './about-page.component.html',
   styleUrl: './about-page.component.css',
 })
@@ -30,41 +32,37 @@ export class AboutPageComponent {
     {
       icon: 'travel_explore',
       image: '/albums-wallpaper.png',
-      imageAlt: 'A collage of album covers',
-      label: 'Discover',
-      title: 'Find the album you did not know you needed.',
-      description:
-        'Search a world of artists and records through the Deezer catalog, then follow your curiosity wherever it leads.',
+      imageAlt: 'about.features.discover.imageAlt',
+      label: 'about.features.discover.label',
+      title: 'about.features.discover.title',
+      description: 'about.features.discover.description',
       reversed: false,
     },
     {
       icon: 'star',
       image: '/rate-image.png',
-      imageAlt: 'A listener rating an album on Soundrate',
-      label: 'Rate',
-      title: 'Turn every listen into a memory.',
-      description:
-        'Give albums and tracks an honest rating, write down what moved you and build a lasting history of your taste.',
+      imageAlt: 'about.features.rate.imageAlt',
+      label: 'about.features.rate.label',
+      title: 'about.features.rate.title',
+      description: 'about.features.rate.description',
       reversed: true,
     },
     {
       icon: 'forum',
       image: '/share-image.png',
-      imageAlt: 'Listeners sharing their music opinions',
-      label: 'Share',
-      title: 'Make music a conversation.',
-      description:
-        'Publish reviews, like the thoughts that resonate and follow listeners who always seem to find something special.',
+      imageAlt: 'about.features.share.imageAlt',
+      label: 'about.features.share.label',
+      title: 'about.features.share.title',
+      description: 'about.features.share.description',
       reversed: false,
     },
     {
       icon: 'bookmark',
       image: '/listen-later.png',
-      imageAlt: 'Albums saved to listen to later',
-      label: 'Save for later',
-      title: 'Keep your next listen within reach.',
-      description:
-        'Save promising albums as you discover them and come back when you have the time to give each one a proper listen.',
+      imageAlt: 'about.features.later.imageAlt',
+      label: 'about.features.later.label',
+      title: 'about.features.later.title',
+      description: 'about.features.later.description',
       reversed: true,
     },
   ];

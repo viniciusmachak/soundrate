@@ -463,22 +463,9 @@ mat-paginator,
   left: calc(50% - 50vw);
   z-index: -1;
   overflow: hidden;
-  background-color: color-mix(in srgb, var(--entity-accent) 92%, var(--background-dark));
-  background-position: center;
-  background-size: 0 0;
+  /* Solid dominant color of the cover/photo, already darkened for white text. */
+  background-color: var(--entity-accent);
   transition: background-color 0.4s ease;
-}
-
-.entity-backdrop::before {
-  position: absolute;
-  inset: -60px;
-  background-image: inherit;
-  background-position: center;
-  background-size: cover;
-  content: '';
-  filter: blur(60px) saturate(1.8);
-  mix-blend-mode: soft-light;
-  opacity: 0.7;
 }
 
 /* Fade into the page background so the tracklist sits on the base color. */

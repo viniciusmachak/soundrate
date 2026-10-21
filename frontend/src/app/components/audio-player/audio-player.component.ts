@@ -9,6 +9,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormatDurationPipe } from '../../pipes/format-duration.pipe';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
 
 @Component({
   selector: 'app-audio-player',
@@ -19,7 +21,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    FormatDurationPipe
+    FormatDurationPipe,
+    TranslatePipe
   ],
   templateUrl: './audio-player.component.html',
   styleUrl: './audio-player.component.css',
@@ -35,7 +38,7 @@ export class AudioPlayerComponent {
   volume$: Observable<number>;
   muted$: Observable<boolean>;
   isLoading$: Observable<boolean>;
-  error$: Observable<string | null>;
+  error$: Observable<TranslationKey | null>;
   queueExpanded = false;
 
   constructor(public audioService: AudioService, destroyRef: DestroyRef) {

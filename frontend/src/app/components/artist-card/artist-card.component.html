@@ -1,5 +1,5 @@
 <a [routerLink]="['/artist', artist.id]" class="entity" [title]="artist.name">
   <img [src]="artist.picture_medium" [alt]="artist.name" class="entity-image" loading="lazy">
   <span class="entity-name">{{ artist.name }}</span>
-  <span class="entity-type">Artist</span>
+  <span class="entity-type">{{ 'common.artist' | t }}</span>
 </a>

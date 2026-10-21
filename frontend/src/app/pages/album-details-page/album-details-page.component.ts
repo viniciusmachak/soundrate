@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, finalize, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AlbumDetails } from '../../models/album-details.model';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { AlbumReview } from '../../models/review.model';
 import { AudioService } from '../../services/audio.service';
-import { CommonModule, DecimalPipe, SlicePipe } from '@angular/common';
+import { CommonModule, SlicePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -21,6 +21,13 @@ import { AlbumCoverDialogComponent } from '../../components/album-cover-dialog/a
 import { DeezerAlbum, DeezerContributor, DeezerTrack } from '../../models/deezer.model';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { LocalNumberPipe } from '../../i18n/locale-pipes';
+import { TranslationKey } from '../../i18n/translation.types';
+import { TranslatedTitleStrategy } from '../../i18n/translated-title.strategy';
+import { NotFoundPageComponent } from '../not-found-page/not-found-page.component';
+import { isNotFoundError } from '../../utils/http-errors';
 
 interface AlbumParticipant {
   id: number | null;
@@ -41,7 +48,8 @@ import { extractBackdropColor } from '../../utils/dominant-color';
     CommonModule, RouterLink, MatIconModule,
     StarRatingComponent, MatButtonModule, MatDialogModule,
     ReviewListComponent, FormatDurationPipe,
-    DecimalPipe, SlicePipe, SkeletonLoaderComponent, DeezerButtonComponent
+    SlicePipe, SkeletonLoaderComponent, DeezerButtonComponent,
+    TranslatePipe, LocalNumberPipe, NotFoundPageComponent
   ],
   templateUrl: './album-details-page.component.html',
   styleUrl: './album-details-page.component.css',
@@ -57,6 +65,7 @@ export class AlbumDetailsPageComponent implements OnInit {
   albumContributors: AlbumParticipant[] = [];
   deletingReviewIds: ReadonlySet<number> = new Set<number>();
   isSavingReview = false;
+  loadState: 'loading' | 'loaded' | 'not-found' | 'error' = 'loading';
 
   constructor(
     private route: ActivatedRoute,
@@ -66,18 +75,27 @@ export class AlbumDetailsPageComponent implements OnInit {
     public audioService: AudioService,
     private dialog: MatDialog,
     private destroyRef: DestroyRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private i18n: I18nService,
+    private titleStrategy: TranslatedTitleStrategy
   ) { }
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
-      switchMap(params => {
-        const id = params.get('id');
-        if (!id) throw new Error('Album ID not found');
-        this.albumId = id;
-        return this.apiService.getAlbumDetails(this.albumId);
-      })
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(details => this.setAlbumDetails(details));
+      tap(params => {
+        this.albumId = params.get('id') ?? '';
+        this.albumDetailsSubject.next(null);
+        this.setLoadState('loading');
+      }),
+      switchMap(() => this.fetchAlbumDetails()),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(details => this.setAlbumDetails(details));
+  }
+
+  retryLoad(): void {
+    this.setLoadState('loading');
+    this.fetchAlbumDetails().pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(details => this.setAlbumDetails(details));
   }
 
   loadAlbumDetails(): void {
@@ -104,14 +122,15 @@ export class AlbumDetailsPageComponent implements OnInit {
 
     apiCall.subscribe({
       next: () => this.feedback.success(
-        isCurrentlyLiked ? 'Removed from your likes' : 'Added to your likes',
-        `${currentDetails.deezerDetails.title} ${isCurrentlyLiked ? 'is no longer' : 'is now'} in your liked albums.`
+        this.i18n.t(isCurrentlyLiked ? 'album.feedback.likeRemoved' : 'album.feedback.likeAdded'),
+        this.i18n.t(isCurrentlyLiked ? 'album.feedback.likeRemovedMessage' : 'album.feedback.likeAddedMessage',
+          { title: currentDetails.deezerDetails.title })
       ),
       error: () => {
         this.albumDetailsSubject.next(currentDetails);
         this.feedback.error(
-          'Couldn’t update your likes',
-          `${currentDetails.deezerDetails.title} kept its previous like status.`
+          this.i18n.t('album.feedback.likeError'),
+          this.i18n.t('album.feedback.likeErrorMessage', { title: currentDetails.deezerDetails.title })
         );
       }
     });
@@ -131,14 +150,15 @@ export class AlbumDetailsPageComponent implements OnInit {
 
     apiCall.subscribe({
       next: () => this.feedback.success(
-        isOnList ? 'Removed from Listen Later' : 'Saved for later',
-        `${currentDetails.deezerDetails.title} ${isOnList ? 'was removed from' : 'was added to'} your listening queue.`
+        this.i18n.t(isOnList ? 'album.feedback.listenLaterRemoved' : 'album.feedback.listenLaterAdded'),
+        this.i18n.t(isOnList ? 'album.feedback.listenLaterRemovedMessage' : 'album.feedback.listenLaterAddedMessage',
+          { title: currentDetails.deezerDetails.title })
       ),
       error: () => {
         this.albumDetailsSubject.next(currentDetails);
         this.feedback.error(
-          'Couldn’t update Listen Later',
-          `${currentDetails.deezerDetails.title} kept its previous list status.`
+          this.i18n.t('album.feedback.listenLaterError'),
+          this.i18n.t('album.feedback.listenLaterErrorMessage', { title: currentDetails.deezerDetails.title })
         );
       }
     });
@@ -159,16 +179,16 @@ export class AlbumDetailsPageComponent implements OnInit {
       this.apiService.deleteRating(this.albumId).subscribe({
         next: () => {
           this.feedback.success(
-            'Rating removed',
-            `Your rating for ${currentDetails.deezerDetails.title} was cleared.`
+            this.i18n.t('album.feedback.ratingRemoved'),
+            this.i18n.t('album.feedback.ratingRemovedMessage', { title: currentDetails.deezerDetails.title })
           );
           this.loadAlbumDetails();
         },
         error: (err) => {
           this.albumDetailsSubject.next({ ...currentDetails, currentUserRating: oldRating });
           this.feedback.error(
-            'Couldn’t remove your rating',
-            `Your previous rating for ${currentDetails.deezerDetails.title} was restored.`
+            this.i18n.t('album.feedback.ratingRemoveError'),
+            this.i18n.t('album.feedback.ratingRestoredMessage', { title: currentDetails.deezerDetails.title })
           );
         }
       });
@@ -177,16 +197,16 @@ export class AlbumDetailsPageComponent implements OnInit {
       this.apiService.rateAlbumOrTrack(ratingDto).subscribe({
         next: () => {
           this.feedback.success(
-            'Rating saved',
-            `You gave ${currentDetails.deezerDetails.title} ${newRating} out of 5 stars.`
+            this.i18n.t('album.feedback.ratingSaved'),
+            this.i18n.t('album.feedback.ratingSavedMessage', { title: currentDetails.deezerDetails.title, rating: newRating })
           );
           this.loadAlbumDetails();
         },
         error: (err) => {
           this.albumDetailsSubject.next({ ...currentDetails, currentUserRating: oldRating });
           this.feedback.error(
-            'Couldn’t save your rating',
-            `Your previous rating for ${currentDetails.deezerDetails.title} was restored.`
+            this.i18n.t('album.feedback.ratingSaveError'),
+            this.i18n.t('album.feedback.ratingRestoredMessage', { title: currentDetails.deezerDetails.title })
           );
         }
       });
@@ -197,25 +217,37 @@ export class AlbumDetailsPageComponent implements OnInit {
     const currentDetails = this.albumDetailsSubject.getValue();
     if (!currentDetails) return;
     const trackTitle = currentDetails.deezerDetails.tracks.data.find(track => track.id.toString() === trackId)?.title
-      ?? 'this track';
+      ?? this.i18n.t('album.thisTrack');
 
     if (newRating === null) {
       this.apiService.deleteRating(undefined, trackId).subscribe({
         next: () => {
-          this.feedback.success('Track rating removed', `Your rating for ${trackTitle} was cleared.`);
+          this.feedback.success(
+            this.i18n.t('album.feedback.trackRatingRemoved'),
+            this.i18n.t('album.feedback.ratingRemovedMessage', { title: trackTitle })
+          );
           this.loadAlbumDetails();
         },
         error: (err) => {
-          this.feedback.error('Couldn’t remove the track rating', `${trackTitle} kept its previous rating.`);
+          this.feedback.error(
+            this.i18n.t('album.feedback.trackRatingRemoveError'),
+            this.i18n.t('album.feedback.trackRatingKeptMessage', { title: trackTitle })
+          );
         }
       });
     } else {
       this.apiService.rateAlbumOrTrack({ albumId: this.albumId, trackId: trackId, rating: newRating }).subscribe({
         next: () => {
-          this.feedback.success('Track rating saved', `You gave ${trackTitle} ${newRating} out of 5 stars.`);
+          this.feedback.success(
+            this.i18n.t('album.feedback.trackRatingSaved'),
+            this.i18n.t('album.feedback.ratingSavedMessage', { title: trackTitle, rating: newRating })
+          );
           this.loadAlbumDetails();
         },
-        error: () => this.feedback.error('Couldn’t save the track rating', `Please try rating ${trackTitle} again.`)
+        error: () => this.feedback.error(
+          this.i18n.t('album.feedback.trackRatingSaveError'),
+          this.i18n.t('album.feedback.trackRatingRetryMessage', { title: trackTitle })
+        )
       });
     }
   }
@@ -226,8 +258,8 @@ export class AlbumDetailsPageComponent implements OnInit {
 
     if (!currentDetails.currentUserRating || currentDetails.currentUserRating === 0) {
       this.feedback.warning(
-        'Rate the album first',
-        `Add a star rating for ${currentDetails.deezerDetails.title} before writing your review.`
+        this.i18n.t('album.feedback.rateFirst'),
+        this.i18n.t('album.feedback.rateFirstMessage', { title: currentDetails.deezerDetails.title })
       );
       return;
     }
@@ -257,8 +289,8 @@ export class AlbumDetailsPageComponent implements OnInit {
         this.isSavingReview = true;
         this.changeDetectorRef.markForCheck();
         const savingFeedback = this.feedback.loading(
-          reviewToEdit ? 'Updating your review' : 'Publishing your review',
-          `Saving your thoughts on ${currentDetails.deezerDetails.title}…`
+          this.i18n.t(reviewToEdit ? 'album.feedback.updatingReview' : 'album.feedback.publishingReview'),
+          this.i18n.t('album.feedback.savingReviewMessage', { title: currentDetails.deezerDetails.title })
         );
 
         apiCall.pipe(
@@ -271,14 +303,14 @@ export class AlbumDetailsPageComponent implements OnInit {
         ).subscribe({
           next: () => {
             this.feedback.success(
-              reviewToEdit ? 'Review updated' : 'Review published',
-              `Your review of ${currentDetails.deezerDetails.title} is now part of the community.`
+              this.i18n.t(reviewToEdit ? 'album.feedback.reviewUpdated' : 'album.feedback.reviewPublished'),
+              this.i18n.t('album.feedback.reviewSavedMessage', { title: currentDetails.deezerDetails.title })
             );
             this.loadAlbumDetails();
           },
           error: () => this.feedback.error(
-            reviewToEdit ? 'Couldn’t update your review' : 'Couldn’t publish your review',
-            'Your text is safe in the editor. Please try again.'
+            this.i18n.t(reviewToEdit ? 'album.feedback.reviewUpdateError' : 'album.feedback.reviewPublishError'),
+            this.i18n.t('album.feedback.reviewSaveErrorMessage')
           )
         });
       }
@@ -293,9 +325,9 @@ export class AlbumDetailsPageComponent implements OnInit {
       maxWidth: 'calc(100vw - 32px)',
       panelClass: ['review-dialog-container', 'review-confirmation-dialog'],
       data: {
-        title: 'Delete review?',
-        message: 'This review will be permanently removed. This action cannot be undone.',
-        confirmLabel: 'Delete review'
+        title: this.i18n.t('album.feedback.deleteReviewTitle'),
+        message: this.i18n.t('album.feedback.deleteReviewMessage'),
+        confirmLabel: this.i18n.t('album.feedback.deleteReviewConfirm')
       }
     });
 
@@ -306,8 +338,8 @@ export class AlbumDetailsPageComponent implements OnInit {
 
       this.deletingReviewIds = new Set([...this.deletingReviewIds, reviewId]);
       const deletingFeedback = this.feedback.loading(
-        'Deleting your review',
-        'Removing it from the Soundrate community…'
+        this.i18n.t('album.feedback.deletingReview'),
+        this.i18n.t('album.feedback.deletingReviewMessage')
       );
 
       this.apiService.deleteReview(reviewId).pipe(
@@ -321,12 +353,15 @@ export class AlbumDetailsPageComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       ).subscribe({
         next: () => {
-          this.feedback.success('Review deleted', 'Your review was permanently removed.');
+          this.feedback.success(
+            this.i18n.t('album.feedback.reviewDeleted'),
+            this.i18n.t('album.feedback.reviewDeletedMessage')
+          );
           this.loadAlbumDetails();
         },
         error: () => this.feedback.error(
-          'Couldn’t delete your review',
-          'The review is still visible and no content was removed.'
+          this.i18n.t('album.feedback.reviewDeleteError'),
+          this.i18n.t('album.feedback.reviewDeleteErrorMessage')
         )
       });
     });
@@ -364,11 +399,44 @@ export class AlbumDetailsPageComponent implements OnInit {
     return tracks.some(track => track.readable !== false && Boolean(track.preview));
   }
 
+  albumMinutes(durationInSeconds: number): number {
+    return Math.round(durationInSeconds / 60);
+  }
+
   getUserRatingForTrack(trackId: string): number {
     return this.trackRatingsById.get(trackId) ?? 0;
   }
 
+  /** Translates the role names built in `collectAlbumContributors` and Deezer's own (`Main`, `Featured`). */
+  contributorRole(role: string): string {
+    const keys: Record<string, TranslationKey> = {
+      'main artist': 'album.roles.mainArtist',
+      main: 'album.roles.mainArtist',
+      'featured artist': 'album.roles.featuredArtist',
+      featured: 'album.roles.featuredArtist',
+      contributor: 'album.roles.contributor'
+    };
+    const key = keys[role.toLowerCase()];
+    return key ? this.i18n.t(key) : role;
+  }
+
+  private fetchAlbumDetails() {
+    return this.apiService.getAlbumDetails(this.albumId).pipe(
+      catchError(error => {
+        this.setLoadState(isNotFoundError(error) ? 'not-found' : 'error');
+        return EMPTY;
+      })
+    );
+  }
+
+  private setLoadState(state: AlbumDetailsPageComponent['loadState']): void {
+    this.loadState = state;
+    this.titleStrategy.setPageTitle(state === 'not-found' ? 'titles.albumNotFound' : null);
+    this.changeDetectorRef.markForCheck();
+  }
+
   private setAlbumDetails(details: AlbumDetails): void {
+    this.loadState = 'loaded';
     this.trackRatingsById = new Map(
       details.currentUserTrackRatings.map(rating => [rating.trackId, rating.rating])
     );

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 export interface AlbumCoverDialogData {
   imageUrl: string;
@@ -12,7 +13,7 @@ export interface AlbumCoverDialogData {
 @Component({
   selector: 'app-album-cover-dialog',
   standalone: true,
-  imports: [MatButtonModule, MatDialogModule, MatIconModule],
+  imports: [MatButtonModule, MatDialogModule, MatIconModule, TranslatePipe],
   templateUrl: './album-cover-dialog.component.html',
   styleUrl: './album-cover-dialog.component.css'
 })

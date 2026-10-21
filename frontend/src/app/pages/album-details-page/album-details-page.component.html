@@ -5,17 +5,16 @@
   @let albumIsPlaying = currentTrack?.album?.id === album.id && isPlaying;
   <div class="page">
     <div class="entity-hero" [style.--entity-accent]="accentColor">
-    <div class="entity-backdrop" aria-hidden="true"
-      [style.background-image]="'url(' + getAlbumCover(details) + ')'"></div>
+    <div class="entity-backdrop" aria-hidden="true"></div>
     <header class="entity-header">
       <button type="button" class="cover-button" (click)="openAlbumCover(details)"
-        [attr.aria-label]="'Open cover of ' + album.title">
-        <img [src]="getAlbumCover(details)" [alt]="'Cover of ' + album.title" class="cover">
+        [attr.aria-label]="'album.openCover' | t: { title: album.title }">
+        <img [src]="getAlbumCover(details)" [alt]="'album.coverOf' | t: { title: album.title }" class="cover">
       </button>
 
       <div class="entity-info">
         <span class="entity-kind">
-          Album
+          {{ 'common.album' | t }}
           @if (album.release_date) { · {{ album.release_date | slice:0:4 }} }
         </span>
         <h1>{{ album.title }}</h1>
@@ -27,21 +26,21 @@
             </a>
             <span aria-hidden="true">·</span>
           }
-          <span>{{ album.tracks.data.length }} {{ album.tracks.data.length === 1 ? 'track' : 'tracks' }}</span>
+          <span>{{ 'album.trackCount' | t: { count: album.tracks.data.length } }}</span>
           <span aria-hidden="true">·</span>
-          <span>{{ album.duration / 60 | number:'1.0-0' }} min</span>
+          <span>{{ 'album.minutes' | t: { count: albumMinutes(album.duration) } }}</span>
           @if (album.explicit_lyrics) {
             <span aria-hidden="true">·</span>
-            <span>Explicit</span>
+            <span>{{ 'common.explicit' | t }}</span>
           }
         </p>
         <div class="community-rating">
           <app-star-rating [rating]="details.communityScore || 0" [readonly]="true"
-            [label]="'Community rating for ' + album.title" />
-          <strong>{{ details.communityScore | number:'1.1-1' }}</strong>
+            [label]="'album.communityRatingFor' | t: { title: album.title }" />
+          <strong>{{ details.communityScore | localNumber:'1.1-1' }}</strong>
           <span class="muted">
-            {{ details.ratingsCount }} {{ details.ratingsCount === 1 ? 'rating' : 'ratings' }}
-            · {{ details.likesCount }} {{ details.likesCount === 1 ? 'like' : 'likes' }}
+            {{ 'album.ratingCount' | t: { count: details.ratingsCount } }}
+            · {{ 'album.likeCount' | t: { count: details.likesCount } }}
           </span>
         </div>
       </div>
@@ -51,8 +50,8 @@
       <button type="button" class="play-button"
         [disabled]="!hasPlayableTracks(album.tracks.data)"
         (click)="toggleAlbumPlayback(album.tracks.data)"
-        [attr.aria-label]="(albumIsPlaying ? 'Pause previews of ' : 'Play previews of ') + album.title"
-        [title]="albumIsPlaying ? 'Pause previews' : 'Play Deezer previews'">
+        [attr.aria-label]="(albumIsPlaying ? 'album.pausePreviewsOf' : 'album.playPreviewsOf') | t: { title: album.title }"
+        [title]="(albumIsPlaying ? 'album.pausePreviews' : 'album.playPreviews') | t">
         <mat-icon>{{ albumIsPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
       </button>
 
@@ -60,15 +59,15 @@
         <button mat-icon-button type="button" class="icon-action" (click)="toggleLike()"
           [class.active]="details.isLikedByCurrentUser"
           [attr.aria-pressed]="details.isLikedByCurrentUser"
-          [attr.aria-label]="details.isLikedByCurrentUser ? 'Unlike album' : 'Like album'"
-          [title]="details.isLikedByCurrentUser ? 'Unlike' : 'Like'">
+          [attr.aria-label]="(details.isLikedByCurrentUser ? 'album.unlikeAlbum' : 'album.likeAlbum') | t"
+          [title]="(details.isLikedByCurrentUser ? 'album.unlike' : 'album.like') | t">
           <mat-icon>{{ details.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}</mat-icon>
         </button>
         <button mat-icon-button type="button" class="icon-action" (click)="toggleListenLater()"
           [class.active]="details.isOnListenLaterList"
           [attr.aria-pressed]="details.isOnListenLaterList"
-          [attr.aria-label]="details.isOnListenLaterList ? 'Remove from Listen later' : 'Add to Listen later'"
-          [title]="details.isOnListenLaterList ? 'On your Listen later list' : 'Listen later'">
+          [attr.aria-label]="(details.isOnListenLaterList ? 'album.removeFromListenLater' : 'album.addToListenLater') | t"
+          [title]="(details.isOnListenLaterList ? 'album.onListenLater' : 'album.listenLater') | t">
           <mat-icon>{{ details.isOnListenLaterList ? 'bookmark' : 'bookmark_border' }}</mat-icon>
         </button>
       }
@@ -79,21 +78,21 @@
         @if (!details.currentUserReview) {
           <button mat-stroked-button type="button" (click)="openReviewDialog()"
             [disabled]="isSavingReview" [attr.aria-busy]="isSavingReview">
-            Write a review
+            {{ 'album.writeReview' | t }}
           </button>
         }
 
         <div class="your-rating">
           <span class="muted">
-            {{ details.currentUserTrackRatings.length > 0 ? 'Your rating (from tracks)' : 'Your rating' }}
+            {{ (details.currentUserTrackRatings.length > 0 ? 'album.yourRatingFromTracks' : 'album.yourRating') | t }}
           </span>
           <app-star-rating [rating]="details.currentUserRating || 0"
-            [label]="'Your rating for ' + album.title"
+            [label]="'album.yourRatingFor' | t: { title: album.title }"
             (ratingChange)="onAlbumRatingChanged($event)">
           </app-star-rating>
           @if (details.currentUserRating) {
             <button mat-icon-button type="button" class="clear-rating" (click)="onAlbumRatingChanged(null)"
-              aria-label="Clear your rating" title="Clear your rating">
+              [attr.aria-label]="'album.clearRating' | t" [title]="'album.clearRating' | t">
               <mat-icon>close</mat-icon>
             </button>
           }
@@ -104,7 +103,7 @@
     </div>
 
     <section class="page-section" aria-labelledby="tracks-title">
-      <h2 id="tracks-title" class="section-title">Tracks</h2>
+      <h2 id="tracks-title" class="section-title">{{ 'album.tracks' | t }}</h2>
       @if (album.tracks.data.length > 0) {
         <ol class="row-list track-list">
           @for (track of album.tracks.data; track track.id; let i = $index) {
@@ -114,7 +113,7 @@
                 @if (track.preview && track.readable !== false) {
                   <button type="button" class="track-play"
                     (click)="toggleTrackPlayback(album.tracks.data, track)"
-                    [attr.aria-label]="(trackIsCurrent && isPlaying ? 'Pause ' : 'Play ') + track.title">
+                    [attr.aria-label]="(trackIsCurrent && isPlaying ? 'album.pauseTrack' : 'album.playTrack') | t: { title: track.title }">
                     <span class="track-number">{{ i + 1 }}</span>
                     <mat-icon>{{ trackIsCurrent && isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
                   </button>
@@ -125,7 +124,7 @@
               <span class="row-copy">
                 <strong>{{ track.title_short || track.title }}</strong>
                 <small>
-                  @if (track.explicit_lyrics) { <span class="explicit" title="Explicit">E</span> }
+                  @if (track.explicit_lyrics) { <span class="explicit" [title]="'common.explicit' | t">E</span> }
                   @if (track.artist) {
                     <a [routerLink]="['/artist', track.artist.id]">{{ track.artist.name }}</a>
                   }
@@ -134,26 +133,26 @@
               @if (authService.isAuthenticated()) {
                 <app-star-rating class="track-rating" [id]="'track-rating-' + track.id"
                   [rating]="getUserRatingForTrack(track.id.toString())"
-                  [label]="'Rating for ' + track.title"
+                  [label]="'album.ratingFor' | t: { title: track.title }"
                   (ratingChange)="onTrackRatingChanged($event, track.id.toString())">
                 </app-star-rating>
               }
               <span class="row-meta">{{ track.duration * 1000 | formatDuration }}</span>
               <a class="track-link" [href]="track.link || album.link" target="_blank" rel="noopener noreferrer"
-                [attr.aria-label]="'Listen to ' + track.title + ' on Deezer'" title="Listen on Deezer">
+                [attr.aria-label]="'album.listenTrackOnDeezer' | t: { title: track.title }" [title]="'common.listenOnDeezer' | t">
                 <mat-icon>open_in_new</mat-icon>
               </a>
             </li>
           }
         </ol>
       } @else {
-        <p class="empty-state">The tracklist for this album is not available.</p>
+        <p class="empty-state">{{ 'album.noTracklist' | t }}</p>
       }
     </section>
 
     <section class="page-section" aria-labelledby="reviews-title">
       <h2 id="reviews-title" class="section-title">
-        Reviews <span>{{ details.userReviews.length }}</span>
+        {{ 'album.reviews' | t }} <span>{{ details.userReviews.length }}</span>
       </h2>
       <app-review-list [reviews]="details.userReviews" [currentUser]="authService.currentUserValue"
         [deletingReviewIds]="deletingReviewIds" [reviewMutationPending]="isSavingReview"
@@ -163,14 +162,14 @@
 
     @if (album.label || album.copyright || (album.genres?.data?.length ?? 0) > 0 || albumContributors.length > 0) {
       <section class="page-section" aria-labelledby="details-title">
-        <h2 id="details-title" class="section-title">Details</h2>
+        <h2 id="details-title" class="section-title">{{ 'album.details' | t }}</h2>
         <dl class="details-list">
           @if (album.label) {
-            <div><dt>Label</dt><dd>{{ album.label }}</dd></div>
+            <div><dt>{{ 'album.label' | t }}</dt><dd>{{ album.label }}</dd></div>
           }
           @if ((album.genres?.data?.length ?? 0) > 0) {
             <div>
-              <dt>Genres</dt>
+              <dt>{{ 'album.genres' | t }}</dt>
               <dd>
                 @for (genre of album.genres!.data; track genre.id; let last = $last) {
                   {{ genre.name }}{{ last ? '' : ', ' }}
@@ -180,7 +179,7 @@
           }
           @if (albumContributors.length > 0) {
             <div>
-              <dt>Credits</dt>
+              <dt>{{ 'album.credits' | t }}</dt>
               <dd>
                 @for (contributor of albumContributors; track contributor.id ?? contributor.name; let last = $last) {
                   @if (contributor.id !== null) {
@@ -188,17 +187,25 @@
                   } @else {
                     {{ contributor.name }}
                   }
-                  @if (contributor.role) { <span class="muted">({{ contributor.role }})</span> }{{ last ? '' : ', ' }}
+                  @if (contributor.role) { <span class="muted">({{ contributorRole(contributor.role) }})</span> }{{ last ? '' : ', ' }}
                 }
               </dd>
             </div>
           }
           @if (album.copyright) {
-            <div><dt>Copyright</dt><dd class="muted">{{ album.copyright }}</dd></div>
+            <div><dt>{{ 'album.copyright' | t }}</dt><dd class="muted">{{ album.copyright }}</dd></div>
           }
         </dl>
       </section>
     }
+  </div>
+} @else if (loadState === 'not-found') {
+  <app-not-found-page kind="album" />
+} @else if (loadState === 'error') {
+  <div class="page empty-state" role="alert">
+    <strong>{{ 'loadError.title' | t }}</strong>
+    <p>{{ 'loadError.album' | t }}</p>
+    <button mat-stroked-button type="button" (click)="retryLoad()">{{ 'common.tryAgain' | t }}</button>
   </div>
 } @else {
   <app-skeleton-loader variant="detail" [count]="6" />

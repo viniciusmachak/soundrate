@@ -12,6 +12,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { finalize } from 'rxjs/operators';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
+import { translateApiError } from '../../utils/http-errors';
 
 @Component({
   selector: 'app-login-page',
@@ -24,14 +28,16 @@ import { FeedbackService } from '../../services/feedback.service';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIcon
-],
+    MatIcon,
+    TranslatePipe
+  ],
   templateUrl: './login-page.component.html',
   styleUrl: '../auth-page.shared.css'
 })
 export class LoginPageComponent {
   loginForm: FormGroup;
-  errorMessage: string | null = null;
+  /** Kept as the raw error so the message follows language changes. */
+  private failure: { error: unknown; fallback: TranslationKey } | null = null;
   hide = true;
   isLoading = false;
 
@@ -39,13 +45,18 @@ export class LoginPageComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private feedback: FeedbackService
+    private feedback: FeedbackService,
+    private i18n: I18nService
   ) {
 
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
+  }
+
+  get errorMessage(): string | null {
+    return this.failure ? translateApiError(this.i18n, this.failure.error, this.failure.fallback) : null;
   }
 
   onSubmit(): void {
@@ -56,18 +67,20 @@ export class LoginPageComponent {
     }
 
     this.isLoading = true;
-    this.errorMessage = null;
+    this.failure = null;
     this.authService.login(this.loginForm.value).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: () => {
         const username = this.authService.currentUserValue?.username ?? this.loginForm.value.username;
-        this.feedback.success('Welcome back', `Signed in as @${username}. Your music is waiting.`);
+        this.feedback.success(
+          this.i18n.t('auth.login.welcomeBack'),
+          this.i18n.t('auth.login.welcomeBackMessage', { username })
+        );
       },
       error: (err) => {
-        this.errorMessage = err.status === 429
-          ? err.error?.message ?? 'Too many attempts. Please wait a minute and try again.'
-          : 'Invalid login or password. Please try again.';
+        // Any failure other than a rate limit is reported as bad credentials.
+        this.failure = { error: err.status === 429 ? err : null, fallback: 'auth.login.invalid' };
       }
     });
   }

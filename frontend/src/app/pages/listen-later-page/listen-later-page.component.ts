@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AlbumCardComponent } from '../../components/album-card/album-card.component';
 import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader.component';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TRANSLATED_PAGINATOR } from '../../i18n/paginator-intl';
 
 @Component({
   selector: 'app-listen-later-page',
@@ -16,8 +18,10 @@ import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skelet
     CommonModule,
     MatPaginatorModule,
     AlbumCardComponent,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    TranslatePipe
   ],
+  providers: [TRANSLATED_PAGINATOR],
   templateUrl: './listen-later-page.component.html',
   styleUrl: './listen-later-page.component.css'
 })

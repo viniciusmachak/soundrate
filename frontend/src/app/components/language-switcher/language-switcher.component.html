@@ -1,0 +1,21 @@
+@if (variant() === 'full') {
+  <!-- Every language listed inline, for roomier spots like the sidebar, footer and settings. -->
+  <div class="language-options" role="radiogroup" [attr.aria-label]="'common.language' | t">
+    <mat-icon aria-hidden="true">language</mat-icon>
+    @for (locale of locales; track locale.value) {
+      <button type="button" class="language-option" role="radio" [lang]="locale.value"
+        [class.selected]="locale.value === current.value"
+        [attr.aria-checked]="locale.value === current.value" (click)="select(locale.value)">
+        {{ locale.label }}
+      </button>
+    }
+  </div>
+} @else {
+  <!-- Two languages: the toolbar button switches straight to the other one (no menu to load). -->
+  <button mat-button type="button" class="language-trigger" (click)="select(next.value)"
+    [attr.aria-label]="('common.switchLanguageTo' | t: { language: next.label })"
+    [title]="'common.switchLanguageTo' | t: { language: next.label }">
+    <mat-icon>language</mat-icon>
+    <span>{{ current.shortLabel }}</span>
+  </button>
+}

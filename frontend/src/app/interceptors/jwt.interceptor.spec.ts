@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService } from '../services/auth.service';
 import { jwtInterceptor } from './jwt.interceptor';
 import { FeedbackService } from '../services/feedback.service';
+import { I18nService } from '../i18n/i18n.service';
 
 describe('jwtInterceptor', () => {
   let httpTesting: HttpTestingController;
@@ -24,6 +25,8 @@ describe('jwtInterceptor', () => {
     });
 
     httpTesting = TestBed.inject(HttpTestingController);
+    // Assertions below use the English copy, whatever the test browser's language is.
+    TestBed.inject(I18nService).setLocale('en');
   });
 
   afterEach(() => httpTesting.verify());

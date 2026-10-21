@@ -1,83 +1,83 @@
 @if (userProfile$ | async; as profile) {
   <div class="page">
     <header class="profile-header">
-      <img [src]="profile.user.avatarUrl" alt="Avatar of {{ profile.user.username }}" class="avatar">
+      <img [src]="profile.user.avatarUrl" [alt]="'profile.avatarOf' | t: { username: profile.user.username }" class="avatar">
 
       <div class="profile-info">
         <h1>{{ profile.user.username }}</h1>
         @if (profile.bio) {
           <p class="bio">{{ profile.bio }}</p>
         } @else if (isOwnProfile) {
-          <a class="bio muted" routerLink="/settings">Add a short bio about your music taste</a>
+          <a class="bio muted" routerLink="/settings">{{ 'profile.addBio' | t }}</a>
         }
         <p class="meta">
           @if (profile.joinedAt) {
-            <span>Joined {{ profile.joinedAt | date:'MMMM y' }}</span>
+            <span>{{ 'profile.joined' | t: { date: (profile.joinedAt | localDate:'MMMM y') } }}</span>
             <span aria-hidden="true">·</span>
           }
-          <span>Average rating
-            <strong>{{ profile.averageRating !== null ? (profile.averageRating | number:'1.1-1') : '—' }}</strong>
+          <span>{{ 'profile.averageRating' | t }}
+            <strong>{{ profile.averageRating !== null ? (profile.averageRating | localNumber:'1.1-1') : '—' }}</strong>
           </span>
           @if (profile.featuredAlbum; as featured) {
             <span aria-hidden="true">·</span>
-            <span>Top album <a [routerLink]="['/album', featured.album.id]">{{ featured.album.title }}</a></span>
+            <span>{{ 'profile.topAlbum' | t }} <a [routerLink]="['/album', featured.album.id]">{{ featured.album.title }}</a></span>
           }
         </p>
         <div class="profile-actions">
           @if (isOwnProfile) {
-            <a mat-stroked-button routerLink="/settings">Edit profile</a>
+            <a mat-stroked-button routerLink="/settings">{{ 'profile.editProfile' | t }}</a>
           }
           @if (authService.isAuthenticated() && !isOwnProfile) {
             @if (profile.isFollowedByCurrentUser) {
               <button mat-stroked-button type="button" [disabled]="followRequestPending"
-                [attr.aria-busy]="followRequestPending" aria-pressed="true" (click)="toggleFollow()">Following</button>
+                [attr.aria-busy]="followRequestPending" aria-pressed="true" (click)="toggleFollow()">{{ 'profile.following' | t }}</button>
             } @else {
               <button mat-flat-button type="button" [disabled]="followRequestPending"
-                [attr.aria-busy]="followRequestPending" aria-pressed="false" (click)="toggleFollow()">Follow</button>
+                [attr.aria-busy]="followRequestPending" aria-pressed="false" (click)="toggleFollow()">{{ 'profile.follow' | t }}</button>
             }
           }
-          <button type="button" class="text-action" (click)="shareProfile(profile.user.username)">Share</button>
+          <button type="button" class="text-action" (click)="shareProfile(profile.user.username)">{{ 'profile.share' | t }}</button>
         </div>
       </div>
 
-      <dl class="stats" aria-label="Profile activity">
+      <dl class="stats" [attr.aria-label]="'profile.activityLabel' | t">
         <div>
-          <dt>Albums</dt>
-          <dd>{{ profile.totalAlbumRatings | number }}</dd>
+          <dt>{{ 'profile.albums' | t }}</dt>
+          <dd>{{ profile.totalAlbumRatings | localNumber }}</dd>
         </div>
         <div>
-          <dt>Reviews</dt>
-          <dd>{{ profile.totalReviews | number }}</dd>
-        </div>
-        <div>
-          <dt>
-            <button type="button" (click)="openFollowListDialog('followers', profile.followersCount)">Followers</button>
-          </dt>
-          <dd>{{ profile.followersCount | number }}</dd>
+          <dt>{{ 'profile.reviews' | t }}</dt>
+          <dd>{{ profile.totalReviews | localNumber }}</dd>
         </div>
         <div>
           <dt>
-            <button type="button" (click)="openFollowListDialog('following', profile.followingCount)">Following</button>
+            <button type="button" (click)="openFollowListDialog('followers', profile.followersCount)">{{ 'profile.followers' | t }}</button>
           </dt>
-          <dd>{{ profile.followingCount | number }}</dd>
+          <dd>{{ profile.followersCount | localNumber }}</dd>
+        </div>
+        <div>
+          <dt>
+            <button type="button" (click)="openFollowListDialog('following', profile.followingCount)">{{ 'profile.following' | t }}</button>
+          </dt>
+          <dd>{{ profile.followingCount | localNumber }}</dd>
         </div>
       </dl>
     </header>
 
     <mat-tab-group class="profile-tabs" animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start"
       [selectedIndex]="selectedTabIndex" (selectedTabChange)="onProfileTabChange($event)">
-      <mat-tab label="Activity">
+      <mat-tab [label]="'profile.activity' | t">
         <div class="tab-content">
           @if (activity$ | async; as activity) {
             <div class="activity-grid">
               <section aria-labelledby="recent-ratings-title">
                 <h2 id="recent-ratings-title" class="section-title">
-                  Recent ratings <a href="#" (click)="$event.preventDefault(); selectTab(1)">See all</a>
+                  {{ 'profile.recentRatings' | t }} <a href="#" (click)="$event.preventDefault(); selectTab(1)">{{ 'profile.seeAll' | t }}</a>
                 </h2>
                 @if (activityRatingsState === 'loading') {
                   <app-skeleton-loader variant="list" [count]="3" />
                 } @else if (activityRatingsState === 'error') {
-                  <p class="state">Ratings couldn't be loaded. <button type="button" (click)="loadRecentRatings()">Try again</button></p>
+                  <p class="state">{{ 'profile.ratingsError' | t }} <button type="button" (click)="loadRecentRatings()">{{ 'common.tryAgain' | t }}</button></p>
                 } @else {
                   <ul class="row-list">
                     @for (rating of activity.recentRatings; track rating.album.id) {
@@ -86,13 +86,13 @@
                           <img class="row-thumb" [src]="rating.album.cover_medium" alt="">
                           <span class="row-copy">
                             <strong>{{ rating.album.title }}</strong>
-                            <small>{{ rating.ratingDate | date:'d MMM y' }}</small>
+                            <small>{{ rating.ratingDate | localDate:'d MMM y' }}</small>
                           </span>
-                          <app-star-rating [rating]="rating.rating" [readonly]="true" [label]="'Rated'" />
+                          <app-star-rating [rating]="rating.rating" [readonly]="true" [label]="'profile.rated' | t" />
                         </a>
                       </li>
                     } @empty {
-                      <li class="state">No ratings yet.</li>
+                      <li class="state">{{ 'profile.noRatings' | t }}</li>
                     }
                   </ul>
                 }
@@ -100,12 +100,12 @@
 
               <section aria-labelledby="recent-reviews-title">
                 <h2 id="recent-reviews-title" class="section-title">
-                  Recent reviews <a href="#" (click)="$event.preventDefault(); selectTab(2)">See all</a>
+                  {{ 'profile.recentReviews' | t }} <a href="#" (click)="$event.preventDefault(); selectTab(2)">{{ 'profile.seeAll' | t }}</a>
                 </h2>
                 @if (activityReviewsState === 'loading') {
                   <app-skeleton-loader variant="list" [count]="3" />
                 } @else if (activityReviewsState === 'error') {
-                  <p class="state">Reviews couldn't be loaded. <button type="button" (click)="loadRecentReviews()">Try again</button></p>
+                  <p class="state">{{ 'profile.reviewsError' | t }} <button type="button" (click)="loadRecentReviews()">{{ 'common.tryAgain' | t }}</button></p>
                 } @else {
                   <ul class="row-list">
                     @for (review of activity.recentReviews; track review.id) {
@@ -119,7 +119,7 @@
                         </a>
                       </li>
                     } @empty {
-                      <li class="state">No reviews yet.</li>
+                      <li class="state">{{ 'profile.noReviews' | t }}</li>
                     }
                   </ul>
                 }
@@ -127,12 +127,12 @@
 
               <section aria-labelledby="recent-likes-title">
                 <h2 id="recent-likes-title" class="section-title">
-                  Recently liked <a href="#" (click)="$event.preventDefault(); selectTab(3)">See all</a>
+                  {{ 'profile.recentlyLiked' | t }} <a href="#" (click)="$event.preventDefault(); selectTab(3)">{{ 'profile.seeAll' | t }}</a>
                 </h2>
                 @if (activityLikesState === 'loading') {
                   <app-skeleton-loader variant="list" [count]="3" />
                 } @else if (activityLikesState === 'error') {
-                  <p class="state">Liked albums couldn't be loaded. <button type="button" (click)="loadRecentLikes()">Try again</button></p>
+                  <p class="state">{{ 'profile.likesError' | t }} <button type="button" (click)="loadRecentLikes()">{{ 'common.tryAgain' | t }}</button></p>
                 } @else {
                   <ul class="row-list">
                     @for (album of activity.recentLikes; track album.id) {
@@ -146,18 +146,18 @@
                         </a>
                       </li>
                     } @empty {
-                      <li class="state">No liked albums yet.</li>
+                      <li class="state">{{ 'profile.noLikes' | t }}</li>
                     }
                   </ul>
                 }
               </section>
 
               <section aria-labelledby="recent-artists-title">
-                <h2 id="recent-artists-title" class="section-title">Followed artists</h2>
+                <h2 id="recent-artists-title" class="section-title">{{ 'profile.followedArtists' | t }}</h2>
                 @if (activityArtistsState === 'loading') {
                   <app-skeleton-loader variant="list" [count]="3" />
                 } @else if (activityArtistsState === 'error') {
-                  <p class="state">Followed artists couldn't be loaded. <button type="button" (click)="loadRecentArtists()">Try again</button></p>
+                  <p class="state">{{ 'profile.artistsError' | t }} <button type="button" (click)="loadRecentArtists()">{{ 'common.tryAgain' | t }}</button></p>
                 } @else {
                   <ul class="row-list">
                     @for (artist of activity.recentArtists; track artist.id) {
@@ -167,13 +167,13 @@
                           <span class="row-copy">
                             <strong>{{ artist.name }}</strong>
                             @if (artist.followedAt) {
-                              <small>Followed {{ artist.followedAt | date:'d MMM y' }}</small>
+                              <small>{{ 'profile.followedOn' | t: { date: (artist.followedAt | localDate:'d MMM y') } }}</small>
                             }
                           </span>
                         </a>
                       </li>
                     } @empty {
-                      <li class="state">No followed artists yet.</li>
+                      <li class="state">{{ 'profile.noArtists' | t }}</li>
                     }
                   </ul>
                 }
@@ -183,21 +183,21 @@
         </div>
       </mat-tab>
 
-      <mat-tab [label]="'Ratings · ' + (totalRatings | number)">
+      <mat-tab [label]="'profile.ratingsTab' | t: { count: totalRatings }">
         <div class="tab-content">
           @if (ratingsState === 'loading') {
             <app-skeleton-loader variant="cards" [count]="6" />
           } @else if (ratingsState === 'error') {
-            <p class="state">We couldn't load these ratings. <button type="button" (click)="loadRatedAlbums()">Try again</button></p>
+            <p class="state">{{ 'profile.ratingsTabError' | t }} <button type="button" (click)="loadRatedAlbums()">{{ 'common.tryAgain' | t }}</button></p>
           } @else if (ratings$ | async; as ratings) {
             <ul class="poster-grid">
               @for (rating of ratings; track rating.album.id) {
                 <li>
                   <app-album-card [album]="rating.album" />
-                  <app-star-rating class="poster-stars" [rating]="rating.rating" [readonly]="true" [label]="'Rated'" />
+                  <app-star-rating class="poster-stars" [rating]="rating.rating" [readonly]="true" [label]="'profile.rated' | t" />
                 </li>
               } @empty {
-                <li class="state">{{ isOwnProfile ? "You haven't rated any albums yet." : "No ratings yet." }}</li>
+                <li class="state">{{ (isOwnProfile ? 'profile.ownNoRatings' : 'profile.noRatings') | t }}</li>
               }
             </ul>
             @if (totalRatings > ratingsPageSize) {
@@ -210,12 +210,12 @@
         </div>
       </mat-tab>
 
-      <mat-tab [label]="'Reviews · ' + (totalReviews | number)">
+      <mat-tab [label]="'profile.reviewsTab' | t: { count: totalReviews }">
         <div class="tab-content">
           @if (reviewsState === 'loading') {
             <app-skeleton-loader variant="list" [count]="4" />
           } @else if (reviewsState === 'error') {
-            <p class="state">We couldn't load these reviews. <button type="button" (click)="loadReviews()">Try again</button></p>
+            <p class="state">{{ 'profile.reviewsTabError' | t }} <button type="button" (click)="loadReviews()">{{ 'common.tryAgain' | t }}</button></p>
           } @else if (reviews$ | async; as reviews) {
             <ul class="row-list">
               @for (review of reviews; track review.id) {
@@ -229,14 +229,14 @@
                       <span class="muted">{{ review.album.artist.name }}</span>
                     </div>
                     <div class="profile-review-header">
-                      <app-star-rating [rating]="review.rating" [readonly]="true" [label]="'Rated'" />
-                      <span class="muted">{{ review.reviewDate | date:'d MMM y' }}</span>
+                      <app-star-rating [rating]="review.rating" [readonly]="true" [label]="'profile.rated' | t" />
+                      <span class="muted">{{ review.reviewDate | localDate:'d MMM y' }}</span>
                     </div>
                     <p>{{ review.text }}</p>
                   </div>
                 </li>
               } @empty {
-                <li class="state">{{ isOwnProfile ? "You haven't written a review yet." : "No reviews yet." }}</li>
+                <li class="state">{{ (isOwnProfile ? 'profile.ownNoReviews' : 'profile.noReviews') | t }}</li>
               }
             </ul>
             @if (totalReviews > reviewsPageSize) {
@@ -249,12 +249,12 @@
         </div>
       </mat-tab>
 
-      <mat-tab [label]="'Likes · ' + (totalLikedAlbums | number)">
+      <mat-tab [label]="'profile.likesTab' | t: { count: totalLikedAlbums }">
         <div class="tab-content">
           @if (likedAlbumsState === 'loading') {
             <app-skeleton-loader variant="cards" [count]="6" />
           } @else if (likedAlbumsState === 'error') {
-            <p class="state">We couldn't load these liked albums. <button type="button" (click)="loadLikedAlbums()">Try again</button></p>
+            <p class="state">{{ 'profile.likesTabError' | t }} <button type="button" (click)="loadLikedAlbums()">{{ 'common.tryAgain' | t }}</button></p>
           } @else if (likedAlbums$ | async; as likedAlbums) {
             <ul class="poster-grid">
               @for (album of likedAlbums; track album.id) {
@@ -263,11 +263,11 @@
                   @if (isOwnProfile) {
                     <button type="button" class="poster-action"
                       [disabled]="removingLikedAlbumIds.size > 0 || isPaginatingLikedAlbums"
-                      (click)="unlikeAlbum(album.id, $event)">Unlike</button>
+                      (click)="unlikeAlbum(album.id, $event)">{{ 'profile.unlike' | t }}</button>
                   }
                 </li>
               } @empty {
-                <li class="state">{{ isOwnProfile ? "You haven't liked any albums yet." : "No liked albums yet." }}</li>
+                <li class="state">{{ (isOwnProfile ? 'profile.ownNoLikes' : 'profile.noLikes') | t }}</li>
               }
             </ul>
             @if (totalLikedAlbums > likedAlbumsPageSize) {
@@ -281,12 +281,12 @@
       </mat-tab>
 
       @if (isOwnProfile) {
-        <mat-tab [label]="'Listen later · ' + (totalListenLater | number)">
+        <mat-tab [label]="'profile.listenLaterTab' | t: { count: totalListenLater }">
           <div class="tab-content">
             @if (listenLaterState === 'loading') {
               <app-skeleton-loader variant="cards" [count]="6" />
             } @else if (listenLaterState === 'error') {
-              <p class="state">We couldn't load your Listen later list. <button type="button" (click)="loadListenLater()">Try again</button></p>
+              <p class="state">{{ 'profile.listenLaterError' | t }} <button type="button" (click)="loadListenLater()">{{ 'common.tryAgain' | t }}</button></p>
             } @else if (listenLater$ | async; as listenLaterAlbums) {
               <ul class="poster-grid">
                 @for (album of listenLaterAlbums; track album.id) {
@@ -294,10 +294,10 @@
                     <app-album-card [album]="album" />
                     <button type="button" class="poster-action"
                       [disabled]="removingListenLaterAlbumIds.size > 0 || isPaginatingListenLater"
-                      (click)="removeFromListenLater(album.id, $event)">Remove</button>
+                      (click)="removeFromListenLater(album.id, $event)">{{ 'profile.remove' | t }}</button>
                   </li>
                 } @empty {
-                  <li class="state">Your Listen later list is empty.</li>
+                  <li class="state">{{ 'profile.listenLaterEmpty' | t }}</li>
                 }
               </ul>
               @if (totalListenLater > listenLaterPageSize) {
@@ -312,10 +312,12 @@
       }
     </mat-tab-group>
   </div>
+} @else if (profileState === 'not-found') {
+  <app-not-found-page kind="user" />
 } @else if (profileState === 'error') {
   <div class="page empty-state" role="alert">
-    <strong>Profile unavailable</strong>
-    <p>We couldn't load this profile. <button type="button" class="text-action" (click)="loadProfile()">Try again</button></p>
+    <strong>{{ 'profile.unavailable' | t }}</strong>
+    <p>{{ 'profile.unavailableCopy' | t }} <button type="button" class="text-action" (click)="loadProfile()">{{ 'common.tryAgain' | t }}</button></p>
   </div>
 } @else {
   <app-skeleton-loader variant="profile" [count]="6" />

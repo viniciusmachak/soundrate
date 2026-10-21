@@ -1,10 +1,10 @@
 <a class="poster" [routerLink]="['/album', id]" [title]="title + ' — ' + artistName">
-  <img [src]="coverUrl" [alt]="'Cover of ' + title" class="poster-cover" loading="lazy">
+  <img [src]="coverUrl" [alt]="'album.coverOf' | t: { title: title }" class="poster-cover" loading="lazy">
   <span class="poster-title">{{ title }}</span>
   <span class="poster-subtitle">
     {{ artistName }}
     @if (averageRating) {
-      <span class="poster-rating" [attr.aria-label]="averageRating + ' out of 5 stars'">★ {{ averageRating | number:'1.1-1' }}</span>
+      <span class="poster-rating" [attr.aria-label]="'common.outOfFiveStars' | t: { rating: averageRating }">★ {{ averageRating | localNumber:'1.1-1' }}</span>
     }
   </span>
 </a>

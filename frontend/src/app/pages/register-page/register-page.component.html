@@ -3,46 +3,46 @@
     <a routerLink="/" class="auth-brand"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
     <mat-card class="auth-card">
       <mat-card-header class="auth-card-header">
-        <mat-card-title><h1>Create your account</h1></mat-card-title>
-        <p class="auth-card-description">Rate albums, write reviews and keep a diary of what you hear.</p>
+        <mat-card-title><h1>{{ 'auth.register.title' | t }}</h1></mat-card-title>
+        <p class="auth-card-description">{{ 'auth.register.description' | t }}</p>
       </mat-card-header>
 
       <mat-card-content>
         <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Username</mat-label>
+            <mat-label>{{ 'auth.register.username' | t }}</mat-label>
             <input matInput formControlName="username" type="text" autocomplete="username"
-              matTooltip="At least 3 characters. Shown on your public profile." matTooltipPosition="above">
+              [matTooltip]="'auth.register.usernameTooltip' | t" matTooltipPosition="above">
             @if (registerForm.get('username')?.hasError('required')) {
-              <mat-error>Choose a username.</mat-error>
+              <mat-error>{{ 'auth.register.usernameRequired' | t }}</mat-error>
             } @else if (registerForm.get('username')?.hasError('minlength')) {
-              <mat-error>Use at least 3 characters.</mat-error>
+              <mat-error>{{ 'auth.register.usernameMinLength' | t }}</mat-error>
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
+            <mat-label>{{ 'auth.email' | t }}</mat-label>
             <input matInput formControlName="email" type="email" autocomplete="email"
-              matTooltip="We'll only use it for account emails, like password resets." matTooltipPosition="above">
+              [matTooltip]="'auth.register.emailTooltip' | t" matTooltipPosition="above">
             @if (registerForm.get('email')?.hasError('required')) {
-              <mat-error>Enter your email.</mat-error>
+              <mat-error>{{ 'auth.emailRequired' | t }}</mat-error>
             } @else if (registerForm.get('email')?.hasError('email')) {
-              <mat-error>Enter a valid email, like name&#64;example.com.</mat-error>
+              <mat-error>{{ 'auth.emailInvalid' | t }}</mat-error>
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
+            <mat-label>{{ 'auth.password' | t }}</mat-label>
             <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
-              autocomplete="new-password" matTooltip="At least 6 characters." matTooltipPosition="above">
+              autocomplete="new-password" [matTooltip]="'auth.register.passwordTooltip' | t" matTooltipPosition="above">
             <button mat-icon-button matSuffix type="button" (click)="hide = !hide"
-              [attr.aria-label]="hide ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hide">
+              [attr.aria-label]="(hide ? 'auth.showPassword' : 'auth.hidePassword') | t" [attr.aria-pressed]="!hide">
               <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (registerForm.get('password')?.hasError('required')) {
-              <mat-error>Create a password.</mat-error>
+              <mat-error>{{ 'auth.register.passwordRequired' | t }}</mat-error>
             } @else if (registerForm.get('password')?.hasError('minlength')) {
-              <mat-error>Use at least 6 characters.</mat-error>
+              <mat-error>{{ 'auth.register.passwordMinLength' | t }}</mat-error>
             }
           </mat-form-field>
 
@@ -57,15 +57,15 @@
             class="full-width auth-submit">
             @if (isLoading) {
               <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
-              <span class="visually-hidden">Creating your account…</span>
+              <span class="visually-hidden">{{ 'auth.register.creating' | t }}</span>
             } @else {
-              <span>Create account</span>
+              <span>{{ 'auth.register.submit' | t }}</span>
             }
           </button>
         </form>
       </mat-card-content>
     </mat-card>
 
-    <p class="auth-switch">Already have an account? <a routerLink="/login" class="inline-link">Sign in</a></p>
+    <p class="auth-switch">{{ 'auth.register.haveAccount' | t }} <a routerLink="/login" class="inline-link">{{ 'auth.signIn' | t }}</a></p>
   </div>
 </div>

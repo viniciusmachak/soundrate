@@ -1,9 +1,10 @@
+@let text = label || ('common.listenOnDeezer' | t);
 <a
   class="deezer-button"
   [href]="href"
   target="_blank"
   rel="noopener noreferrer"
-  [attr.aria-label]="label + ' (opens in a new tab)'"
+  [attr.aria-label]="'shared.opensInNewTab' | t: { label: text }"
 >
-  <span>{{ label }}</span>
+  <span>{{ text }}</span>
 </a>

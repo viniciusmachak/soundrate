@@ -1,10 +1,7 @@
 <section class="page not-found" aria-labelledby="not-found-title">
   <img src="/logo-96.png" alt="" width="64" height="64" class="not-found-logo">
-  <p class="not-found-code">Error 404</p>
-  <h1 id="not-found-title">We couldn't find this page</h1>
-  <p class="not-found-copy">
-    The link may be broken or the page may have moved. Search for an album, artist or member
-    using the search bar above, or go back to the home page.
-  </p>
-  <a mat-flat-button routerLink="/">Go to home</a>
+  <p class="not-found-code">{{ 'notFound.code' | t }}</p>
+  <h1 id="not-found-title">{{ titleKey() | t }}</h1>
+  <p class="not-found-copy">{{ copyKey() | t }}</p>
+  <a mat-flat-button routerLink="/">{{ 'notFound.goHome' | t }}</a>
 </section>

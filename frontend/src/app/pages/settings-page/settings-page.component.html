@@ -1,22 +1,22 @@
 <div class="settings-container">
   <header class="settings-header">
-    <h1>Account settings</h1>
+    <h1>{{ 'settings.title' | t }}</h1>
   </header>
 
   <mat-card class="settings-card">
     <mat-card-header class="section-header">
-      <mat-card-title>Profile picture</mat-card-title>
+      <mat-card-title>{{ 'settings.pictureTitle' | t }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content class="avatar-content">
       <div class="avatar-preview-container">
-        <img [src]="imagePreview" alt="Avatar preview" class="avatar-preview">
+        <img [src]="imagePreview" [alt]="'settings.avatarPreview' | t" class="avatar-preview">
       </div>
 
       <div class="avatar-details">
-        <p class="section-help">Choose a PNG or JPEG image up to 5 MB.</p>
+        <p class="section-help">{{ 'settings.pictureHelp' | t }}</p>
         @if (selectedFile) {
-          <p class="selected-file">Selected: {{ selectedFile.name }}</p>
+          <p class="selected-file">{{ 'settings.selected' | t: { name: selectedFile.name } }}</p>
         }
 
         <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/png, image/jpeg">
@@ -24,7 +24,7 @@
         <div class="avatar-actions">
           <button mat-stroked-button type="button" (click)="fileInput.click()">
             <mat-icon>upload</mat-icon>
-            Choose Image
+            {{ 'settings.chooseImage' | t }}
           </button>
 
           @if (selectedFile) {
@@ -33,7 +33,7 @@
               @if (isUploadingAvatar) {
                 <mat-spinner diameter="18"></mat-spinner>
               } @else {
-                <span>Save New Picture</span>
+                <span>{{ 'settings.savePicture' | t }}</span>
               }
             </button>
           }
@@ -42,7 +42,7 @@
             @if (isResettingAvatar) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
-              <span>Reset to Default</span>
+              <span>{{ 'settings.resetPicture' | t }}</span>
             }
           </button>
         </div>
@@ -52,28 +52,28 @@
 
   <mat-card class="settings-card">
     <mat-card-header class="section-header">
-      <mat-card-title>Account information</mat-card-title>
+      <mat-card-title>{{ 'settings.accountTitle' | t }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
       <form class="settings-form" [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ 'auth.email' | t }}</mat-label>
           <input matInput formControlName="email" type="email" autocomplete="email">
           @if (profileForm.get('email')?.hasError('required')) {
-            <mat-error>Email is required</mat-error>
+            <mat-error>{{ 'settings.emailRequired' | t }}</mat-error>
           } @else if (profileForm.get('email')?.hasError('email')) {
-            <mat-error>Please enter a valid email address</mat-error>
+            <mat-error>{{ 'settings.emailInvalid' | t }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Bio</mat-label>
+          <mat-label>{{ 'settings.bio' | t }}</mat-label>
           <textarea matInput formControlName="bio" rows="4" maxlength="280"
-            placeholder="Share a little about your taste in music"></textarea>
+            [placeholder]="'settings.bioPlaceholder' | t"></textarea>
           <mat-hint align="end">{{ profileForm.get('bio')?.value?.length || 0 }}/280</mat-hint>
           @if (profileForm.get('bio')?.hasError('maxlength')) {
-            <mat-error>Bio must be at most 280 characters</mat-error>
+            <mat-error>{{ 'settings.bioMaxLength' | t }}</mat-error>
           }
         </mat-form-field>
 
@@ -83,7 +83,7 @@
             @if (isUpdatingProfile) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
-              <span>Save Changes</span>
+              <span>{{ 'settings.saveChanges' | t }}</span>
             }
           </button>
         </div>
@@ -93,58 +93,69 @@
 
   <mat-card class="settings-card">
     <mat-card-header class="section-header">
-      <mat-card-title>Security</mat-card-title>
+      <mat-card-title>{{ 'settings.languageTitle' | t }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="section-help">{{ 'settings.languageHelp' | t }}</p>
+      <app-language-switcher variant="full" />
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="settings-card">
+    <mat-card-header class="section-header">
+      <mat-card-title>{{ 'settings.securityTitle' | t }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
       <form class="settings-form" [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Current Password</mat-label>
+          <mat-label>{{ 'settings.currentPassword' | t }}</mat-label>
           <input matInput formControlName="currentPassword" [type]="hideCurrentPassword ? 'password' : 'text'"
             autocomplete="current-password">
           <button mat-icon-button matSuffix type="button" (click)="hideCurrentPassword = !hideCurrentPassword"
-            [attr.aria-label]="hideCurrentPassword ? 'Show current password' : 'Hide current password'"
+            [attr.aria-label]="(hideCurrentPassword ? 'settings.showCurrentPassword' : 'settings.hideCurrentPassword') | t"
             [attr.aria-pressed]="!hideCurrentPassword">
             <mat-icon>{{ hideCurrentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
           @if (passwordForm.get('currentPassword')?.hasError('required')) {
-            <mat-error>Current password is required</mat-error>
+            <mat-error>{{ 'settings.currentPasswordRequired' | t }}</mat-error>
           }
         </mat-form-field>
 
         <div class="password-grid">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>New Password</mat-label>
+            <mat-label>{{ 'settings.newPassword' | t }}</mat-label>
             <input matInput formControlName="newPassword" [type]="hideNewPassword ? 'password' : 'text'"
               autocomplete="new-password">
             <button mat-icon-button matSuffix type="button" (click)="hideNewPassword = !hideNewPassword"
-              [attr.aria-label]="hideNewPassword ? 'Show new password' : 'Hide new password'"
+              [attr.aria-label]="(hideNewPassword ? 'settings.showNewPassword' : 'settings.hideNewPassword') | t"
               [attr.aria-pressed]="!hideNewPassword">
               <mat-icon>{{ hideNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (passwordForm.get('newPassword')?.hasError('required')) {
-              <mat-error>New password is required</mat-error>
+              <mat-error>{{ 'settings.newPasswordRequired' | t }}</mat-error>
             } @else if (passwordForm.get('newPassword')?.hasError('minlength')) {
-              <mat-error>Password must be at least 6 characters</mat-error>
+              <mat-error>{{ 'settings.passwordMinLength' | t }}</mat-error>
             }
           </mat-form-field>
 
           <div class="confirm-password-field">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Confirm New Password</mat-label>
+              <mat-label>{{ 'settings.confirmPassword' | t }}</mat-label>
               <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'"
                 autocomplete="new-password">
               <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword"
-                [attr.aria-label]="hideConfirmPassword ? 'Show password confirmation' : 'Hide password confirmation'"
+                [attr.aria-label]="(hideConfirmPassword ? 'settings.showConfirmation' : 'settings.hideConfirmation') | t"
                 [attr.aria-pressed]="!hideConfirmPassword">
                 <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
               @if (passwordForm.get('confirmPassword')?.hasError('required')) {
-                <mat-error>Password confirmation is required</mat-error>
+                <mat-error>{{ 'settings.confirmationRequired' | t }}</mat-error>
               }
             </mat-form-field>
             @if (passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.dirty) {
-              <p class="field-error">Passwords do not match</p>
+              <p class="field-error">{{ 'settings.mismatch' | t }}</p>
             }
           </div>
         </div>
@@ -155,7 +166,7 @@
             @if (isUpdatingPassword) {
               <mat-spinner diameter="18"></mat-spinner>
             } @else {
-              <span>Change Password</span>
+              <span>{{ 'settings.changePassword' | t }}</span>
             }
           </button>
         </div>
@@ -165,17 +176,17 @@
 
   <mat-card class="settings-card danger-zone">
     <mat-card-header class="section-header">
-      <mat-card-title>Danger zone</mat-card-title>
+      <mat-card-title>{{ 'settings.dangerTitle' | t }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-content class="danger-content">
-      <p>Deleting your account is permanent and will remove all your data.</p>
+      <p>{{ 'settings.dangerCopy' | t }}</p>
       <button mat-stroked-button class="danger-button" type="button" (click)="deleteAccount()"
         [disabled]="isDeletingAccount">
         @if (isDeletingAccount) {
           <mat-spinner diameter="18"></mat-spinner>
         } @else {
-          <span>Delete My Account</span>
+          <span>{{ 'settings.deleteAccount' | t }}</span>
         }
       </button>
     </mat-card-content>

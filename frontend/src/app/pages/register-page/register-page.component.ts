@@ -12,6 +12,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { finalize } from 'rxjs/operators';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
+import { translateApiError } from '../../utils/http-errors';
 @Component({
   selector: 'app-register-page',
   standalone: true,
@@ -24,15 +28,17 @@ import { FeedbackService } from '../../services/feedback.service';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIcon
-],
+    MatIcon,
+    TranslatePipe
+  ],
   templateUrl: './register-page.component.html',
   styleUrl: '../auth-page.shared.css'
 })
 
 export class RegisterPageComponent {
   registerForm: FormGroup;
-  errorMessage: string | null = null;
+  /** Kept as the raw error so the message follows language changes. */
+  private failure: { error: unknown; fallback: TranslationKey } | null = null;
   hide = true;
   isLoading = false;
 
@@ -40,13 +46,18 @@ export class RegisterPageComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private feedback: FeedbackService
+    private feedback: FeedbackService,
+    private i18n: I18nService
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  get errorMessage(): string | null {
+    return this.failure ? translateApiError(this.i18n, this.failure.error, this.failure.fallback) : null;
   }
 
   onSubmit(): void {
@@ -57,17 +68,20 @@ export class RegisterPageComponent {
     }
 
     this.isLoading = true;
-    this.errorMessage = null;
+    this.failure = null;
 
     this.authService.register(this.registerForm.value).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: () => {
         const username = this.authService.currentUserValue?.username ?? this.registerForm.value.username;
-        this.feedback.success('Your Soundrate profile is ready', `Welcome, @${username}. Start rating what you hear.`);
+        this.feedback.success(
+          this.i18n.t('auth.register.ready'),
+          this.i18n.t('auth.register.readyMessage', { username })
+        );
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'An error occurred while registering. Please try again.';
+        this.failure = { error: err, fallback: 'auth.register.failed' };
       }
     });
   }

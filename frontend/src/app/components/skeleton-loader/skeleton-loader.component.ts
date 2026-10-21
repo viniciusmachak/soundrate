@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 export type SkeletonVariant = 'cards' | 'detail' | 'profile' | 'list';
 
 @Component({
   selector: 'app-skeleton-loader',
   standalone: true,
+  imports: [TranslatePipe],
   templateUrl: './skeleton-loader.component.html',
   styleUrl: './skeleton-loader.component.css'
 })

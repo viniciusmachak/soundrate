@@ -1,9 +1,9 @@
 <figure class="cover-dialog">
-  <button mat-icon-button mat-dialog-close class="close-button" aria-label="Close album cover">
+  <button mat-icon-button mat-dialog-close class="close-button" [attr.aria-label]="'shared.closeAlbumCover' | t">
     <mat-icon>close</mat-icon>
   </button>
 
-  <img [src]="data.imageUrl" [alt]="'Cover of ' + data.title" />
+  <img [src]="data.imageUrl" [alt]="'album.coverOf' | t: { title: data.title }" />
 
   <figcaption>
     <strong>{{ data.title }}</strong>

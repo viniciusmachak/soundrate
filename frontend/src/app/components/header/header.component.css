@@ -452,6 +452,12 @@
   border-radius: 999px;
 }
 
+/* Language choice: inline in the toolbar, at the foot of the sidebar on small screens. */
+.sidebar-language {
+  padding: 12px 20px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 @media (max-width: 900px) {
   .nav-container {
     gap: 6px;
@@ -481,6 +487,12 @@
     min-width: auto;
     padding: 0 8px;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .toolbar-language {
+    display: none;
   }
 }
 

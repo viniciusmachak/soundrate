@@ -16,6 +16,9 @@ import { UserRating } from '../../models/user-rating.model';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
 interface HeaderSearchState {
   isLoading: boolean;
@@ -42,7 +45,9 @@ interface RecentRatingsState {
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslatePipe,
+    LanguageSwitcherComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -71,7 +76,8 @@ export class HeaderComponent {
     private authService: AuthService,
     private apiService: ApiService,
     private router: Router,
-    private feedback: FeedbackService
+    private feedback: FeedbackService,
+    private i18n: I18nService
   ) {
     this.currentUser$ = this.authService.currentUser$;
 
@@ -141,8 +147,8 @@ export class HeaderComponent {
     this.closeSidebar();
     this.authService.logout();
     this.feedback.info(
-      'Signed out safely',
-      username ? `See you next time, @${username}.` : 'See you next time.'
+      this.i18n.t('header.signedOut'),
+      username ? this.i18n.t('header.seeYou', { username }) : this.i18n.t('header.seeYouAnonymous')
     );
   }
 
@@ -232,8 +238,12 @@ export class HeaderComponent {
 
   resultSubtitle(result: SearchResult): string {
     if (result.album) return result.album.artist.name;
-    if (result.artist) return 'Artist';
-    return 'User';
+    if (result.artist) return this.i18n.t('common.artist');
+    return this.i18n.t('common.user');
+  }
+
+  resultTypeLabel(result: SearchResult): string {
+    return this.i18n.t(`header.resultType.${result.type}`);
   }
 
   resultKey(result: SearchResult): string {

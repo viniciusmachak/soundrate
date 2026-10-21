@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DeezerTrack } from '../models/deezer.model';
+import { TranslationKey } from '../i18n/translation.types';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +17,8 @@ export class AudioService {
     private volumeSubject = new BehaviorSubject<number>(0.8);
     private mutedSubject = new BehaviorSubject<boolean>(false);
     private isLoadingSubject = new BehaviorSubject<boolean>(false);
-    private errorSubject = new BehaviorSubject<string | null>(null);
+    /** Translation key of the current playback error, if any. */
+    private errorSubject = new BehaviorSubject<TranslationKey | null>(null);
 
     public isPlaying$ = this.isPlayingSubject.asObservable();
     public currentTrack$ = this.currentTrackSubject.asObservable();
@@ -75,7 +77,7 @@ export class AudioService {
 
             this.isPlayingSubject.next(false);
             this.isLoadingSubject.next(false);
-            this.errorSubject.next('This preview could not be loaded.');
+            this.errorSubject.next('player.errors.load');
         });
     }
 
@@ -239,7 +241,7 @@ export class AudioService {
         this.audio.play().catch(() => {
             this.isPlayingSubject.next(false);
             this.isLoadingSubject.next(false);
-            this.errorSubject.next('Playback could not be started.');
+            this.errorSubject.next('player.errors.start');
         });
     }
 }

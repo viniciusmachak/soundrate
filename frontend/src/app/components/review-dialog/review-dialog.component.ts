@@ -1,9 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 
 @Component({
@@ -14,7 +16,8 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslatePipe
   ],
   templateUrl: './review-dialog.component.html',
   styleUrl: './review-dialog.component.css'
@@ -22,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 export class ReviewDialogComponent {
   readonly maxReviewLength = 2000;
   form: FormGroup;
+  private readonly i18n = inject(I18nService);
 
   constructor(
     private fb: FormBuilder,
@@ -55,7 +59,7 @@ export class ReviewDialogComponent {
 
   onCancel(): void {
     const hasUnsavedText = this.form.dirty && this.form.value.text?.trim() !== (this.data?.existingText ?? '').trim();
-    if (hasUnsavedText && !window.confirm('Discard your unsaved review?')) {
+    if (hasUnsavedText && !window.confirm(this.i18n.t('reviews.dialog.discardConfirm'))) {
       return;
     }
     this.dialogRef.close();

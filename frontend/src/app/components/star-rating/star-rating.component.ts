@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 @Component({
   selector: 'app-star-rating',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, TranslatePipe],
   templateUrl: './star-rating.component.html',
   styleUrl: './star-rating.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -13,7 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
 export class StarRatingComponent {
   @Input() rating: number = 0;
   @Input() readonly: boolean = false;
-  @Input() label: string = 'Rating';
+  /** Accessible name; defaults to the translated "Rating". */
+  @Input() label?: string;
   @Output() ratingChange = new EventEmitter<number | null>();
 
   readonly stars = [1, 2, 3, 4, 5];

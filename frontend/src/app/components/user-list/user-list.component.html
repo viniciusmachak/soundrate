@@ -6,7 +6,7 @@
     <mat-icon matPrefix>search</mat-icon>
     <input matInput [formControl]="searchControl" [attr.aria-label]="searchLabel">
     @if (searchControl.value) {
-      <button mat-icon-button matSuffix type="button" aria-label="Clear search" (click)="clearSearch()">
+      <button mat-icon-button matSuffix type="button" [attr.aria-label]="'userList.clearSearch' | t" (click)="clearSearch()">
         <mat-icon>close</mat-icon>
       </button>
     }
@@ -14,12 +14,12 @@
 
   @if (data.listType === 'following') {
     <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onTabChange($event)">
-      <mat-tab label="People">
+      <mat-tab [label]="'userList.people' | t">
         <div class="tab-content">
           <ng-container [ngTemplateOutlet]="peopleList" />
         </div>
       </mat-tab>
-      <mat-tab label="Artists">
+      <mat-tab [label]="'userList.artists' | t">
         <div class="tab-content">
           <ng-container [ngTemplateOutlet]="artistsList" />
         </div>
@@ -37,7 +37,7 @@
         <mat-list>
           @for (user of users; track user.id) {
             <mat-list-item>
-              <img matListItemAvatar [src]="user.avatarUrl" alt="Avatar of {{ user.username }}"
+              <img matListItemAvatar [src]="user.avatarUrl" [alt]="'userList.avatarOf' | t: { username: user.username }"
                 class="entity-avatar">
               <a matListItemTitle [routerLink]="['/user', user.username]" mat-dialog-close class="entity-link">
                 {{ user.username }}
@@ -46,13 +46,13 @@
                 <button mat-stroked-button matListItemMeta type="button" class="follow-action"
                   [class.is-following]="user.isFollowedByCurrentUser" [disabled]="isUpdatingUser(user.id)"
                   [attr.aria-busy]="isUpdatingUser(user.id)"
-                  [attr.aria-label]="(user.isFollowedByCurrentUser ? 'Unfollow ' : 'Follow ') + user.username"
+                  [attr.aria-label]="(user.isFollowedByCurrentUser ? 'userList.unfollowUser' : 'userList.followUser') | t: { username: user.username }"
                   (click)="toggleUserFollow(user)">
                   @if (user.isFollowedByCurrentUser) {
-                    <span class="following-label">Following</span>
-                    <span class="unfollow-label">Unfollow</span>
+                    <span class="following-label">{{ 'userList.following' | t }}</span>
+                    <span class="unfollow-label">{{ 'userList.unfollow' | t }}</span>
                   } @else {
-                    Follow
+                    {{ 'userList.follow' | t }}
                   }
                 </button>
               }
@@ -71,17 +71,17 @@
       @if (usersError) {
         <div class="state-container error-state" role="alert">
           
-          <p>We couldn't load the people in this list.</p>
-          <button mat-stroked-button type="button" (click)="retryUsers()">Try again</button>
+          <p>{{ 'userList.peopleError' | t }}</p>
+          <button mat-stroked-button type="button" (click)="retryUsers()">{{ 'common.tryAgain' | t }}</button>
         </div>
       }
 
       @if (isLoadingUsers) {
-        <p class="loading-message" role="status">Loading people…</p>
+        <p class="loading-message" role="status">{{ 'userList.loadingPeople' | t }}</p>
       } @else if (hasMoreUsers && !usersError) {
         <div class="load-more-container">
           <button mat-stroked-button type="button" (click)="loadUsers()">
-            Load more · {{ users.length }} of {{ usersTotal }}
+            {{ 'userList.loadMore' | t: { loaded: users.length, total: usersTotal } }}
           </button>
         </div>
       }
@@ -96,7 +96,7 @@
         <mat-list>
           @for (artist of artists; track artist.id) {
             <mat-list-item>
-              <img matListItemAvatar [src]="artist.picture_medium" alt="Picture of {{ artist.name }}"
+              <img matListItemAvatar [src]="artist.picture_medium" [alt]="'userList.pictureOf' | t: { name: artist.name }"
                 class="entity-avatar">
               <a matListItemTitle [routerLink]="['/artist', artist.id]" mat-dialog-close class="entity-link">
                 {{ artist.name }}
@@ -116,17 +116,17 @@
       @if (artistsError) {
         <div class="state-container error-state" role="alert">
           
-          <p>We couldn't load the artists in this list.</p>
-          <button mat-stroked-button type="button" (click)="retryArtists()">Try again</button>
+          <p>{{ 'userList.artistsError' | t }}</p>
+          <button mat-stroked-button type="button" (click)="retryArtists()">{{ 'common.tryAgain' | t }}</button>
         </div>
       }
 
       @if (isLoadingArtists) {
-        <p class="loading-message" role="status">Loading artists…</p>
+        <p class="loading-message" role="status">{{ 'userList.loadingArtists' | t }}</p>
       } @else if (hasMoreArtists && !artistsError) {
         <div class="load-more-container">
           <button mat-stroked-button type="button" (click)="loadArtists()">
-            Load more · {{ artists.length }} of {{ artistsTotal }}
+            {{ 'userList.loadMore' | t: { loaded: artists.length, total: artistsTotal } }}
           </button>
         </div>
       }
@@ -135,5 +135,5 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close color="primary">Close</button>
+  <button mat-button mat-dialog-close color="primary">{{ 'common.close' | t }}</button>
 </mat-dialog-actions>

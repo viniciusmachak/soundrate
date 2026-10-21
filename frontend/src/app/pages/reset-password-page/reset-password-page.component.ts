@@ -9,6 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
+import { translateApiError } from '../../utils/http-errors';
 
 export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('newPassword');
@@ -27,8 +31,9 @@ export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): 
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIconModule
-],
+    MatIconModule,
+    TranslatePipe
+  ],
   templateUrl: './reset-password-page.component.html',
   styleUrl: '../auth-page.shared.css'
 })
@@ -36,21 +41,23 @@ export class ResetPasswordPageComponent implements OnInit {
   resetPasswordForm!: FormGroup;
   isLoading = false;
   isSuccess = false;
-  errorMessage: string | null = null;
+  /** Kept as the raw error so the message follows language changes. */
+  private failure: { error: unknown; fallback: TranslationKey } | null = null;
   token: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private i18n: I18nService
   ) { }
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
       this.token = params.get('token');
       if (!this.token) {
-        this.errorMessage = 'Invalid or missing password reset token.';
+        this.failure = { error: null, fallback: 'auth.reset.missingToken' };
       }
     });
 
@@ -58,6 +65,10 @@ export class ResetPasswordPageComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: passwordsMatchValidator });
+  }
+
+  get errorMessage(): string | null {
+    return this.failure ? translateApiError(this.i18n, this.failure.error, this.failure.fallback) : null;
   }
 
   onSubmit(): void {
@@ -68,7 +79,7 @@ export class ResetPasswordPageComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.errorMessage = null;
+    this.failure = null;
     const { newPassword } = this.resetPasswordForm.value;
 
     this.apiService.resetPassword(this.token, newPassword).subscribe({
@@ -78,7 +89,7 @@ export class ResetPasswordPageComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'The token is invalid or has expired. Please try again.';
+        this.failure = { error: err, fallback: 'auth.reset.invalidToken' };
         console.error(err);
       }
     });

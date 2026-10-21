@@ -10,13 +10,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ApiService } from '../../services/api.service';
 import { finalize } from 'rxjs';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { LocalDatePipe } from '../../i18n/locale-pipes';
 
 @Component({
   selector: 'app-review-list',
   standalone: true,
   imports: [
     CommonModule, MatButtonModule, MatIconModule, MatMenuModule,
-    RouterLink, StarRatingComponent
+    RouterLink, StarRatingComponent, TranslatePipe, LocalDatePipe
   ],
   templateUrl: './review-list.component.html',
   styleUrl: './review-list.component.css'
@@ -32,7 +35,8 @@ export class ReviewListComponent {
 
   constructor(
     private apiService: ApiService,
-    private feedback: FeedbackService
+    private feedback: FeedbackService,
+    private i18n: I18nService
   ) { }
 
   isAuthor(review: AlbumReview): boolean {
@@ -52,17 +56,16 @@ export class ReviewListComponent {
       finalize(() => this.updatingLikeIds.delete(review.id))
     ).subscribe({
       next: () => this.feedback.success(
-        isCurrentlyLiked ? 'Reaction removed' : 'Review appreciated',
-        isCurrentlyLiked
-          ? `Your like was removed from @${review.author.username}’s review.`
-          : `Your support was added to @${review.author.username}’s review.`
+        this.i18n.t(isCurrentlyLiked ? 'reviews.reactionRemoved' : 'reviews.reviewAppreciated'),
+        this.i18n.t(isCurrentlyLiked ? 'reviews.reactionRemovedMessage' : 'reviews.reviewAppreciatedMessage',
+          { username: review.author.username })
       ),
       error: () => {
         review.isLikedByCurrentUser = isCurrentlyLiked;
         review.likesCount += isCurrentlyLiked ? 1 : -1;
         this.feedback.error(
-          'Couldn’t update your reaction',
-          `@${review.author.username}’s review kept its previous like status.`
+          this.i18n.t('reviews.reactionError'),
+          this.i18n.t('reviews.reactionErrorMessage', { username: review.author.username })
         );
       }
     });

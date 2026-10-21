@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 import {
   MAT_SNACK_BAR_DATA,
   MatSnackBarRef
@@ -18,7 +19,7 @@ export interface OperationFeedbackData {
 @Component({
   selector: 'app-operation-feedback',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, TranslatePipe],
   templateUrl: './operation-feedback.component.html',
   styleUrl: './operation-feedback.component.css'
 })

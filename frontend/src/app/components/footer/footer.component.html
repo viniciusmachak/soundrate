@@ -3,28 +3,28 @@
     <div class="footer-main">
       <div class="footer-brand">
         <a routerLink="/" class="footer-logo"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
-        <p>Discover, rate and share the music that stays with you.</p>
+        <p>{{ 'layout.tagline' | t }}</p>
       </div>
 
-      <nav class="footer-navigation" aria-label="Footer navigation">
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Home</a>
-        <a routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page">About</a>
-        <a routerLink="/listen-later" routerLinkActive="active" ariaCurrentWhenActive="page">Listen Later</a>
+      <nav class="footer-navigation" [attr.aria-label]="'layout.footerNavigation' | t">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">{{ 'common.home' | t }}</a>
+        <a routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page">{{ 'common.about' | t }}</a>
+        <a routerLink="/listen-later" routerLinkActive="active" ariaCurrentWhenActive="page">{{ 'common.listenLater' | t }}</a>
         <a href="https://www.deezer.com/" target="_blank" rel="noopener noreferrer">Deezer</a>
         <a
           href="https://github.com/viniciusmachak/sound-rate"
           target="_blank"
           rel="noopener noreferrer"
-          >Code</a
+          >{{ 'layout.code' | t }}</a
         >
       </nav>
 
-      <div class="social-links" aria-label="Developer social links">
+      <div class="social-links" [attr.aria-label]="'layout.socialLinks' | t">
         <a
           href="https://github.com/viniciusmachak"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Developer's GitHub"
+          [attr.aria-label]="'layout.developerGithub' | t"
           title="GitHub"
         >
           <i class="fab fa-github" aria-hidden="true"></i>
@@ -33,7 +33,7 @@
           href="https://www.instagram.com/vinicabr4l/"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Developer's Instagram"
+          [attr.aria-label]="'layout.developerInstagram' | t"
           title="Instagram"
         >
           <i class="fab fa-instagram" aria-hidden="true"></i>
@@ -42,8 +42,9 @@
     </div>
 
     <div class="footer-bottom">
-      <p>© {{ currentYear }} Soundrate. Built for music lovers.</p>
-      <p>Music data provided by Deezer.</p>
+      <p>{{ 'layout.copyright' | t: { year: currentYearLabel } }}</p>
+      <p>{{ 'layout.dataProvider' | t }}</p>
+      <app-language-switcher variant="full" class="footer-language" />
     </div>
   </div>
 </footer>

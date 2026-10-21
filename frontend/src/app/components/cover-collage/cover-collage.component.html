@@ -19,13 +19,13 @@
 
   <div class="collage-content">
     <p id="home-intro">
-      Soundrate is your music diary for discovering, rating and remembering the albums that move you.
+      {{ 'home.collageIntro' | t }}
     </p>
   </div>
 
   <button type="button" class="collage-toggle" (click)="togglePause()" [attr.aria-pressed]="isPaused"
-    [attr.aria-label]="isPaused ? 'Play cover animation' : 'Pause cover animation'"
-    [title]="isPaused ? 'Play animation' : 'Pause animation'">
+    [attr.aria-label]="(isPaused ? 'home.playAnimation' : 'home.pauseAnimation') | t"
+    [title]="(isPaused ? 'home.playAnimationShort' : 'home.pauseAnimationShort') | t">
     <span class="material-icons" aria-hidden="true">{{ isPaused ? 'play_arrow' : 'pause' }}</span>
   </button>
 </section>

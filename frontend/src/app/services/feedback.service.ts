@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { I18nService } from '../i18n/i18n.service';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import {
   OperationFeedbackComponent,
@@ -8,6 +9,8 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
+  private readonly i18n = inject(I18nService);
+
   constructor(private readonly snackBar: MatSnackBar) {}
 
   success(title: string, message: string, duration = 3200): MatSnackBarRef<OperationFeedbackComponent> {
@@ -30,8 +33,8 @@ export class FeedbackService {
     return this.show('loading', title, message);
   }
 
-  retry(title: string, message: string, actionLabel = 'Try again'): MatSnackBarRef<OperationFeedbackComponent> {
-    return this.show('error', title, message, 6000, actionLabel);
+  retry(title: string, message: string, actionLabel?: string): MatSnackBarRef<OperationFeedbackComponent> {
+    return this.show('error', title, message, 6000, actionLabel ?? this.i18n.t('common.tryAgain'));
   }
 
   private show(

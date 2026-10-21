@@ -9,6 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
+import { translateApiError } from '../../utils/http-errors';
 
 @Component({
   selector: 'app-forget-password-page',
@@ -21,8 +25,9 @@ import { MatCardModule } from '@angular/material/card';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIconModule
-],
+    MatIconModule,
+    TranslatePipe
+  ],
   templateUrl: './forget-password-page.component.html',
   styleUrl: '../auth-page.shared.css'
 })
@@ -30,18 +35,24 @@ export class ForgetPasswordPageComponent implements OnInit {
   forgotPasswordForm!: FormGroup;
   isLoading = false;
   isSuccess = false;
-  errorMessage: string | null = null;
+  /** Kept as the raw error so the message follows language changes. */
+  private failure: { error: unknown; fallback: TranslationKey } | null = null;
 
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private i18n: I18nService
   ) { }
 
   ngOnInit(): void {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });
+  }
+
+  get errorMessage(): string | null {
+    return this.failure ? translateApiError(this.i18n, this.failure.error, this.failure.fallback) : null;
   }
 
   onSubmit(): void {
@@ -52,7 +63,7 @@ export class ForgetPasswordPageComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.errorMessage = null;
+    this.failure = null;
     const email = this.forgotPasswordForm.value.email;
 
     this.apiService.requestPasswordReset(email).subscribe({
@@ -62,9 +73,9 @@ export class ForgetPasswordPageComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.status === 429
-          ? err.error?.message ?? 'Too many requests. Please wait a few minutes and try again.'
-          : 'An unexpected error occurred. Please try again.';
+        this.failure = err.status === 429
+          ? { error: null, fallback: 'auth.forgot.tooManyRequests' }
+          : { error: err, fallback: 'auth.errors.unexpected' };
         console.error(err);
       }
     });

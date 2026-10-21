@@ -15,12 +15,14 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HomeFeaturesComponent } from '../../components/home-features/home-features.component';
 import { CoverCollageComponent } from '../../components/cover-collage/cover-collage.component';
 import { CollageAlbum } from '../../components/cover-collage/featured-albums';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationKey } from '../../i18n/translation.types';
 
 interface SearchState {
   isLoading: boolean;
   results: SearchResult[];
   query: string;
-  error: string | null;
+  error: TranslationKey | null;
 }
 
 @Component({
@@ -29,7 +31,7 @@ interface SearchState {
   imports: [
     CommonModule, ReactiveFormsModule, RouterLink, HomeFeaturesComponent, CoverCollageComponent,
     AlbumCardComponent, ArtistCardComponent, UserCardComponent,
-    MatButtonModule, SkeletonLoaderComponent,
+    MatButtonModule, SkeletonLoaderComponent, TranslatePipe,
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
@@ -37,10 +39,10 @@ interface SearchState {
 export class HomePageComponent implements OnInit {
   filterControl = new FormControl<'all' | 'album' | 'artist' | 'user'>('all', { nonNullable: true });
   readonly filters = [
-    { value: 'all', label: 'All' },
-    { value: 'album', label: 'Albums' },
-    { value: 'artist', label: 'Artists' },
-    { value: 'user', label: 'Members' }
+    { value: 'all', label: 'homePage.filters.all' },
+    { value: 'album', label: 'homePage.filters.album' },
+    { value: 'artist', label: 'homePage.filters.artist' },
+    { value: 'user', label: 'homePage.filters.user' }
   ] as const;
 
   resultsData$!: Observable<{
@@ -48,7 +50,7 @@ export class HomePageComponent implements OnInit {
     results: SearchResult[];
     filteredResults: SearchResult[];
     query: string;
-    error: string | null;
+    error: TranslationKey | null;
   }>;
 
   highestRatedAlbums$!: Observable<AlbumDashboard[]>;
@@ -100,7 +102,7 @@ export class HomePageComponent implements OnInit {
               isLoading: false,
               results: [],
               query,
-              error: 'Search is temporarily unavailable. Please try again.'
+              error: 'homePage.searchError'
             }))
           )
         );

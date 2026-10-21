@@ -15,64 +15,64 @@ function numericIdMatcher(prefix: string): UrlMatcher {
 export const routes: Routes = [
   {
     path: '',
-    title: 'Discover and rate music | Soundrate',
+    title: 'titles.home',
     loadComponent: () => import('./pages/home-page/home-page.component').then(m => m.HomePageComponent)
   },
   {
     path: 'login',
-    title: 'Login | Soundrate',
+    title: 'titles.login',
     loadComponent: () => import('./pages/login-page/login-page.component').then(m => m.LoginPageComponent)
   },
   {
     path: 'register',
-    title: 'Create account | Soundrate',
+    title: 'titles.register',
     loadComponent: () => import('./pages/register-page/register-page.component').then(m => m.RegisterPageComponent)
   },
   {
     path: 'forgot-password',
-    title: 'Recover password | Soundrate',
+    title: 'titles.forgotPassword',
     loadComponent: () => import('./pages/forget-password-page/forget-password-page.component').then(m => m.ForgetPasswordPageComponent)
   },
   {
     path: 'reset-password',
-    title: 'Reset password | Soundrate',
+    title: 'titles.resetPassword',
     loadComponent: () => import('./pages/reset-password-page/reset-password-page.component').then(m => m.ResetPasswordPageComponent)
   },
   {
     path: 'user/:username',
-    title: 'User profile | Soundrate',
+    title: 'titles.userProfile',
     loadComponent: () => import('./pages/user-profile-page/user-profile-page.component').then(m => m.UserProfilePageComponent)
   },
   {
     matcher: numericIdMatcher('album'),
-    title: 'Album details | Soundrate',
+    title: 'titles.albumDetails',
     loadComponent: () => import('./pages/album-details-page/album-details-page.component').then(m => m.AlbumDetailsPageComponent)
   },
   {
     matcher: numericIdMatcher('artist'),
-    title: 'Artist details | Soundrate',
+    title: 'titles.artistDetails',
     loadComponent: () => import('./pages/artist-details-page/artist-details-page.component').then(m => m.ArtistDetailsPageComponent)
   },
   {
     path: 'settings',
-    title: 'Account settings | Soundrate',
+    title: 'titles.settings',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/settings-page/settings-page.component').then(m => m.SettingsPageComponent)
   },
   {
     path: 'listen-later',
-    title: 'Listen Later | Soundrate',
+    title: 'titles.listenLater',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/listen-later-page/listen-later-page.component').then(m => m.ListenLaterPageComponent)
   },
   {
     path: 'about',
-    title: 'About | Soundrate',
+    title: 'titles.about',
     loadComponent: () => import('./pages/about-page/about-page.component').then(m => m.AboutPageComponent)
   },
   {
     path: '**',
-    title: 'Page not found | Soundrate',
+    title: 'titles.notFound',
     loadComponent: () => import('./pages/not-found-page/not-found-page.component').then(m => m.NotFoundPageComponent)
   }
 ];

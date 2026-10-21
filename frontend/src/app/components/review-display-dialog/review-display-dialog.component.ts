@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 export interface ReviewDisplayData {
   albumTitle: string;
@@ -10,7 +11,7 @@ export interface ReviewDisplayData {
 @Component({
   selector: 'app-review-display-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
+  imports: [MatDialogModule, MatButtonModule, TranslatePipe],
   templateUrl: './review-display-dialog.component.html',
 })
 export class ReviewDisplayDialogComponent {

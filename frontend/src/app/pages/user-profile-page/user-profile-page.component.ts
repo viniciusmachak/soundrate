@@ -27,8 +27,17 @@ import { UserReview } from '../../models/user-review.model';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { LocalDatePipe, LocalNumberPipe } from '../../i18n/locale-pipes';
+import { TranslationKey } from '../../i18n/translation.types';
+import { TranslatedTitleStrategy } from '../../i18n/translated-title.strategy';
+import { NotFoundPageComponent } from '../not-found-page/not-found-page.component';
+import { isNotFoundError } from '../../utils/http-errors';
+import { TRANSLATED_PAGINATOR } from '../../i18n/paginator-intl';
 
 type ContentState = 'idle' | 'loading' | 'loaded' | 'empty' | 'error';
+type ProfileState = ContentState | 'not-found';
 
 const EMPTY_ACTIVITY: UserActivity = {
   recentRatings: [],
@@ -51,8 +60,13 @@ const EMPTY_ACTIVITY: UserActivity = {
     MatButtonModule,
     MatPaginatorModule,
     MatDialogModule,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    TranslatePipe,
+    LocalDatePipe,
+    LocalNumberPipe,
+    NotFoundPageComponent
   ],
+  providers: [TRANSLATED_PAGINATOR],
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.css'
 })
@@ -60,7 +74,7 @@ export class UserProfilePageComponent implements OnInit {
   private readonly profileSubject = new BehaviorSubject<UserProfile | null>(null);
   readonly userProfile$ = this.profileSubject.asObservable();
   private username!: string;
-  profileState: ContentState = 'idle';
+  profileState: ProfileState = 'idle';
 
   isOwnProfile = false;
   followRequestPending = false;
@@ -115,7 +129,9 @@ export class UserProfilePageComponent implements OnInit {
     public readonly authService: AuthService,
     private readonly dialog: MatDialog,
     private readonly feedback: FeedbackService,
-    private readonly destroyRef: DestroyRef
+    private readonly destroyRef: DestroyRef,
+    private readonly i18n: I18nService,
+    private readonly titleStrategy: TranslatedTitleStrategy
   ) {}
 
   ngOnInit(): void {
@@ -153,12 +169,17 @@ export class UserProfilePageComponent implements OnInit {
           this.totalListenLater = profile.totalListenLater;
           this.loadActivity();
         },
-        error: () => {
+        error: error => {
           if (requestedUsername !== this.username) return;
+          if (isNotFoundError(error)) {
+            this.profileState = 'not-found';
+            this.titleStrategy.setPageTitle('titles.userNotFound');
+            return;
+          }
           this.profileState = 'error';
           this.feedback.error(
-            `Couldn’t load @${requestedUsername}`,
-            'The profile is temporarily unavailable. Please try again.'
+            this.i18n.t('profile.feedback.loadError', { username: requestedUsername }),
+            this.i18n.t('profile.feedback.loadErrorMessage')
           );
         }
       });
@@ -294,18 +315,18 @@ export class UserProfilePageComponent implements OnInit {
       next: () => {
         this.followRequestPending = false;
         this.feedback.success(
-          isCurrentlyFollowed ? `Unfollowed @${this.username}` : `Following @${this.username}`,
-          isCurrentlyFollowed
-            ? 'Their updates were removed from your following feed.'
-            : 'Their music activity will now appear in your community.'
+          this.i18n.t(isCurrentlyFollowed ? 'userList.feedback.unfollowed' : 'userList.feedback.followed',
+            { username: this.username }),
+          this.i18n.t(isCurrentlyFollowed ? 'userList.feedback.unfollowedMessage' : 'userList.feedback.followedMessage')
         );
       },
       error: () => {
         this.followRequestPending = false;
         this.profileSubject.next(currentProfile);
         this.feedback.error(
-          `Couldn’t ${isCurrentlyFollowed ? 'unfollow' : 'follow'} @${this.username}`,
-          'Your previous follow status was restored. Please try again.'
+          this.i18n.t(isCurrentlyFollowed ? 'userList.feedback.unfollowError' : 'userList.feedback.followError',
+            { username: this.username }),
+          this.i18n.t('userList.feedback.errorMessage')
         );
       }
     });
@@ -313,23 +334,32 @@ export class UserProfilePageComponent implements OnInit {
 
   async shareProfile(username: string): Promise<void> {
     const shareData = {
-      title: `${username} on Soundrate`,
-      text: `See ${username}'s music profile on Soundrate`,
+      title: this.i18n.t('profile.feedback.shareTitle', { username }),
+      text: this.i18n.t('profile.feedback.shareText', { username }),
       url: window.location.href
     };
 
     try {
       if (navigator.share) {
         await navigator.share(shareData);
-        this.feedback.success(`Shared @${username}`, 'The listener profile was sent successfully.');
+        this.feedback.success(
+          this.i18n.t('profile.feedback.shared', { username }),
+          this.i18n.t('profile.feedback.sharedMessage')
+        );
         return;
       }
 
       await navigator.clipboard.writeText(shareData.url);
-      this.feedback.success('Profile link copied', `@${username} is ready to share from your clipboard.`);
+      this.feedback.success(
+        this.i18n.t('profile.feedback.linkCopied'),
+        this.i18n.t('profile.feedback.linkCopiedMessage', { username })
+      );
     } catch (error) {
       if ((error as DOMException)?.name !== 'AbortError') {
-        this.feedback.error(`Couldn’t share @${username}`, 'The profile link is still available in your address bar.');
+        this.feedback.error(
+          this.i18n.t('profile.feedback.shareError', { username }),
+          this.i18n.t('profile.feedback.shareErrorMessage')
+        );
       }
     }
   }
@@ -341,7 +371,7 @@ export class UserProfilePageComponent implements OnInit {
 
     const currentLikedAlbums = this.likedAlbumsSubject.getValue();
     const currentActivity = this.activitySubject.getValue();
-    const albumTitle = currentLikedAlbums.find(album => album.id === albumId)?.title ?? 'This album';
+    const albumTitle = currentLikedAlbums.find(album => album.id === albumId)?.title ?? this.i18n.t('common.thisAlbum');
     this.removingLikedAlbumIds.add(albumId);
     this.likedAlbumsSubject.next(currentLikedAlbums.filter(album => album.id !== albumId));
     if (currentActivity) {
@@ -359,7 +389,10 @@ export class UserProfilePageComponent implements OnInit {
       .subscribe({
         next: () => {
           this.removingLikedAlbumIds.delete(albumId);
-          this.feedback.success('Removed from your likes', `${albumTitle} is no longer in your liked albums.`);
+          this.feedback.success(
+            this.i18n.t('profile.feedback.likeRemoved'),
+            this.i18n.t('profile.feedback.likeRemovedMessage', { title: albumTitle })
+          );
           this.reloadLikedAlbumsAfterRemoval();
         },
         error: () => {
@@ -368,7 +401,10 @@ export class UserProfilePageComponent implements OnInit {
           if (currentActivity) this.activitySubject.next(currentActivity);
           this.totalLikedAlbums++;
           this.totalActivity++;
-          this.feedback.error('Couldn’t remove the like', `${albumTitle} was restored to your liked albums.`);
+          this.feedback.error(
+            this.i18n.t('profile.feedback.likeRemoveError'),
+            this.i18n.t('profile.feedback.likeRestoredMessage', { title: albumTitle })
+          );
         }
       });
   }
@@ -379,7 +415,7 @@ export class UserProfilePageComponent implements OnInit {
     if (this.removingListenLaterAlbumIds.has(albumId)) return;
 
     const currentList = this.listenLaterSubject.getValue();
-    const albumTitle = currentList.find(album => album.id === albumId)?.title ?? 'This album';
+    const albumTitle = currentList.find(album => album.id === albumId)?.title ?? this.i18n.t('common.thisAlbum');
     this.removingListenLaterAlbumIds.add(albumId);
     this.listenLaterSubject.next(currentList.filter(album => album.id !== albumId));
     this.totalListenLater = Math.max(0, this.totalListenLater - 1);
@@ -390,14 +426,20 @@ export class UserProfilePageComponent implements OnInit {
       .subscribe({
         next: () => {
           this.removingListenLaterAlbumIds.delete(albumId);
-          this.feedback.success('Removed from Listen Later', `${albumTitle} was removed from your listening queue.`);
+          this.feedback.success(
+            this.i18n.t('profile.feedback.listenLaterRemoved'),
+            this.i18n.t('profile.feedback.listenLaterRemovedMessage', { title: albumTitle })
+          );
           this.reloadListenLaterAfterRemoval();
         },
         error: () => {
           this.removingListenLaterAlbumIds.delete(albumId);
           this.listenLaterSubject.next(currentList);
           this.totalListenLater++;
-          this.feedback.error('Couldn’t update Listen Later', `${albumTitle} was restored to your listening queue.`);
+          this.feedback.error(
+            this.i18n.t('profile.feedback.listenLaterError'),
+            this.i18n.t('profile.feedback.listenLaterRestoredMessage', { title: albumTitle })
+          );
         }
       });
   }
@@ -449,7 +491,7 @@ export class UserProfilePageComponent implements OnInit {
             this.currentRatingsPage = previousPageIndex;
             this.ratingsPageSize = previousPageSize;
             this.showPaginationError(
-              'ratings',
+              'profile.content.ratings',
               () => this.loadRatedAlbums(pageIndex, pageSize)
             );
           }
@@ -491,7 +533,7 @@ export class UserProfilePageComponent implements OnInit {
             this.currentReviewsPage = previousPageIndex;
             this.reviewsPageSize = previousPageSize;
             this.showPaginationError(
-              'reviews',
+              'profile.content.reviews',
               () => this.loadReviews(pageIndex, pageSize)
             );
           }
@@ -533,7 +575,7 @@ export class UserProfilePageComponent implements OnInit {
             this.currentLikedAlbumsPage = previousPageIndex;
             this.likedAlbumsPageSize = previousPageSize;
             this.showPaginationError(
-              'liked albums',
+              'profile.content.likedAlbums',
               () => this.loadLikedAlbums(pageIndex, pageSize)
             );
           }
@@ -575,7 +617,7 @@ export class UserProfilePageComponent implements OnInit {
             this.currentListenLaterPage = previousPageIndex;
             this.listenLaterPageSize = previousPageSize;
             this.showPaginationError(
-              'Listen Later albums',
+              'profile.content.listenLater',
               () => this.loadListenLater(pageIndex, pageSize)
             );
           }
@@ -654,9 +696,12 @@ export class UserProfilePageComponent implements OnInit {
     this.loadListenLater(Math.min(this.currentListenLaterPage, lastPage), this.listenLaterPageSize);
   }
 
-  private showPaginationError(contentName: string, retry: () => void): void {
+  private showPaginationError(contentKey: TranslationKey, retry: () => void): void {
     this.feedback
-      .retry('Couldn’t load more', `The next page of ${contentName} is temporarily unavailable.`)
+      .retry(
+        this.i18n.t('profile.feedback.loadMoreError'),
+        this.i18n.t('profile.feedback.loadMoreErrorMessage', { content: this.i18n.t(contentKey) })
+      )
       .onAction()
       .pipe(take(1), takeUntilDestroyed(this.destroyRef))
       .subscribe(retry);

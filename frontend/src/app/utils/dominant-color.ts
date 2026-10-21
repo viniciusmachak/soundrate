@@ -61,30 +61,29 @@ export function extractDominantColor(imageUrl: string): Promise<string | null> {
 }
 
 /**
- * Turns a dominant color into a vivid hero backdrop: saturation is boosted, then
- * lightness is lowered until white text on it keeps at least 4.5:1 contrast.
+ * Keeps the dominant color's hue and saturation and only lowers its lightness
+ * until white text on it keeps at least 4.5:1 contrast.
  */
-export function toVividBackdropColor(rgb: string): string {
+export function toBackdropColor(rgb: string): string {
   const match = rgb.match(/\d+/g);
   if (!match) return rgb;
 
   const [hue, saturation, lightness] = rgbToHsl(+match[0], +match[1], +match[2]);
-  const vividSaturation = Math.min(1, saturation * 1.5 + 0.2);
   // Relative luminance ≤ 0.18 keeps white text at ≥ 4.5:1.
-  let vividLightness = Math.min(lightness, 0.5);
-  let color = hslToRgb(hue, vividSaturation, vividLightness);
-  while (relativeLuminance(color) > 0.18 && vividLightness > 0.05) {
-    vividLightness -= 0.02;
-    color = hslToRgb(hue, vividSaturation, vividLightness);
+  let backdropLightness = lightness;
+  let color = hslToRgb(hue, saturation, backdropLightness);
+  while (relativeLuminance(color) > 0.18 && backdropLightness > 0.05) {
+    backdropLightness -= 0.02;
+    color = hslToRgb(hue, saturation, backdropLightness);
   }
 
   return `rgb(${color.map(Math.round).join(', ')})`;
 }
 
-/** Dominant color of an image, already made vivid and text-safe for a backdrop. */
+/** Dominant color of an image as a solid, text-safe backdrop color. */
 export async function extractBackdropColor(imageUrl: string): Promise<string | null> {
   const dominant = await extractDominantColor(imageUrl);
-  return dominant ? toVividBackdropColor(dominant) : null;
+  return dominant ? toBackdropColor(dominant) : null;
 }
 
 function rgbToHsl(red: number, green: number, blue: number): [number, number, number] {

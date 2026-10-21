@@ -8,7 +8,7 @@
   @if (resultsData$ | async; as data) {
     @if (data.query.length < 3) {
       <section aria-labelledby="ranking-title">
-        <h2 id="ranking-title" class="section-title">Highest rated</h2>
+        <h2 id="ranking-title" class="section-title">{{ 'homePage.highestRated' | t }}</h2>
         @if (highestRatedAlbums$ | async; as albums) {
           @if (albums.length > 0) {
             <ol class="poster-grid">
@@ -18,8 +18,8 @@
             </ol>
           } @else {
             <div class="empty-state" role="status">
-              <strong>No ranked albums yet</strong>
-              <p>Rate an album to start the chart.</p>
+              <strong>{{ 'homePage.noRanked' | t }}</strong>
+              <p>{{ 'homePage.noRankedCopy' | t }}</p>
             </div>
           }
         } @else {
@@ -30,26 +30,26 @@
       <app-home-features />
 
       <section class="final-cta" aria-labelledby="cta-title">
-        <p id="cta-title">Turn every listen into a collection of ratings, reviews and memories.</p>
+        <p id="cta-title">{{ 'homePage.ctaCopy' | t }}</p>
         <div class="cta-actions">
-          <a mat-flat-button class="primary-action" routerLink="/register">Create your diary</a>
-          <a mat-stroked-button class="secondary-action" href="#ranking-title">Explore albums</a>
+          <a mat-flat-button class="primary-action" routerLink="/register">{{ 'homePage.createDiary' | t }}</a>
+          <a mat-stroked-button class="secondary-action" href="#ranking-title">{{ 'homePage.exploreAlbums' | t }}</a>
         </div>
       </section>
     } @else {
       <section aria-labelledby="search-results-title">
         <h1 id="search-results-title" class="search-title">
-          <span class="muted">Results for</span> “{{ data.query }}”
+          <span class="muted">{{ 'homePage.resultsFor' | t }}</span> “{{ data.query }}”
         </h1>
 
         @if (data.isLoading) {
           <app-skeleton-loader variant="cards" [count]="12" />
         } @else {
           @if (data.results.length > 0) {
-            <div class="text-tabs" role="tablist" aria-label="Filter search results">
+            <div class="text-tabs" role="tablist" [attr.aria-label]="'homePage.filterResults' | t">
               @for (filter of filters; track filter.value) {
                 <button type="button" role="tab" [attr.aria-selected]="filterControl.value === filter.value"
-                  (click)="filterControl.setValue(filter.value)">{{ filter.label }}</button>
+                  (click)="filterControl.setValue(filter.value)">{{ filter.label | t }}</button>
               }
             </div>
           }
@@ -68,8 +68,8 @@
             </ul>
           } @else {
             <div class="empty-state" role="status">
-              <strong>{{ data.error ? 'Search unavailable' : 'No results found' }}</strong>
-              <p>{{ data.error || 'Try another album, artist or username.' }}</p>
+              <strong>{{ (data.error ? 'homePage.searchUnavailable' : 'homePage.noResults') | t }}</strong>
+              <p>{{ (data.error || 'homePage.tryAnother') | t }}</p>
             </div>
           }
         }

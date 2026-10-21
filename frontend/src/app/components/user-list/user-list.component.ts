@@ -17,6 +17,8 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackService } from '../../services/feedback.service';
 import { SkeletonLoaderComponent } from '../skeleton-loader/skeleton-loader.component';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 export interface UserListDialogData {
   username: string;
@@ -38,7 +40,8 @@ export interface UserListDialogData {
     MatListModule,
     MatTabsModule,
     RouterLink,
-    SkeletonLoaderComponent
+    SkeletonLoaderComponent,
+    TranslatePipe
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'
@@ -73,19 +76,17 @@ export class UserListComponent implements OnInit {
   artistsError = false;
   usersTotal = 0;
   artistsTotal = 0;
-  title = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: UserListDialogData,
     private readonly apiService: ApiService,
     private readonly authService: AuthService,
     private readonly feedback: FeedbackService,
-    private readonly destroyRef: DestroyRef
+    private readonly destroyRef: DestroyRef,
+    private readonly i18n: I18nService
   ) {}
 
   ngOnInit(): void {
-    const label = this.data.listType === 'followers' ? 'Followers' : 'Following';
-    this.title = `${label} · ${this.data.totalCount}`;
     this.resetUsers('');
 
     this.searchControl.valueChanges
@@ -212,38 +213,44 @@ export class UserListComponent implements OnInit {
       next: () => {
         this.updatingUserIds.delete(user.id);
         this.feedback.success(
-          wasFollowed ? `Unfollowed @${user.username}` : `Following @${user.username}`,
-          wasFollowed
-            ? 'Their updates were removed from your following feed.'
-            : 'Their music activity will now appear in your community.'
+          this.i18n.t(wasFollowed ? 'userList.feedback.unfollowed' : 'userList.feedback.followed',
+            { username: user.username }),
+          this.i18n.t(wasFollowed ? 'userList.feedback.unfollowedMessage' : 'userList.feedback.followedMessage')
         );
       },
       error: () => {
         this.updatingUserIds.delete(user.id);
         this.updateUserFollowState(user.id, wasFollowed);
         this.feedback.error(
-          `Couldn’t ${wasFollowed ? 'unfollow' : 'follow'} @${user.username}`,
-          'Your previous follow status was restored. Please try again.'
+          this.i18n.t(wasFollowed ? 'userList.feedback.unfollowError' : 'userList.feedback.followError',
+            { username: user.username }),
+          this.i18n.t('userList.feedback.errorMessage')
         );
       }
     });
   }
 
+  get title(): string {
+    return this.i18n.t(this.data.listType === 'followers' ? 'userList.followersTitle' : 'userList.followingTitle',
+      { count: this.data.totalCount });
+  }
+
   get searchLabel(): string {
-    return this.activeTabIndex === 1 ? 'Search artists' : 'Search people';
+    return this.i18n.t(this.activeTabIndex === 1 ? 'userList.searchArtists' : 'userList.searchPeople');
   }
 
   get peopleEmptyMessage(): string {
     const query = this.searchControl.value.trim();
-    if (query) return `No people match “${query}”.`;
-    if (this.data.listType === 'followers') return `No one follows @${this.data.username} yet.`;
-    return `@${this.data.username} isn't following any people yet.`;
+    const username = this.data.username;
+    if (query) return this.i18n.t('userList.noPeopleMatch', { query });
+    if (this.data.listType === 'followers') return this.i18n.t('userList.noFollowers', { username });
+    return this.i18n.t('userList.noFollowingPeople', { username });
   }
 
   get artistsEmptyMessage(): string {
     const query = this.searchControl.value.trim();
-    if (query) return `No artists match “${query}”.`;
-    return `@${this.data.username} isn't following any artists yet.`;
+    if (query) return this.i18n.t('userList.noArtistsMatch', { query });
+    return this.i18n.t('userList.noFollowingArtists', { username: this.data.username });
   }
 
   private resetUsers(query: string): void {

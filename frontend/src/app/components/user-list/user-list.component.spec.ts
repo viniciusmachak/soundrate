@@ -9,6 +9,7 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackService } from '../../services/feedback.service';
 import { UserListComponent, UserListDialogData } from './user-list.component';
+import { I18nService } from '../../i18n/i18n.service';
 
 describe('UserListComponent', () => {
   let apiService: jasmine.SpyObj<ApiService>;
@@ -74,6 +75,8 @@ describe('UserListComponent', () => {
         }
       ]
     });
+    // Assertions below use the English copy, whatever the test browser's language is.
+    TestBed.inject(I18nService).setLocale('en');
   });
 
   it('shows the total and the loaded-item counter', () => {

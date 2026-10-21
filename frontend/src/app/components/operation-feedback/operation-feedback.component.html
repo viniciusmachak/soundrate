@@ -15,7 +15,7 @@
       {{ data.actionLabel }}
     </button>
   } @else if (data.dismissible) {
-    <button type="button" class="feedback-close" (click)="close()" aria-label="Dismiss notification">
+    <button type="button" class="feedback-close" (click)="close()" [attr.aria-label]="'shared.dismissNotification' | t">
       <mat-icon>close</mat-icon>
     </button>
   }

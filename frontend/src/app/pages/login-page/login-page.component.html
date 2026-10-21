@@ -3,34 +3,34 @@
     <a routerLink="/" class="auth-brand"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
     <mat-card class="auth-card">
       <mat-card-header class="auth-card-header">
-        <mat-card-title><h1>Sign in</h1></mat-card-title>
-        <p class="auth-card-description">Welcome back. Pick up your music diary where you left it.</p>
+        <mat-card-title><h1>{{ 'auth.login.title' | t }}</h1></mat-card-title>
+        <p class="auth-card-description">{{ 'auth.login.description' | t }}</p>
       </mat-card-header>
 
       <mat-card-content>
         <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Username or email</mat-label>
+            <mat-label>{{ 'auth.login.identifier' | t }}</mat-label>
             <input matInput formControlName="username" type="text" autocomplete="username">
             @if (loginForm.get('username')?.hasError('required')) {
-              <mat-error>Enter your username or email.</mat-error>
+              <mat-error>{{ 'auth.login.identifierRequired' | t }}</mat-error>
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
+            <mat-label>{{ 'auth.password' | t }}</mat-label>
             <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
               autocomplete="current-password">
             <button mat-icon-button matSuffix type="button" (click)="hide = !hide"
-              [attr.aria-label]="hide ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hide">
+              [attr.aria-label]="(hide ? 'auth.showPassword' : 'auth.hidePassword') | t" [attr.aria-pressed]="!hide">
               <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (loginForm.get('password')?.hasError('required')) {
-              <mat-error>Enter your password.</mat-error>
+              <mat-error>{{ 'auth.login.passwordRequired' | t }}</mat-error>
             }
           </mat-form-field>
 
-          <a routerLink="/forgot-password" class="inline-link forgot-link">Forgot your password?</a>
+          <a routerLink="/forgot-password" class="inline-link forgot-link">{{ 'auth.login.forgot' | t }}</a>
 
           @if (errorMessage) {
             <p class="auth-error" role="alert">
@@ -43,15 +43,15 @@
             class="full-width auth-submit">
             @if (isLoading) {
               <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
-              <span class="visually-hidden">Signing in…</span>
+              <span class="visually-hidden">{{ 'auth.login.signingIn' | t }}</span>
             } @else {
-              <span>Sign in</span>
+              <span>{{ 'auth.signIn' | t }}</span>
             }
           </button>
         </form>
       </mat-card-content>
     </mat-card>
 
-    <p class="auth-switch">New to Soundrate? <a routerLink="/register" class="inline-link">Create an account</a></p>
+    <p class="auth-switch">{{ 'auth.login.newHere' | t }} <a routerLink="/register" class="inline-link">{{ 'auth.login.createAccount' | t }}</a></p>
   </div>
 </div>

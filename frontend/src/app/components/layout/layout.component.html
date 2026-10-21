@@ -1,4 +1,4 @@
-<a class="skip-link" href="#main-content">Skip to main content</a>
+<a class="skip-link" href="#main-content">{{ 'layout.skipToContent' | t }}</a>
 
 <app-header />
 
@@ -9,7 +9,7 @@
 <app-footer />
 
 @if (showBackToTop) {
-  <button class="back-to-top" type="button" aria-label="Back to top" title="Back to top"
+  <button class="back-to-top" type="button" [attr.aria-label]="'layout.backToTop' | t" [title]="'layout.backToTop' | t"
     (click)="scrollToTop()">
     <span class="material-icons" aria-hidden="true">arrow_upward</span>
   </button>

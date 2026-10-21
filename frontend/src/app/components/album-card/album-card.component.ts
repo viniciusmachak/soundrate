@@ -1,19 +1,23 @@
-import { DecimalPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AlbumDashboard } from '../../models/album-details.model';
 import { DeezerAlbum } from '../../models/deezer.model';
+import { I18nService } from '../../i18n/i18n.service';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { LocalNumberPipe } from '../../i18n/locale-pipes';
 
 @Component({
   selector: 'app-album-card',
   standalone: true,
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, TranslatePipe, LocalNumberPipe],
   templateUrl: './album-card.component.html',
   styleUrl: './album-card.component.css'
 })
 export class AlbumCardComponent {
   @Input() album!: DeezerAlbum | AlbumDashboard;
   @Input() artistNameOverride?: string;
+
+  private readonly i18n = inject(I18nService);
 
   get coverUrl(): string {
     if ('cover_medium' in this.album) {
@@ -39,7 +43,7 @@ export class AlbumCardComponent {
       return this.album.artistName;
     }
 
-    return 'Unknown Artist';
+    return this.i18n.t('shared.unknownArtist');
   }
 
   get id(): string | number {
