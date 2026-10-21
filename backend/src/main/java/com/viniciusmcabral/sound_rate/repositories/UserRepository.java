@@ -24,6 +24,8 @@ public interface 	UserRepository extends JpaRepository<UserModel, Long> {
 	Optional<UserModel> findByUsername(String username);
 
 	Optional<UserModel> findByEmail(String email);
+
+	Optional<UserModel> findByGoogleId(String googleId);
 	
 	@Query("SELECT u FROM User u WHERE u.active = true AND lower(u.username) LIKE lower(concat('%', :query, '%'))")
     Page<UserModel> searchByUsername(String query, Pageable pageable);

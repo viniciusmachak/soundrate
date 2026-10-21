@@ -496,6 +496,12 @@ export const en = {
       missingToken: 'Invalid or missing password reset token.',
       invalidToken: 'The token is invalid or has expired. Please try again.'
     },
+    google: {
+      divider: 'or',
+      signingIn: 'Signing in with Google…',
+      signedInMessage: 'Signed in as @{username}.',
+      failed: 'Google sign-in failed. Please try again.'
+    },
     errors: {
       unexpected: 'An unexpected error occurred. Please try again.',
       tooManyAttempts: 'Too many attempts. Please wait a minute and try again.',

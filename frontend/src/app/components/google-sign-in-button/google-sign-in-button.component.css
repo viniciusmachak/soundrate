@@ -1,0 +1,68 @@
+.google-sign-in {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Reserves the height of Google's large button (40px) so the form doesn't jump when it renders. */
+.google-button-host {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  /* A dark color-scheme makes the browser paint Google's iframe with an opaque white backdrop. */
+  color-scheme: normal;
+}
+
+.google-button-host.is-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.google-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--secondary-text);
+  font-size: 0.875rem;
+}
+
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--warn-color) 50%, transparent);
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--warn-color) 8%, transparent);
+  color: var(--warn-color);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.auth-error mat-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 16px;
+  color: var(--secondary-text);
+  font-size: 0.875rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--divider);
+}

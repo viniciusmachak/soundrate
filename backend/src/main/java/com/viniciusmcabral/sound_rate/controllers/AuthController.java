@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.annotation.Validated;
 
 import com.viniciusmcabral.sound_rate.dtos.request.ForgotPasswordRequestDTO;
+import com.viniciusmcabral.sound_rate.dtos.request.GoogleLoginRequestDTO;
 import com.viniciusmcabral.sound_rate.dtos.request.LoginRequestDTO;
 import com.viniciusmcabral.sound_rate.dtos.request.RegisterRequestDTO;
 import com.viniciusmcabral.sound_rate.dtos.request.ResetPasswordRequestDTO;
@@ -52,6 +53,11 @@ public class AuthController {
 	public ResponseEntity<AuthResponseDTO> register(@RequestBody @Valid RegisterRequestDTO registerDTO) {
 		AuthResponseDTO response = authService.registerUser(registerDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	@PostMapping("/google")
+	public ResponseEntity<AuthResponseDTO> loginWithGoogle(@RequestBody @Valid GoogleLoginRequestDTO request) {
+		return ResponseEntity.ok(authService.loginWithGoogle(request.credential()));
 	}
 
 	@PostMapping("/forgot-password")

@@ -1,0 +1,21 @@
+@if (!unavailable()) {
+  <div class="google-sign-in">
+    <div #buttonHost class="google-button-host" [class.is-busy]="isSigningIn()" [attr.aria-busy]="isSigningIn()"></div>
+
+    @if (isSigningIn()) {
+      <p class="google-status" role="status">
+        <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+        <span>{{ 'auth.google.signingIn' | t }}</span>
+      </p>
+    }
+
+    @if (errorMessage) {
+      <p class="auth-error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </p>
+    }
+
+    <div class="auth-divider" aria-hidden="true"><span>{{ 'auth.google.divider' | t }}</span></div>
+  </div>
+}

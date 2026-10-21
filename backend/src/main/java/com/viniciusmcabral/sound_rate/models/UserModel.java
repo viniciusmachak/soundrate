@@ -34,6 +34,9 @@ public class UserModel extends AuditableEntityModel implements UserDetails, Seri
 	@Column(length = 280)
 	private String bio;
 
+	@Column(name = "google_id", unique = true)
+	private String googleId;
+
 	@Column(nullable = false)
 	private boolean active = true;
 
@@ -60,6 +63,14 @@ public class UserModel extends AuditableEntityModel implements UserDetails, Seri
 
 	public void setBio(String bio) {
 		this.bio = bio;
+	}
+
+	public String getGoogleId() {
+		return googleId;
+	}
+
+	public void setGoogleId(String googleId) {
+		this.googleId = googleId;
 	}
 
 	public boolean isActive() {

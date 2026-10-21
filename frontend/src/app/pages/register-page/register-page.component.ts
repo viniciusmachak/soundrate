@@ -16,6 +16,7 @@ import { I18nService } from '../../i18n/i18n.service';
 import { TranslatePipe } from '../../i18n/translate.pipe';
 import { TranslationKey } from '../../i18n/translation.types';
 import { translateApiError } from '../../utils/http-errors';
+import { GoogleSignInButtonComponent } from '../../components/google-sign-in-button/google-sign-in-button.component';
 @Component({
   selector: 'app-register-page',
   standalone: true,
@@ -29,7 +30,8 @@ import { translateApiError } from '../../utils/http-errors';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatIcon,
-    TranslatePipe
+    TranslatePipe,
+    GoogleSignInButtonComponent
   ],
   templateUrl: './register-page.component.html',
   styleUrl: '../auth-page.shared.css'

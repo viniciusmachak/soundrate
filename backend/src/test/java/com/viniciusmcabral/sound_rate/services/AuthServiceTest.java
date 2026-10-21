@@ -16,13 +16,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.viniciusmcabral.sound_rate.dtos.request.RegisterRequestDTO;
 import com.viniciusmcabral.sound_rate.models.PasswordResetTokenModel;
 import com.viniciusmcabral.sound_rate.repositories.PasswordResetTokenRepository;
+import com.viniciusmcabral.sound_rate.models.UserModel;
 import com.viniciusmcabral.sound_rate.repositories.UserRepository;
+import com.viniciusmcabral.sound_rate.services.GoogleIdentityService.GoogleProfile;
 import com.viniciusmcabral.sound_rate.support.TestDataFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +46,9 @@ class AuthServiceTest {
 
 	@Mock
 	private EmailService emailService;
+
+	@Mock
+	private GoogleIdentityService googleIdentityService;
 
 	@InjectMocks
 	private AuthService authService;
@@ -124,6 +131,60 @@ class AuthServiceTest {
 				.hasMessageContaining("expired");
 
 		verify(tokenRepository).delete(resetToken);
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	void loginWithGoogleCreatesUserWithFreeUsernameDerivedFromEmail() {
+		var profile = new GoogleProfile("sub-1", "João.Silva+music@gmail.com", true, "João", "https://lh3.example/p.jpg");
+		when(googleIdentityService.verify("token")).thenReturn(Optional.of(profile));
+		when(userRepository.findByGoogleId("sub-1")).thenReturn(Optional.empty());
+		when(userRepository.findByEmail(profile.email())).thenReturn(Optional.empty());
+		when(userRepository.findByUsername("joao.silvamusic")).thenReturn(Optional.of(TestDataFactory.user(5L, "joao.silvamusic")));
+		when(userRepository.findByUsername(org.mockito.ArgumentMatchers.matches("joao\\.silvamusic\\d{4}")))
+				.thenReturn(Optional.empty());
+		when(passwordEncoder.encode(any())).thenReturn("encoded-random");
+		when(tokenService.generateToken(any())).thenReturn("jwt-token");
+
+		var response = authService.loginWithGoogle("token");
+
+		ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
+		verify(userRepository).save(userCaptor.capture());
+		UserModel saved = userCaptor.getValue();
+		assertThat(saved.getUsername()).matches("joao\\.silvamusic\\d{4}");
+		assertThat(saved.getGoogleId()).isEqualTo("sub-1");
+		assertThat(saved.getAvatarUrl()).isEqualTo("https://lh3.example/p.jpg");
+		verify(emailService).sendWelcomeEmail(profile.email(), saved.getUsername());
+		assertThat(response.token()).isEqualTo("jwt-token");
+	}
+
+	@Test
+	void loginWithGoogleRejectsUnverifiedEmail() {
+		when(googleIdentityService.verify("token"))
+				.thenReturn(Optional.of(new GoogleProfile("sub-1", "someone@example.com", false, null, null)));
+
+		assertThatThrownBy(() -> authService.loginWithGoogle("token")).isInstanceOf(BadCredentialsException.class);
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	void loginWithGoogleRejectsInvalidToken() {
+		when(googleIdentityService.verify("bad")).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> authService.loginWithGoogle("bad")).isInstanceOf(BadCredentialsException.class);
+	}
+
+	@Test
+	void loginWithGoogleDoesNotLinkOrSignInInactiveAccount() {
+		var user = TestDataFactory.user(1L, "listener");
+		user.setActive(false);
+		when(googleIdentityService.verify("token"))
+				.thenReturn(Optional.of(new GoogleProfile("sub-1", user.getEmail(), true, null, null)));
+		when(userRepository.findByGoogleId("sub-1")).thenReturn(Optional.empty());
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+		assertThatThrownBy(() -> authService.loginWithGoogle("token")).isInstanceOf(DisabledException.class);
+		assertThat(user.getGoogleId()).isNull();
 		verify(userRepository, never()).save(any());
 	}
 }

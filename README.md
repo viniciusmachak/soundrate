@@ -90,6 +90,10 @@ MAIL_FROM=no-reply@yourdomain.com
 APP_FRONTEND_URL=http://localhost:4200
 APP_CORS_ORIGINS=http://localhost:4200
 
+# Google sign-in OAuth client id (optional: defaults to the project's client id).
+# Must match googleClientId in frontend/src/environments.
+# GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com
+
 # Production only (docker-compose.prod.yml)
 DOMAIN=yourdomain.com
 # Umami analytics session secret (openssl rand -hex 32)

@@ -497,6 +497,12 @@ export const ptBR: Translations = {
       missingToken: 'Token de redefinição de senha inválido ou ausente.',
       invalidToken: 'O token é inválido ou expirou. Tente novamente.'
     },
+    google: {
+      divider: 'ou',
+      signingIn: 'Entrando com o Google…',
+      signedInMessage: 'Conectado como @{username}.',
+      failed: 'Não foi possível entrar com o Google. Tente novamente.'
+    },
     errors: {
       unexpected: 'Ocorreu um erro inesperado. Tente novamente.',
       tooManyAttempts: 'Muitas tentativas. Aguarde um minuto e tente novamente.',

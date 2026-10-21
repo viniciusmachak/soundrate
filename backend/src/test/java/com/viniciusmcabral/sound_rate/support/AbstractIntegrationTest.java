@@ -33,6 +33,7 @@ import com.viniciusmcabral.sound_rate.repositories.TrackRatingRepository;
 import com.viniciusmcabral.sound_rate.repositories.UserRepository;
 import com.viniciusmcabral.sound_rate.services.DeezerService;
 import com.viniciusmcabral.sound_rate.services.EmailService;
+import com.viniciusmcabral.sound_rate.services.GoogleIdentityService;
 import com.viniciusmcabral.sound_rate.services.StorageService;
 import com.viniciusmcabral.sound_rate.services.TokenService;
 
@@ -91,6 +92,9 @@ public abstract class AbstractIntegrationTest {
 
 	@MockBean
 	protected StorageService storageService;
+
+	@MockBean
+	protected GoogleIdentityService googleIdentityService;
 
 	@BeforeEach
 	void resetDatabaseAndMocks() {

@@ -8,6 +8,8 @@
       </mat-card-header>
 
       <mat-card-content>
+        <app-google-sign-in-button></app-google-sign-in-button>
+
         <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'auth.register.username' | t }}</mat-label>

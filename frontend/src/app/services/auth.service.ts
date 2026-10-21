@@ -47,6 +47,15 @@ export class AuthService {
     );
   }
 
+  /** Signs in (creating the account on first use) with the ID token from the Google button. */
+  loginWithGoogle(credential: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/google`, { credential }).pipe(
+      tap(response => {
+        this.handleAuthentication(response);
+      })
+    );
+  }
+
   logout(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('jwt_token');

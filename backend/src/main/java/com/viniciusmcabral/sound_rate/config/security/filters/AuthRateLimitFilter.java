@@ -42,6 +42,7 @@ public class AuthRateLimitFilter extends OncePerRequestFilter {
 	static final List<Rule> RULES = List.of(
 			new Rule("/api/v1/auth/login", 10, Duration.ofMinutes(1)),
 			new Rule("/api/v1/auth/register", 5, Duration.ofMinutes(10)),
+			new Rule("/api/v1/auth/google", 10, Duration.ofMinutes(1)),
 			new Rule("/api/v1/auth/forgot-password", 5, Duration.ofMinutes(15)),
 			new Rule("/api/v1/auth/reset-password", 10, Duration.ofMinutes(15)));
 
