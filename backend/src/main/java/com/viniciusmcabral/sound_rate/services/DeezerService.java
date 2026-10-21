@@ -29,6 +29,7 @@ public class DeezerService {
 	private static final Logger logger = LoggerFactory.getLogger(DeezerService.class);
 	private static final Pattern FEATURED_ARTIST_PATTERN = Pattern
 			.compile("(?i)(?:\\bfeat(?:uring)?\\.?\\s+|\\bft\\.?\\s+|\\(with\\s+)");
+	private static final Pattern NUMERIC_ID_PATTERN = Pattern.compile("\\d{1,19}");
 	private final RestTemplate restTemplate;
 	private final String deezerApiUrl = "https://api.deezer.com";
 
@@ -58,8 +59,11 @@ public class DeezerService {
 	}
 
 	public DeezerArtistDetailsDTO getArtistDetails(String artistId) {
+		if (!isNumericId(artistId)) {
+			return null;
+		}
 		return getOrDefault(() -> restTemplate.getForObject(buildUri("/artist/{artistId}").build(artistId),
-				DeezerArtistDetailsDTO.class), details -> details, null,
+				DeezerArtistDetailsDTO.class), details -> isMissing(details) ? null : details, null,
 				"Failed to fetch Deezer artist details for artist '{}': {}.", artistId);
 	}
 
@@ -102,9 +106,12 @@ public class DeezerService {
 	}
 
 	public DeezerAlbumDTO getAlbumDetails(String albumId) {
+		if (!isNumericId(albumId)) {
+			return null;
+		}
 		logger.debug("Fetching Deezer album details for album '{}'.", albumId);
 		return getOrDefault(() -> restTemplate.getForObject(buildUri("/album/{albumId}").build(albumId),
-				DeezerAlbumDTO.class), this::enrichFeaturedTrackContributors, null,
+				DeezerAlbumDTO.class), album -> isMissing(album) ? null : enrichFeaturedTrackContributors(album), null,
 				"Failed to fetch Deezer album details for album '{}': {}.", albumId);
 	}
 
@@ -153,6 +160,22 @@ public class DeezerService {
 				album.artist(), album.recordType(), album.releaseDate(), album.duration(), album.fans(), album.rating(), album.explicitLyrics(),
 				album.label(), album.copyright(), album.genres(), album.contributors(),
 				new DeezerTracklistDTO(List.copyOf(tracks)), album.communityScore());
+	}
+
+	/**
+	 * Deezer answers unknown IDs with HTTP 200 and an {@code error} body, which deserializes to an empty DTO.
+	 * Non-numeric IDs are rejected up front because Deezer resolves them as name searches.
+	 */
+	private static boolean isNumericId(String id) {
+		return id != null && NUMERIC_ID_PATTERN.matcher(id).matches();
+	}
+
+	private static boolean isMissing(DeezerAlbumDTO album) {
+		return album == null || album.id() <= 0;
+	}
+
+	private static boolean isMissing(DeezerArtistDetailsDTO artist) {
+		return artist == null || artist.id() <= 0;
 	}
 
 	private UriComponentsBuilder buildUri(String path) {

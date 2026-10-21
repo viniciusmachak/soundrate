@@ -1,5 +1,16 @@
-import { Routes } from '@angular/router';
+import { Routes, UrlMatcher, UrlSegment } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+
+/**
+ * Matches `<prefix>/<numeric id>` only, so `/album/abc` falls through to the not-found page
+ * instead of asking the API (Deezer would resolve a non-numeric artist ID as a name search).
+ */
+function numericIdMatcher(prefix: string): UrlMatcher {
+  return (segments: UrlSegment[]) =>
+    segments.length === 2 && segments[0].path === prefix && /^\d{1,19}$/.test(segments[1].path)
+      ? { consumed: segments, posParams: { id: segments[1] } }
+      : null;
+}
 
 export const routes: Routes = [
   {
@@ -33,12 +44,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/user-profile-page/user-profile-page.component').then(m => m.UserProfilePageComponent)
   },
   {
-    path: 'album/:id',
+    matcher: numericIdMatcher('album'),
     title: 'Album details | Soundrate',
     loadComponent: () => import('./pages/album-details-page/album-details-page.component').then(m => m.AlbumDetailsPageComponent)
   },
   {
-    path: 'artist/:id',
+    matcher: numericIdMatcher('artist'),
     title: 'Artist details | Soundrate',
     loadComponent: () => import('./pages/artist-details-page/artist-details-page.component').then(m => m.ArtistDetailsPageComponent)
   },

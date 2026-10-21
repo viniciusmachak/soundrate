@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -105,11 +106,14 @@ public class AlbumService {
 
 		return topAlbumIds.stream().map(albumId -> {
 			DeezerAlbumDTO deezerDetails = deezerService.getAlbumDetails(albumId);
+			if (deezerDetails == null) {
+				return null;
+			}
 			Double communityScore = albumRatingRepository.findCommunityAverageRating(albumId).orElse(0.0);
 
 			return new AlbumDashboardDTO(albumId, deezerDetails.title(), deezerDetails.coverMedium(),
 					deezerDetails.artist().name(), communityScore);
-		}).collect(Collectors.toList());
+		}).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	private Double findCurrentUserRating(String albumId) {
