@@ -66,7 +66,8 @@ export const en = {
     developerGithub: 'Developer\'s GitHub',
     developerInstagram: 'Developer\'s Instagram',
     copyright: '© {year} Soundrate. Built for music lovers.',
-    dataProvider: 'Music data provided by Deezer.'
+    dataProvider: 'Music data provided by Deezer.',
+    privacy: 'Privacy'
   },
   titles: {
     suffix: '{title} | Soundrate',
@@ -81,6 +82,7 @@ export const en = {
     settings: 'Account settings',
     listenLater: 'Listen Later',
     about: 'About',
+    privacy: 'Privacy Policy',
     notFound: 'Page not found',
     albumNotFound: 'Album not found',
     artistNotFound: 'Artist not found',
@@ -699,6 +701,42 @@ export const en = {
       listenLaterRestoredMessage: '{title} was restored to your listening queue.',
       loadMoreError: 'Couldn’t load more',
       loadMoreErrorMessage: 'The next page of {content} is temporarily unavailable.'
+    }
+  },
+  privacy: {
+    eyebrow: 'Legal',
+    title: 'Privacy Policy',
+    updated: 'Last updated: October 21, 2026',
+    intro: 'Soundrate is a personal project that lets you discover, rate and review albums. This policy explains what data the app collects, why, and what you can do about it.',
+    collect: {
+      title: 'What we collect',
+      account: 'Account data: your username, email address, password (stored only as a one-way hash), profile picture and bio.',
+      activity: 'Activity: the ratings, reviews and likes you post, the members and artists you follow and the albums you save to listen later. Ratings, reviews and your profile are public.',
+      google: 'If you sign in with Google, we receive your name, email address, profile picture and Google account ID. We use them only to create or sign in to your account; we never see your Google password or any other Google data.'
+    },
+    use: {
+      title: 'How we use it',
+      body: 'We use your data to run your account, sign you in, show your profile and activity, and send account emails (welcome, password reset and account deletion). We don\'t sell your data or use it for advertising.'
+    },
+    services: {
+      title: 'Services we rely on',
+      deezer: 'Deezer provides the music catalog, artwork and track previews. Previews play from Deezer\'s servers.',
+      google: 'Google handles "Continue with Google" sign-in.',
+      cloudinary: 'Cloudinary stores the profile pictures you upload.',
+      email: 'An email delivery provider sends account emails to your address.',
+      analytics: 'Umami, hosted on our own server, counts page views without cookies and without identifying you.'
+    },
+    storage: {
+      title: 'Storage and cookies',
+      body: 'Your data is kept in our database for as long as your account exists. Soundrate sets no cookies: your sign-in session and language choice are kept in your browser\'s local storage. Signing out removes the session, and clearing site data removes both.'
+    },
+    choices: {
+      title: 'Your choices',
+      body: 'You can edit your profile, email and password in Account settings. Deleting your account there deactivates it right away: you can no longer sign in and your profile is no longer shown. To have your data erased completely, or for any other request, contact us.'
+    },
+    contact: {
+      title: 'Contact',
+      body: 'Questions about this policy or your data? Write to'
     }
   },
   session: {

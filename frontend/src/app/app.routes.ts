@@ -71,6 +71,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/about-page/about-page.component').then(m => m.AboutPageComponent)
   },
   {
+    path: 'privacy',
+    title: 'titles.privacy',
+    loadComponent: () => import('./pages/privacy-page/privacy-page.component').then(m => m.PrivacyPageComponent)
+  },
+  {
     path: '**',
     title: 'titles.notFound',
     loadComponent: () => import('./pages/not-found-page/not-found-page.component').then(m => m.NotFoundPageComponent)

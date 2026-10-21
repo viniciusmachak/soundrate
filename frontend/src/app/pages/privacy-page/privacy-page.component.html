@@ -1,0 +1,32 @@
+<article class="policy">
+  <header class="policy-header">
+    <span class="policy-eyebrow">{{ 'privacy.eyebrow' | t }}</span>
+    <h1>{{ 'privacy.title' | t }}</h1>
+    <p class="policy-updated">{{ 'privacy.updated' | t }}</p>
+    <p class="policy-intro">{{ 'privacy.intro' | t }}</p>
+  </header>
+
+  @for (section of sections; track section.title) {
+    <section class="policy-section">
+      <h2>{{ section.title | t }}</h2>
+      @for (paragraph of section.paragraphs ?? []; track paragraph) {
+        <p>{{ paragraph | t }}</p>
+      }
+      @if (section.items) {
+        <ul>
+          @for (item of section.items; track item) {
+            <li>{{ item | t }}</li>
+          }
+        </ul>
+      }
+    </section>
+  }
+
+  <section class="policy-section">
+    <h2>{{ 'privacy.contact.title' | t }}</h2>
+    <p>
+      {{ 'privacy.contact.body' | t }}
+      <a class="policy-link" [href]="'mailto:' + contactEmail">{{ contactEmail }}</a>.
+    </p>
+  </section>
+</article>

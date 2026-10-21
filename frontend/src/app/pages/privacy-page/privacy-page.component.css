@@ -1,0 +1,77 @@
+.policy {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(32px, 7vh, 72px) var(--gutter) 64px;
+  line-height: 1.7;
+}
+
+.policy-header {
+  margin-bottom: 40px;
+}
+
+.policy-eyebrow {
+  color: var(--accent-text);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 8px 0 4px;
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.policy-updated {
+  margin: 0 0 20px;
+  color: var(--secondary-text);
+  font-size: var(--fs-small);
+}
+
+.policy-intro {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.policy-section {
+  padding-top: 28px;
+  border-top: 1px solid var(--divider);
+  margin-top: 28px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.policy-section p,
+.policy-section li {
+  color: var(--secondary-text);
+}
+
+.policy-section p {
+  margin: 0 0 12px;
+}
+
+.policy-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.policy-section li + li {
+  margin-top: 8px;
+}
+
+/* Underlined so the link isn't identified by color alone (WCAG 1.4.1). */
+.policy-link {
+  color: var(--primary-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
