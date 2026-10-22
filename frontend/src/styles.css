@@ -513,3 +513,10 @@ mat-paginator,
   align-items: center;
   gap: 10px;
 }
+
+/* Header wordmark, in the same accent as the logo */
+.brand-wordmark {
+  color: var(--accent-color);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}

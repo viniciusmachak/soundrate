@@ -1,0 +1,7 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Soundrate">
+  <rect width="512" height="512" rx="112" fill="#121212"/>
+  <path d="M122 290 A134 134 0 0 1 390 290" fill="none" stroke="#a43fdb" stroke-width="26" stroke-linecap="round"/>
+  <rect x="92" y="262" width="56" height="118" rx="24" fill="#a43fdb"/>
+  <rect x="364" y="262" width="56" height="118" rx="24" fill="#a43fdb"/>
+  <polygon points="256.0,218.0 277.2,274.8 337.8,277.4 290.4,315.2 306.5,373.6 256.0,340.1 205.5,373.6 221.6,315.2 174.2,277.4 234.8,274.8" fill="#a43fdb" stroke="#a43fdb" stroke-width="12" stroke-linejoin="round"/>
+</svg>
