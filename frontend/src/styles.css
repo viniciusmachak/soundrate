@@ -28,7 +28,7 @@
   --on-accent: #fff;
   --warn-color: #ff8a8a;
 
-  --font-sans: GraphikWeb, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --fs-display: clamp(2rem, 5vw, 3.5rem);
   --fs-h1: 1.5rem;
   --fs-h2: 1.125rem;
@@ -77,6 +77,54 @@
   --mat-snack-bar-container-shape: var(--radius);
 }
 
+/* The prebuilt Material theme hardcodes Roboto per component; route them all to the brand font. */
+:root {
+  --mat-badge-text-font: var(--font-sans);
+  --mat-bottom-sheet-container-text-font: var(--font-sans);
+  --mat-button-filled-label-text-font: var(--font-sans);
+  --mat-button-outlined-label-text-font: var(--font-sans);
+  --mat-button-protected-label-text-font: var(--font-sans);
+  --mat-button-text-label-text-font: var(--font-sans);
+  --mat-button-toggle-label-text-font: var(--font-sans);
+  --mat-button-toggle-legacy-label-text-font: var(--font-sans);
+  --mat-button-tonal-label-text-font: var(--font-sans);
+  --mat-card-subtitle-text-font: var(--font-sans);
+  --mat-card-title-text-font: var(--font-sans);
+  --mat-checkbox-label-text-font: var(--font-sans);
+  --mat-chip-label-text-font: var(--font-sans);
+  --mat-datepicker-calendar-text-font: var(--font-sans);
+  --mat-dialog-subhead-font: var(--font-sans);
+  --mat-dialog-supporting-text-font: var(--font-sans);
+  --mat-expansion-container-text-font: var(--font-sans);
+  --mat-expansion-header-text-font: var(--font-sans);
+  --mat-fab-extended-label-text-font: var(--font-sans);
+  --mat-form-field-container-text-font: var(--font-sans);
+  --mat-form-field-filled-label-text-font: var(--font-sans);
+  --mat-form-field-outlined-label-text-font: var(--font-sans);
+  --mat-form-field-subscript-text-font: var(--font-sans);
+  --mat-list-list-item-label-text-font: var(--font-sans);
+  --mat-list-list-item-supporting-text-font: var(--font-sans);
+  --mat-list-list-item-trailing-supporting-text-font: var(--font-sans);
+  --mat-menu-item-label-text-font: var(--font-sans);
+  --mat-optgroup-label-text-font: var(--font-sans);
+  --mat-option-label-text-font: var(--font-sans);
+  --mat-paginator-container-text-font: var(--font-sans);
+  --mat-radio-label-text-font: var(--font-sans);
+  --mat-select-trigger-text-font: var(--font-sans);
+  --mat-slider-label-label-text-font: var(--font-sans);
+  --mat-slide-toggle-label-text-font: var(--font-sans);
+  --mat-snack-bar-supporting-text-font: var(--font-sans);
+  --mat-stepper-container-text-font: var(--font-sans);
+  --mat-stepper-header-label-text-font: var(--font-sans);
+  --mat-tab-label-text-font: var(--font-sans);
+  --mat-table-footer-supporting-text-font: var(--font-sans);
+  --mat-table-header-headline-font: var(--font-sans);
+  --mat-table-row-item-label-text-font: var(--font-sans);
+  --mat-toolbar-title-text-font: var(--font-sans);
+  --mat-tooltip-supporting-text-font: var(--font-sans);
+  --mat-tree-node-text-font: var(--font-sans);
+}
+
 html,
 body {
   height: 100%;
@@ -96,8 +144,10 @@ a {
   color: inherit;
 }
 
+/* width/height attributes reserve space; CSS still decides the rendered size. */
 img {
   max-width: 100%;
+  height: auto;
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
@@ -512,11 +562,4 @@ mat-paginator,
   display: inline-flex;
   align-items: center;
   gap: 10px;
-}
-
-/* Header wordmark, in the same accent as the logo */
-.brand-wordmark {
-  color: var(--accent-color);
-  font-weight: 800;
-  letter-spacing: -0.03em;
 }

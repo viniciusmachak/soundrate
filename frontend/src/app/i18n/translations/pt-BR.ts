@@ -36,7 +36,7 @@ export const ptBR: Translations = {
     searchPlaceholder: 'Buscar no Soundrate',
     searchLabel: 'Buscar álbuns, artistas ou usuários',
     suggestions: 'Sugestões de busca',
-    searching: 'Buscando...',
+    searching: 'Buscando…',
     suggestionsAvailable: {
       one: '1 sugestão disponível. Use as setas para cima e para baixo para navegar.',
       other: '{count} sugestões disponíveis. Use as setas para cima e para baixo para navegar.'
@@ -48,7 +48,7 @@ export const ptBR: Translations = {
     avatarOf: 'Avatar de {username}',
     mainNavigation: 'Navegação principal',
     recentlyRated: 'Avaliados recentemente',
-    loadingRatings: 'Carregando avaliações...',
+    loadingRatings: 'Carregando avaliações…',
     ratingLabel: 'Nota: {rating} de 5',
     ratingsError: 'Não foi possível carregar as avaliações.',
     noRatings: 'Nenhum álbum avaliado ainda.',
@@ -324,7 +324,7 @@ export const ptBR: Translations = {
     }
   },
   skeleton: {
-    loading: 'Carregando conteúdo...'
+    loading: 'Carregando conteúdo…'
   },
   player: {
     playingFrom: 'Tocando de',

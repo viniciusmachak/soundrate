@@ -37,7 +37,7 @@
         <mat-list>
           @for (user of users; track user.id) {
             <mat-list-item>
-              <img matListItemAvatar [src]="user.avatarUrl" [alt]="'userList.avatarOf' | t: { username: user.username }"
+              <img width="44" height="44" matListItemAvatar [src]="user.avatarUrl" [alt]="'userList.avatarOf' | t: { username: user.username }"
                 class="entity-avatar">
               <a matListItemTitle [routerLink]="['/user', user.username]" mat-dialog-close class="entity-link">
                 {{ user.username }}
@@ -96,7 +96,7 @@
         <mat-list>
           @for (artist of artists; track artist.id) {
             <mat-list-item>
-              <img matListItemAvatar [src]="artist.picture_medium" [alt]="'userList.pictureOf' | t: { name: artist.name }"
+              <img width="44" height="44" matListItemAvatar [src]="artist.picture_medium" [alt]="'userList.pictureOf' | t: { name: artist.name }"
                 class="entity-avatar">
               <a matListItemTitle [routerLink]="['/artist', artist.id]" mat-dialog-close class="entity-link">
                 {{ artist.name }}

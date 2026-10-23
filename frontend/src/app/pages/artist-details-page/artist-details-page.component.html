@@ -7,7 +7,7 @@
     <div class="entity-hero" [style.--entity-accent]="accentColor">
     <div class="entity-backdrop" aria-hidden="true"></div>
     <header class="entity-header">
-      <img [src]="artist.picture_xl" [alt]="artist.name" class="artist-photo">
+      <img width="200" height="200" [src]="artist.picture_xl" [alt]="artist.name" class="artist-photo">
       <div class="entity-info">
         <span class="entity-kind">{{ 'common.artist' | t }}</span>
         <h1>{{ artist.name }}</h1>
@@ -83,7 +83,7 @@
           @for (item of page.community.recentReviews; track item.review.id) {
             <li class="recent-review">
               <a [routerLink]="['/album', item.album.id]" class="recent-review-cover">
-                <img [src]="item.album.cover_medium" [alt]="item.album.title">
+                <img width="64" height="64" [src]="item.album.cover_medium" [alt]="item.album.title">
               </a>
               <div class="recent-review-body">
                 <div class="recent-review-header">

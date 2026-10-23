@@ -1,7 +1,7 @@
 @if (userProfile$ | async; as profile) {
   <div class="page">
     <header class="profile-header">
-      <img [src]="profile.user.avatarUrl" [alt]="'profile.avatarOf' | t: { username: profile.user.username }" class="avatar">
+      <img width="112" height="112" [src]="profile.user.avatarUrl" [alt]="'profile.avatarOf' | t: { username: profile.user.username }" class="avatar">
 
       <div class="profile-info">
         <h1>{{ profile.user.username }}</h1>
@@ -83,7 +83,7 @@
                     @for (rating of activity.recentRatings; track rating.album.id) {
                       <li>
                         <a class="row" [routerLink]="['/album', rating.album.id]">
-                          <img class="row-thumb" [src]="rating.album.cover_medium" alt="">
+                          <img width="44" height="44" class="row-thumb" [src]="rating.album.cover_medium" alt="">
                           <span class="row-copy">
                             <strong>{{ rating.album.title }}</strong>
                             <small>{{ rating.ratingDate | localDate:'d MMM y' }}</small>
@@ -111,7 +111,7 @@
                     @for (review of activity.recentReviews; track review.id) {
                       <li>
                         <a class="row" [routerLink]="['/album', review.album.id]">
-                          <img class="row-thumb" [src]="review.album.cover_medium" alt="">
+                          <img width="44" height="44" class="row-thumb" [src]="review.album.cover_medium" alt="">
                           <span class="row-copy">
                             <strong>{{ review.album.title }}</strong>
                             <small>{{ review.text }}</small>
@@ -138,7 +138,7 @@
                     @for (album of activity.recentLikes; track album.id) {
                       <li>
                         <a class="row" [routerLink]="['/album', album.id]">
-                          <img class="row-thumb" [src]="album.cover_medium" alt="">
+                          <img width="44" height="44" class="row-thumb" [src]="album.cover_medium" alt="">
                           <span class="row-copy">
                             <strong>{{ album.title }}</strong>
                             <small>{{ album.artist.name }}</small>
@@ -163,7 +163,7 @@
                     @for (artist of activity.recentArtists; track artist.id) {
                       <li>
                         <a class="row" [routerLink]="['/artist', artist.id]">
-                          <img class="row-thumb round" [src]="artist.picture_medium" alt="">
+                          <img width="44" height="44" class="row-thumb round" [src]="artist.picture_medium" alt="">
                           <span class="row-copy">
                             <strong>{{ artist.name }}</strong>
                             @if (artist.followedAt) {
@@ -221,7 +221,7 @@
               @for (review of reviews; track review.id) {
                 <li class="profile-review">
                   <a class="profile-review-cover" [routerLink]="['/album', review.album.id]">
-                    <img [src]="review.album.cover_medium" [alt]="review.album.title">
+                    <img width="72" height="72" [src]="review.album.cover_medium" [alt]="review.album.title">
                   </a>
                   <div class="profile-review-body">
                     <div class="profile-review-header">

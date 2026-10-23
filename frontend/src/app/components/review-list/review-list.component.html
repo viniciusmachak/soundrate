@@ -3,7 +3,7 @@
     <article class="review">
       <a [routerLink]="['/user', review.author.username]" class="review-avatar"
         [attr.aria-label]="'header.openProfile' | t: { username: review.author.username }">
-        <img [src]="review.author.avatarUrl" alt="">
+        <img width="36" height="36" [src]="review.author.avatarUrl" alt="">
       </a>
       <div class="review-body">
         <header class="review-header">

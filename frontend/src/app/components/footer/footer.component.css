@@ -79,9 +79,13 @@
   height: 36px;
   border-radius: 50%;
   color: var(--secondary-text);
-  font-size: 1.15rem;
   text-decoration: none;
   transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.social-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .social-links a:hover,

@@ -6,7 +6,7 @@
       <mat-icon>menu</mat-icon>
     </button>
 
-    <a routerLink="/" class="app-title" [attr.aria-label]="'header.homeLink' | t"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span class="brand-wordmark">Soundrate</span></a>
+    <a routerLink="/" class="app-title" [attr.aria-label]="'header.homeLink' | t"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
 
     <form class="search-container" (submit)="submitSearch($event)">
       <button type="submit" class="search-submit" [attr.aria-label]="'header.showAllResults' | t">
@@ -39,7 +39,7 @@
                     [class.active]="activeSearchIndex === index"
                     [attr.aria-selected]="activeSearchIndex === index"
                     (mousedown)="$event.preventDefault()" (click)="selectResult(result)">
-                    <img [src]="resultImage(result)" alt="">
+                    <img width="40" height="40" [src]="resultImage(result)" alt="">
                     <span class="result-copy">
                       <strong>{{ resultTitle(result) }}</strong>
                       <small>{{ resultSubtitle(result) }}</small>
@@ -64,7 +64,7 @@
       @if (currentUser$ | async; as user) {
         <a mat-icon-button class="profile-link" [routerLink]="['/user', user.username]"
           [attr.aria-label]="'header.openProfile' | t: { username: user.username }">
-          <img [src]="user.avatarUrl" [alt]="'header.avatarOf' | t: { username: user.username }" class="toolbar-avatar">
+          <img width="34" height="34" [src]="user.avatarUrl" [alt]="'header.avatarOf' | t: { username: user.username }" class="toolbar-avatar">
         </a>
         <a mat-icon-button routerLink="/settings" class="nav-icon-link" [attr.aria-label]="'common.settings' | t">
           <mat-icon>settings</mat-icon>
@@ -88,7 +88,7 @@
   <aside id="mobile-navigation" class="sidebar" role="dialog" aria-modal="true"
     [attr.aria-label]="'header.mainNavigation' | t" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <div class="sidebar-header">
-      <a routerLink="/" class="sidebar-brand" (click)="closeSidebar()"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span class="brand-wordmark">Soundrate</span></a>
+      <a routerLink="/" class="sidebar-brand" (click)="closeSidebar()"><img src="/logo-96.png" alt="" width="32" height="32" class="brand-logo"><span>Soundrate</span></a>
       <button mat-icon-button type="button" [attr.aria-label]="'header.closeMenu' | t" (click)="closeSidebar()">
         <mat-icon>close</mat-icon>
       </button>
@@ -107,7 +107,7 @@
 
       @if (currentUser$ | async; as user) {
         <a class="sidebar-link" [routerLink]="['/user', user.username]" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="closeSidebar()">
-          <img [src]="user.avatarUrl" alt="" class="sidebar-profile-image">
+          <img width="24" height="24" [src]="user.avatarUrl" alt="" class="sidebar-profile-image">
           <span>{{ 'common.profile' | t }}</span>
         </a>
 
@@ -123,7 +123,7 @@
               <div class="recent-rating-list">
                 @for (rating of state.ratings; track rating.album.id) {
                   <a class="recent-rating" [routerLink]="['/album', rating.album.id]" (click)="closeSidebar()">
-                    <img [src]="rating.album.cover_medium" [alt]="rating.album.title">
+                    <img width="42" height="42" [src]="rating.album.cover_medium" [alt]="rating.album.title">
                     <span class="recent-rating-copy">
                       <strong>{{ rating.album.title }}</strong>
                       <span class="recent-rating-stars"

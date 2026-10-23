@@ -38,6 +38,7 @@
   color: var(--primary-text);
   font-size: 1.5rem;
   font-weight: 700;
+  letter-spacing: normal;
   text-decoration: none;
   transition: color 0.2s ease;
 }

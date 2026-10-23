@@ -35,7 +35,7 @@ export const en = {
     searchPlaceholder: 'Search Soundrate',
     searchLabel: 'Search albums, artists or users',
     suggestions: 'Search suggestions',
-    searching: 'Searching...',
+    searching: 'Searching…',
     suggestionsAvailable: {
       one: '1 suggestion available. Use the up and down arrow keys to navigate.',
       other: '{count} suggestions available. Use the up and down arrow keys to navigate.'
@@ -47,7 +47,7 @@ export const en = {
     avatarOf: 'Avatar of {username}',
     mainNavigation: 'Main navigation',
     recentlyRated: 'Recently rated',
-    loadingRatings: 'Loading ratings...',
+    loadingRatings: 'Loading ratings…',
     ratingLabel: 'Rating: {rating} out of 5',
     ratingsError: 'Unable to load ratings.',
     noRatings: 'No rated albums yet.',
@@ -323,7 +323,7 @@ export const en = {
     }
   },
   skeleton: {
-    loading: 'Loading content...'
+    loading: 'Loading content…'
   },
   player: {
     playingFrom: 'Playing from',

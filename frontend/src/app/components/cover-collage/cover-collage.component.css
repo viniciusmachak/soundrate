@@ -104,7 +104,7 @@
   pointer-events: none;
 }
 
-.collage-content p {
+.collage-content h1 {
   max-width: 640px;
   margin: 0;
   color: var(--primary-text);
@@ -112,6 +112,7 @@
   font-weight: 700;
   line-height: 1.4;
   text-align: center;
+  text-wrap: balance;
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
 }
 

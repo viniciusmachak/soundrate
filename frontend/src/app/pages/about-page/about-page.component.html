@@ -9,7 +9,7 @@
 
       <figure class="deezer-partner">
         <span>{{ 'about.poweredBy' | t }}</span>
-        <img src="/deezer-logo.jpeg" alt="Deezer" />
+        <img width="736" height="732" src="/deezer-logo.jpeg" alt="Deezer" />
       </figure>
     </div>
   </section>
@@ -29,7 +29,7 @@
               <div class="feature-placeholder" aria-hidden="true">
                 <mat-icon>{{ feature.icon }}</mat-icon>
               </div>
-              <img
+              <img width="1200" height="675"
                 [src]="feature.image"
                 [alt]="feature.imageAlt | t"
                 loading="lazy"
@@ -70,7 +70,7 @@
           @for (technology of technologies; track technology.name) {
             <li class="technology-card">
               <span class="technology-logo">
-                <img
+                <img width="48" height="48"
                   [src]="technology.image"
                   [alt]="technology.name"
                   loading="lazy"
@@ -85,7 +85,7 @@
           @for (technology of technologies; track technology.name) {
             <li class="technology-card">
               <span class="technology-logo">
-                <img
+                <img width="48" height="48"
                   [src]="technology.image"
                   alt=""
                   loading="lazy"

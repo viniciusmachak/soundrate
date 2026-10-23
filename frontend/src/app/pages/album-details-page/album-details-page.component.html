@@ -9,7 +9,7 @@
     <header class="entity-header">
       <button type="button" class="cover-button" (click)="openAlbumCover(details)"
         [attr.aria-label]="'album.openCover' | t: { title: album.title }">
-        <img [src]="getAlbumCover(details)" [alt]="'album.coverOf' | t: { title: album.title }" class="cover">
+        <img width="232" height="232" [src]="getAlbumCover(details)" [alt]="'album.coverOf' | t: { title: album.title }" class="cover">
       </button>
 
       <div class="entity-info">
@@ -21,7 +21,7 @@
         <p class="entity-meta">
           @if (album.artist) {
             <a [routerLink]="['/artist', album.artist.id]" class="artist-link">
-              <img [src]="album.artist.picture_medium || album.artist.picture" alt="">
+              <img width="24" height="24" [src]="album.artist.picture_medium || album.artist.picture" alt="">
               {{ album.artist.name }}
             </a>
             <span aria-hidden="true">·</span>

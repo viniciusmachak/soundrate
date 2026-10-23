@@ -37,7 +37,7 @@
                   {{ index + 1 }}
                 }
               </span>
-              <img [src]="queueTrack.album.cover" alt="" />
+              <img width="42" height="42" [src]="queueTrack.album.cover" alt="" />
               <span class="queue-track-copy">
                 <strong>{{ queueTrack.title }}</strong>
                 <small>{{ queueTrack.artist.name }}</small>
@@ -54,7 +54,7 @@
 
   <div class="audio-player-container" role="region" [attr.aria-label]="'player.region' | t">
     <div class="track-summary">
-      <img [src]="track.album.cover" [alt]="'album.coverOf' | t: { title: track.album.title }" class="track-cover">
+      <img width="48" height="48" [src]="track.album.cover" [alt]="'album.coverOf' | t: { title: track.album.title }" class="track-cover">
       <div class="track-details">
         <span class="preview-label">
           @if (isLoading) {

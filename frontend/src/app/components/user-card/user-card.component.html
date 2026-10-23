@@ -1,5 +1,5 @@
 <a [routerLink]="['/user', user.username]" class="entity" [title]="user.username">
-  <img [src]="user.avatarUrl" [alt]="user.username" class="entity-image" loading="lazy">
+  <img width="250" height="250" [src]="user.avatarUrl" [alt]="user.username" class="entity-image" loading="lazy">
   <span class="entity-name">{{ user.username }}</span>
   <span class="entity-type">{{ 'shared.member' | t }}</span>
 </a>
