@@ -62,7 +62,6 @@ export const ptBR: Translations = {
     backToTop: 'Voltar ao topo',
     tagline: 'Descubra, avalie e compartilhe a música que fica com você.',
     footerNavigation: 'Navegação do rodapé',
-    code: 'Código',
     socialLinks: 'Redes sociais do desenvolvedor',
     developerGithub: 'GitHub do desenvolvedor',
     developerInstagram: 'Instagram do desenvolvedor',

@@ -172,7 +172,7 @@ Production runs the same Compose stack on a single VPS, with [Caddy](https://cad
 
    `docker-compose.prod.yml` sets `APP_FRONTEND_URL` and `APP_CORS_ORIGINS` to `https://$DOMAIN`.
 
-5. **Continuous deploy (optional)**: `.github/workflows/deploy.yml` pulls and rebuilds on every push to `main`. Add the repository secrets `SSH_HOST`, `SSH_USER` and `SSH_KEY` (a deploy key allowed on the server), and clone the repo at `~/sound-rate`.
+5. **Continuous deploy (optional)**: `.github/workflows/deploy.yml` pulls and rebuilds on every push to `main`. Add the repository secrets `SSH_HOST`, `SSH_USER`, `SSH_KEY` (a key allowed in the server's `authorized_keys`) and `SSH_FINGERPRINT` (the server's SHA256 host key fingerprint, from `ssh-keygen -lf /etc/ssh/ssh_host_ecdsa_key.pub`). Since the repository is private, give the server its own read-only GitHub deploy key and clone the repo over SSH at `~/sound-rate`.
 
 ### Analytics
 

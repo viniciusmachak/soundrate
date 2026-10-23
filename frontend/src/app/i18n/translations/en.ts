@@ -61,7 +61,6 @@ export const en = {
     backToTop: 'Back to top',
     tagline: 'Discover, rate and share the music that stays with you.',
     footerNavigation: 'Footer navigation',
-    code: 'Code',
     socialLinks: 'Developer social links',
     developerGithub: 'Developer\'s GitHub',
     developerInstagram: 'Developer\'s Instagram',
