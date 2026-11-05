@@ -706,7 +706,7 @@ export const ptBR: Translations = {
   privacy: {
     eyebrow: 'Legal',
     title: 'Política de Privacidade',
-    updated: 'Última atualização: 21 de outubro de 2026',
+    updated: 'Última atualização: 5 de novembro de 2026',
     intro: 'O Soundrate é um projeto pessoal para descobrir, avaliar e resenhar álbuns. Esta política explica quais dados o app coleta, por que coleta e o que você pode fazer a respeito.',
     collect: {
       title: 'O que coletamos',
@@ -728,7 +728,7 @@ export const ptBR: Translations = {
     },
     storage: {
       title: 'Armazenamento e cookies',
-      body: 'Seus dados ficam no nosso banco de dados enquanto sua conta existir. O Soundrate não usa cookies: sua sessão e o idioma escolhido ficam no armazenamento local do navegador. Sair da conta apaga a sessão, e limpar os dados do site apaga os dois.'
+      body: 'Seus dados ficam no nosso banco de dados enquanto sua conta existir. O Soundrate não define cookies próprios: sua sessão, o idioma escolhido e o fechamento do aviso de cookies ficam no armazenamento local do navegador. Se você usar "Continuar com o Google", o Google pode definir cookies próprios. Sair da conta apaga a sessão, e limpar os dados do site apaga o restante.'
     },
     choices: {
       title: 'Suas escolhas',
@@ -738,6 +738,11 @@ export const ptBR: Translations = {
       title: 'Contato',
       body: 'Dúvidas sobre esta política ou sobre seus dados? Escreva para'
     }
+  },
+  cookies: {
+    label: 'Aviso de cookies',
+    message: 'O Soundrate não usa cookies de rastreamento nem de publicidade. Sua sessão e seu idioma ficam no armazenamento local do navegador, e nossas estatísticas funcionam sem cookies. Se você usar "Continuar com o Google", o Google pode definir cookies próprios.',
+    dismiss: 'Entendi'
   },
   session: {
     expired: 'Sua sessão expirou',

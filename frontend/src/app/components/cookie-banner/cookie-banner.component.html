@@ -1,0 +1,9 @@
+@if (visible()) {
+  <section class="cookie-banner" [class.above-player]="currentTrack()" [attr.aria-label]="'cookies.label' | t">
+    <p>
+      {{ 'cookies.message' | t }}
+      <a routerLink="/privacy">{{ 'layout.privacy' | t }}</a>
+    </p>
+    <button mat-flat-button type="button" (click)="dismiss()">{{ 'cookies.dismiss' | t }}</button>
+  </section>
+}

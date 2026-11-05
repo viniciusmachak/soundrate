@@ -17,7 +17,7 @@ interface PolicySection {
   styleUrl: './privacy-page.component.css'
 })
 export class PrivacyPageComponent {
-  readonly contactEmail = 'vmachakcabral@gmail.com';
+  readonly contactEmail = 'viniciuscmachak@gmail.com';
 
   readonly sections: PolicySection[] = [
     {

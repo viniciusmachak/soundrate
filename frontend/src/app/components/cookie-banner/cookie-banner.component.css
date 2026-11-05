@@ -1,0 +1,41 @@
+.cookie-banner {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  color: var(--primary-text);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+
+.cookie-banner.above-player {
+  bottom: 88px;
+}
+
+.cookie-banner p {
+  margin: 0;
+}
+
+.cookie-banner a {
+  color: var(--accent-text);
+}
+
+.cookie-banner a:hover {
+  color: var(--primary-text);
+}
+
+@media (max-width: 760px) {
+  .cookie-banner.above-player {
+    bottom: 158px;
+  }
+}

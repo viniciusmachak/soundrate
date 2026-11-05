@@ -705,7 +705,7 @@ export const en = {
   privacy: {
     eyebrow: 'Legal',
     title: 'Privacy Policy',
-    updated: 'Last updated: October 21, 2026',
+    updated: 'Last updated: November 5, 2026',
     intro: 'Soundrate is a personal project that lets you discover, rate and review albums. This policy explains what data the app collects, why, and what you can do about it.',
     collect: {
       title: 'What we collect',
@@ -727,7 +727,7 @@ export const en = {
     },
     storage: {
       title: 'Storage and cookies',
-      body: 'Your data is kept in our database for as long as your account exists. Soundrate sets no cookies: your sign-in session and language choice are kept in your browser\'s local storage. Signing out removes the session, and clearing site data removes both.'
+      body: 'Your data is kept in our database for as long as your account exists. Soundrate sets no cookies of its own: your sign-in session, language choice and the dismissal of the cookie notice are kept in your browser\'s local storage. If you use "Continue with Google", Google may set its own cookies. Signing out removes the session, and clearing site data removes the rest.'
     },
     choices: {
       title: 'Your choices',
@@ -737,6 +737,11 @@ export const en = {
       title: 'Contact',
       body: 'Questions about this policy or your data? Write to'
     }
+  },
+  cookies: {
+    label: 'Cookie notice',
+    message: 'Soundrate uses no tracking or advertising cookies. Your session and language stay in your browser\'s local storage, and our analytics run without cookies. If you use "Continue with Google", Google may set its own cookies.',
+    dismiss: 'Got it'
   },
   session: {
     expired: 'Your session expired',

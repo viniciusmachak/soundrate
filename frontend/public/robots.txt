@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /settings
+Disallow: /listen-later
+Disallow: /reset-password
+Disallow: /forgot-password
+
+Sitemap: https://soundratevm.com/sitemap.xml

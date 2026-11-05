@@ -1,0 +1,23 @@
+# Soundrate
+
+> Soundrate is a music diary for discovering, rating and reviewing albums. It is a personal project, available in English and Brazilian Portuguese, with a music catalog provided by Deezer.
+
+Members can rate and review albums, like reviews, follow other members and artists, and save albums to listen to later. Ratings, reviews and member profiles are public. Track previews play from Deezer's servers.
+
+The site is a single-page app, so pages render with JavaScript.
+
+## Pages
+
+- [Home](https://soundratevm.com/): discover albums and artists
+- [About](https://soundratevm.com/about): what Soundrate is and how it is built
+- [Privacy Policy](https://soundratevm.com/privacy): what data the app collects and how to contact us
+
+## Page patterns
+
+- `https://soundratevm.com/album/<deezer-album-id>`: album details, ratings and reviews
+- `https://soundratevm.com/artist/<deezer-artist-id>`: artist details
+- `https://soundratevm.com/user/<username>`: public member profile
+
+## Contact
+
+- Email: viniciuscmachak@gmail.com
