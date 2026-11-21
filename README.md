@@ -235,3 +235,11 @@ The backend test suite uses H2 and includes unit and integration coverage for au
 
 - Backend details: [backend/README.md](backend/README.md)
 - Frontend details: [frontend/README.md](frontend/README.md)
+
+## Contributing
+
+Contributions are welcome! Read the contributing guide ([English](CONTRIBUTING.md) · [Português](CONTRIBUTING.pt-BR.md)) to get started and follow the Code of Conduct ([English](CODE_OF_CONDUCT.md) · [Português](CODE_OF_CONDUCT.pt-BR.md)).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
